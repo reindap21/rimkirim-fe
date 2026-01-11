@@ -2,7 +2,6 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-
   modules: [
     '@nuxt/eslint',
     '@nuxt/image',
@@ -18,6 +17,12 @@ export default defineNuxtConfig({
       ],
     }
   },
+  components: [
+    {
+      path: '~/components',
+      pathPrefix: false,
+    },
+  ],
   css: [
     '/assets/css/global.css'
   ]
