@@ -1,29 +1,38 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
+import Aura from '@primeuix/themes/aura';
+
 export default defineNuxtConfig({
-  compatibilityDate: '2025-07-15',
+  compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
   modules: [
-    '@nuxt/eslint',
-    '@nuxt/image',
-    '@nuxt/test-utils',
-    '@nuxtjs/tailwindcss'
+    "@nuxt/eslint",
+    "@nuxt/image",
+    "@nuxt/test-utils",
+    "@nuxtjs/tailwindcss",
+    "@primevue/nuxt-module",
   ],
+  primevue: {
+    options: {
+      theme: {
+        preset: Aura,
+      },
+    },
+  },
   app: {
     head: {
-      title: 'Rimkirim',
+      title: "Rimkirim",
       meta: [
-        { charset: 'utf-8' },
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' }
+        { charset: "utf-8" },
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
       ],
-    }
+    },
   },
   components: [
     {
-      path: '~/components',
+      path: "~/components",
       pathPrefix: false,
     },
   ],
-  css: [
-    '/assets/css/global.css'
-  ]
-})
+  css: ["/assets/css/global.css"],
+});
