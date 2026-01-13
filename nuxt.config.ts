@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
-import Aura from '@primeuix/themes/aura';
+import RimkirimPreset from './primevue/preset'
 
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
@@ -15,9 +15,9 @@ export default defineNuxtConfig({
   primevue: {
     options: {
       theme: {
-        preset: Aura,
-      },
-    },
+        preset: RimkirimPreset
+      }
+    }
   },
   app: {
     head: {
