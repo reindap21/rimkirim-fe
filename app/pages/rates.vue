@@ -1,12 +1,132 @@
+<script setup>
+
+import { Form } from '@primevue/forms';
+import IconField from "primevue/iconfield";
+import InputIcon from "primevue/inputicon";
+import { ref, computed } from 'vue'
+import InputGroup from 'primevue/inputgroup';
+import InputGroupAddon from 'primevue/inputgroupaddon';
+
+
+// * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
+
+const isVisibleAdvanceCalc = ref(true);
+const items = ref([
+  {
+    id: Date.now(),
+    weight: null,
+    length: null,
+    width: null,
+    height: null,
+    quantity: 1,
+  }
+])
+const volumetricFactor = 5000; // Chargable Weight
+
+// * ------- Methods -----------------------------------------------------------------------------------------------------------------------------------------------
+
+/**
+ * Toggle Button to show hide advance calculator
+ */
+const toggleCalculator = () => {
+  isVisibleAdvanceCalc.value = !isVisibleAdvanceCalc.value
+}
+
+/**
+ * Action add item
+ */
+const addItem = () => {
+  items.value.push({
+    id: Date.now() + Math.random(),
+    weight: null,
+    length: null,
+    width: null,
+    height: null,
+    quantity: 1,
+  })
+}
+
+/**
+ * Action remove item
+ * @param index 
+ */
+const removeItem = (index) => {
+  if (items.value.length === 1) return
+  items.value.splice(index, 1)
+}
+
+/**
+ * Calculate the total actual weight
+ */
+const totalActualWeight = computed(() => {
+  return items.value.reduce((total, item) => {
+    const weight = Number(item.weight) || 0
+    const qty = Number(item.quantity) || 1
+    return total + weight * qty
+  }, 0)
+})
+
+/**
+ * Calculate the total volumetric weight
+ */
+const totalVolumetricWeight = computed(() => {
+  return items.value.reduce((total, item) => {
+    const l = Number(item.length) || 0
+    const w = Number(item.width) || 0
+    const h = Number(item.height) || 0
+    const qty = Number(item.quantity) || 1
+
+    if (!l || !w || !h) return total
+
+    const volumetric = (l * w * h) / volumetricFactor
+    return total + volumetric * qty
+  }, 0)
+})
+
+// TODO: Refactor to Utils
+
+const formatNumber = (
+  value,
+  options = { decimals: 0, locale: 'en-US' }
+) => {
+  const number = Number(value)
+
+  if (isNaN(number)) return '0'
+
+  return new Intl.NumberFormat(options.locale, {
+    minimumFractionDigits: options.decimals,
+    maximumFractionDigits: options.decimals,
+  }).format(number)
+}
+
+
+// * ------- Hooks -------------------------------------------------------------------------------------------------------------------------------------------------
+
+/**
+ * The chargable weight
+ */
+const chargeableWeight = computed(() => {
+  return Math.ceil(
+    Math.max(totalActualWeight.value, totalVolumetricWeight.value)
+  )
+})
+
+
+</script>
+
 <template>
-  <!-- Calculate Your Shipment Section -->
+
   <section class="max-w-5xl mx-auto pt-40 pb-24 px-6">
+
+    <!-- Title -->
     <div class="flex flex-col items-center justify-center gap-2 mb-8">
       <h1 class="text-[32px] leading-[130%] font-semibold text-[#1E1E1E]">Calculate Your Shipment</h1>
       <p class="text-[14px] leading-[22px] font-[400] text-[#757575] uppercase">GET AN INSTANT ESTIMATE FOR YOUR
         INTERNATIONAL MOVE</p>
     </div>
-    <div class="flex flex-col gap-4 rounded-2xl bg-[#FAFAFC] border border-[#EDEDED] overflow-hidden">
+
+    <!-- Body -->
+    <div class="flex flex-col gap-6 rounded-2xl bg-[#FAFAFC] border border-[#EDEDED] overflow-hidden">
       <!-- Tabs -->
       <div class="flex gap-6 p-6 bg-[#F6F6FA] border-b border-[#F6F6FA]">
         <button class="flex-1 h-[50px] rounded-lg bg-[#1E1E1E] text-white text-[18px] leading-[26px] font-medium">Back
@@ -14,7 +134,6 @@
         <button class="flex-1 h-[50px] rounded-lg bg-white text-[#1E1E1E] text-[18px] leading-[26px] font-medium">Moving
           Abroad</button>
       </div>
-
       <!-- Form -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end px-6">
         <div>
@@ -28,32 +147,117 @@
             class="mt-1 w-full h-[46px] rounded-lg border border-[#E5E7EB] px-4 text-sm" />
         </div>
       </div>
+      <!-- Advance -->
+      <div class="flex flex-col gap-6 px-6 transition-all duration-300 ease-out" :class="isVisibleAdvanceCalc
+        ? 'max-h-fit opacity-100'
+        : 'max-h-0 opacity-0 -mt-6'
+        ">
+        <div class="h-[1px] border-y border-[#EDEDED]" />
+
+        <div class="flex items-center gap-2 text-[18px] leading-[26px] font-medium text-[#1E1E1E]">
+          <IconPackageDetails />
+          PACKAGE DETAILS
+        </div>
+
+
+        <div class="flex flex-col gap-3">
+          <div v-for="(item, index) in items" :key="item.id" class="relative grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+            <!-- Weight -->
+            <div class="flex flex-col gap-2">
+              <label class="text-[14px] leading-[22px] font-medium" for="weight">Weight (KG)</label>
+              <InputGroup>
+                <InputNumber id="weight" v-model="item.weight" placeholder="Weight" />
+                <InputGroupAddon class="bg-[#F6F6FA] text-[#757575] text-[14px] leading-[22px] font-[400]">
+                  KG
+                </InputGroupAddon>
+              </InputGroup>
+            </div>
+
+            <!-- Dimension -->
+            <div class="md:col-span-2">
+              <div class="flex flex-col gap-2">
+                <label class="text-[14px] leading-[22px] font-medium">Dimension (L × W × H)</label>
+                <div class="flex gap-2">
+                  <InputGroup>
+                    <InputNumber id="L" v-model="item.length" placeholder="L" />
+                    <InputGroupAddon class="bg-[#F6F6FA] text-[#757575] text-[14px] leading-[22px] font-[400]">
+                      cm
+                    </InputGroupAddon>
+                  </InputGroup>
+                  <InputGroup>
+                    <InputNumber id="W" v-model="item.width" placeholder="W" />
+                    <InputGroupAddon class="bg-[#F6F6FA] text-[#757575] text-[14px] leading-[22px] font-[400]">
+                      cm
+                    </InputGroupAddon>
+                  </InputGroup>
+                  <InputGroup>
+                    <InputNumber id="H" v-model="item.height" placeholder="H" />
+                    <InputGroupAddon class="bg-[#F6F6FA] text-[#757575] text-[14px] leading-[22px] font-[400]">
+                      cm
+                    </InputGroupAddon>
+                  </InputGroup>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quantity -->
+            <div class="flex flex-col gap-2">
+              <label class="text-[14px] leading-[22px] font-medium" for="quantity">Quantity</label>
+              <InputGroup>
+                <InputNumber id="quantity" v-model="item.quantity" placeholder="Qty" />
+                <InputGroupAddon class="bg-[#F6F6FA] text-[#757575] text-[14px] leading-[22px] font-[400]">
+                  pcs
+                </InputGroupAddon>
+              </InputGroup>
+
+              <!-- Remove Item -->
+              <button v-if="items.length > 1" @click="removeItem(index)"
+                class="absolute bottom-3 -right-5">
+                <IconTrash height="18" width="18" />
+              </button>
+            </div>
+          </div>
+
+          <!-- Add Item -->
+          <button class="flex items-center gap-2 text-sm font-medium text-[#1E1E1E] w-fit" @click="addItem">
+            <IconPlusCircle />
+            Add Item
+          </button>
+        </div>
+
+
+        <!-- Chargeable Weight -->
+        <div class="flex items-center justify-between bg-[#F6F6FA] p-4 border-b border-[#F6F6FA]">
+          <div class="flex gap-3">
+            <div class="flex justify-center items-center w-[44px] h-[44px] bg-white rounded-[8px]">
+              <IconChargeableWeight />
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <p class="flex items-center gap-1 text-[14px] leading-[22px] font-medium text-[#1E1E1E]">
+                Chargeable Weight for this Package
+                <IconQuestionMarkCircle />
+              </p>
+              <p class="text-[14px] leading-[22px] text-[#9E9E9E]">
+                Calculated as the greater of Actual Weight <span class="text-[#1E1E1E]">({{ formatNumber(Number(totalActualWeight), 1) }} Kg)</span> or
+                Volumetric Weight <span class="text-[#1E1E1E]">({{ formatNumber(Number(totalVolumetricWeight), 1) }} Kg)</span>
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-1 text-lg font-semibold text-[#1E1E1E] bg-white min-w-[100px] p-4 rounded-xl">
+            <div class="text-[18px] leading-[26px] font-bold w-full text-center">{{ formatNumber(Number(chargeableWeight), 1) }}</div>
+            <div class="text-sm font-normal w-fit">Kg</div>
+          </div>
+        </div>
+
+        <div class="h-[1px] border-y border-[#EDEDED]" />
+      </div>
 
       <div class="flex items-start justify-between w-full h-[70px] px-6">
-        <button class="flex items-center gap-2 py-2 text-[14px] leading-[22px] font-[400] text-[#1E1E1E]]">
-          <span>
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M15.4024 8.30474C15.4024 6.81305 15.4007 5.75534 15.281 4.95346C15.1645 4.174 14.9467 3.7152 14.5664 3.37286C14.1777 3.02303 13.6432 2.81667 12.7479 2.70832C11.8421 2.59872 10.6524 2.59756 9 2.59756C7.34758 2.59756 6.15793 2.59872 5.25214 2.70832C4.3568 2.81667 3.82229 3.02303 3.43359 3.37286C3.05329 3.7152 2.8355 4.17401 2.71904 4.95346C2.59925 5.75534 2.59756 6.81305 2.59756 8.30474V9.69527C2.59756 11.1869 2.59925 12.2447 2.71904 13.0465C2.8355 13.826 3.05329 14.2848 3.43359 14.6271C3.82229 14.977 4.3568 15.1833 5.25214 15.2917C6.15793 15.4013 7.34758 15.4024 9 15.4024C10.6524 15.4024 11.8421 15.4013 12.7479 15.2917C13.6432 15.1833 14.1777 14.977 14.5664 14.6271L14.7015 14.4928C14.9996 14.165 15.1791 13.7286 15.281 13.0465C15.4007 12.2447 15.4024 11.1869 15.4024 9.69527V8.30474ZM16.5 9.69527C16.5 11.1526 16.5011 12.3071 16.3664 13.2087C16.2283 14.1326 15.9377 14.8694 15.3003 15.4432C14.671 16.0094 13.8768 16.2607 12.8793 16.3814C11.8922 16.5008 10.6243 16.5 9 16.5C7.37572 16.5 6.10776 16.5008 5.12067 16.3814C4.12325 16.2607 3.32899 16.0094 2.69974 15.4432C2.06225 14.8694 1.77166 14.1326 1.63362 13.2087C1.49892 12.3071 1.5 11.1526 1.5 9.69527V8.30474C1.5 6.84741 1.49892 5.69294 1.63362 4.79125C1.77166 3.86744 2.06226 3.13057 2.69974 2.55683C3.32899 1.99059 4.12325 1.73931 5.12067 1.61862C6.10776 1.4992 7.37572 1.5 9 1.5C10.6243 1.5 11.8922 1.4992 12.8793 1.61862C13.8768 1.73931 14.671 1.9906 15.3003 2.55683C15.9377 3.13057 16.2283 3.86744 16.3664 4.79125C16.5011 5.69294 16.5 6.84741 16.5 8.30474V9.69527Z"
-                fill="#1E1E1E" />
-              <path
-                d="M11.3864 7.63636V6.61364H10.3636C10.0247 6.61364 9.75 6.3389 9.75 6C9.75 5.6611 10.0247 5.38636 10.3636 5.38636H11.3864V4.36364C11.3864 4.02473 11.6611 3.75 12 3.75C12.3389 3.75 12.6136 4.02473 12.6136 4.36364V5.38636H13.6364C13.9753 5.38636 14.25 5.6611 14.25 6C14.25 6.3389 13.9753 6.61364 13.6364 6.61364H12.6136V7.63636C12.6136 7.97527 12.3389 8.25 12 8.25C11.6611 8.25 11.3864 7.97527 11.3864 7.63636Z"
-                fill="#1E1E1E" />
-              <path
-                d="M13.6364 12.75C13.9753 12.75 14.25 12.9179 14.25 13.125C14.25 13.3321 13.9753 13.5 13.6364 13.5H10.3636C10.0247 13.5 9.75 13.3321 9.75 13.125C9.75 12.9179 10.0247 12.75 10.3636 12.75H13.6364Z"
-                fill="#1E1E1E" />
-              <path
-                d="M13.6364 10.5C13.9753 10.5 14.25 10.6679 14.25 10.875C14.25 11.0821 13.9753 11.25 13.6364 11.25H10.3636C10.0247 11.25 9.75 11.0821 9.75 10.875C9.75 10.6679 10.0247 10.5 10.3636 10.5H13.6364Z"
-                fill="#1E1E1E" />
-              <path
-                d="M7.28975 9.91475C7.50942 9.69508 7.86549 9.69508 8.08516 9.91475C8.30483 10.1344 8.30483 10.4905 8.08516 10.7102L7.17037 11.625L8.08516 12.5398C8.30483 12.7594 8.30483 13.1155 8.08516 13.3352C7.86549 13.5548 7.50942 13.5548 7.28975 13.3352L6.37496 12.4204L5.46016 13.3352C5.24049 13.5548 4.88442 13.5548 4.66475 13.3352C4.44508 13.1155 4.44508 12.7594 4.66475 12.5398L5.57955 11.625L4.66475 10.7102C4.44508 10.4905 4.44508 10.1344 4.66475 9.91475C4.88442 9.69508 5.24049 9.69508 5.46016 9.91475L6.37496 10.8295L7.28975 9.91475Z"
-                fill="#1E1E1E" />
-              <path
-                d="M7.63636 5.25C7.97527 5.25 8.25 5.58579 8.25 6C8.25 6.41421 7.97527 6.75 7.63636 6.75H4.36364C4.02473 6.75 3.75 6.41421 3.75 6C3.75 5.58579 4.02473 5.25 4.36364 5.25H7.63636Z"
-                fill="#1E1E1E" />
-            </svg>
-          </span>
-          Show Advance Shipment Calculator
+        <button class="flex items-center gap-2 py-2 text-[14px] leading-[22px] font-[400] text-[#1E1E1E] cursor-pointer"
+          @click="toggleCalculator">
+          <IconCalculator />
+          {{ isVisibleAdvanceCalc ? 'Hide' : 'Show' }} Advance Shipment Calculator
         </button>
         <button class="h-[46px] px-6 rounded-lg bg-[#E5E5E5] text-sm font-medium text-[#9E9E9E]">Get Special
           Rate</button>
