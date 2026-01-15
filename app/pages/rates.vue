@@ -10,7 +10,7 @@ import InputGroupAddon from 'primevue/inputgroupaddon';
 
 // * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
 
-const isVisibleAdvanceCalc = ref(true);
+const isVisibleAdvanceCalc = ref(false);
 const items = ref([
   {
     id: Date.now(),
@@ -83,6 +83,14 @@ const totalVolumetricWeight = computed(() => {
   }, 0)
 })
 
+const handleOriginSelect = (data) => {
+  console.log(data)
+}
+
+const handleDestinationSelect = (data) => {
+  console.log(data)
+}
+
 // TODO: Refactor to Utils
 
 const formatNumber = (
@@ -100,7 +108,7 @@ const formatNumber = (
 }
 
 
-// * ------- Hooks -------------------------------------------------------------------------------------------------------------------------------------------------
+// * ------- Compute -----------------------------------------------------------------------------------------------------------------------------------------------
 
 /**
  * The chargable weight
@@ -136,21 +144,24 @@ const chargeableWeight = computed(() => {
       </div>
       <!-- Form -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end px-6">
-        <div>
+        <div class="flex flex-col gap-2">
           <label class="text-[14px] leading-[22px] font-medium text-[##404040]">Moving from</label>
           <input type="text" placeholder="Origin Address"
             class="mt-1 w-full h-[46px] rounded-lg border border-[#E5E7EB] px-4 text-sm" />
+          <!-- <GoogleAddressInput v-model="originAddress" placeholder="Origin address" @select="handleOriginSelect" /> -->
         </div>
-        <div>
+        <div class="flex flex-col gap-2">
           <label class="text-[14px] leading-[22px] font-medium text-[##404040]">Moving to</label>
           <input type="text" placeholder="Destination Address"
-            class="mt-1 w-full h-[46px] rounded-lg border border-[#E5E7EB] px-4 text-sm" />
+            class="mt-1 w-full h-[46px] rounded-lg border border-[#E5E7EB] px-4 text-sm" /> 
+          <!-- <GoogleAddressInput v-model="destinationAddress" placeholder="Origin address" @select="handleDestinationSelect" /> -->
         </div>
+
       </div>
       <!-- Advance -->
       <div class="flex flex-col gap-6 px-6 transition-all duration-300 ease-out" :class="isVisibleAdvanceCalc
         ? 'max-h-fit opacity-100'
-        : 'max-h-0 opacity-0 -mt-6'
+        : 'max-h-0 opacity-0 -mt-6 -z-10'
         ">
         <div class="h-[1px] border-y border-[#EDEDED]" />
 
@@ -161,7 +172,8 @@ const chargeableWeight = computed(() => {
 
 
         <div class="flex flex-col gap-3">
-          <div v-for="(item, index) in items" :key="item.id" class="relative grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+          <div v-for="(item, index) in items" :key="item.id"
+            class="relative grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
             <!-- Weight -->
             <div class="flex flex-col gap-2">
               <label class="text-[14px] leading-[22px] font-medium" for="weight">Weight (KG)</label>
@@ -211,8 +223,7 @@ const chargeableWeight = computed(() => {
               </InputGroup>
 
               <!-- Remove Item -->
-              <button v-if="items.length > 1" @click="removeItem(index)"
-                class="absolute bottom-3 -right-5">
+              <button v-if="items.length > 1" @click="removeItem(index)" class="absolute bottom-3 -right-5">
                 <IconTrash height="18" width="18" />
               </button>
             </div>
@@ -239,13 +250,17 @@ const chargeableWeight = computed(() => {
                 <IconQuestionMarkCircle />
               </p>
               <p class="text-[14px] leading-[22px] text-[#9E9E9E]">
-                Calculated as the greater of Actual Weight <span class="text-[#1E1E1E]">({{ formatNumber(Number(totalActualWeight), 1) }} Kg)</span> or
-                Volumetric Weight <span class="text-[#1E1E1E]">({{ formatNumber(Number(totalVolumetricWeight), 1) }} Kg)</span>
+                Calculated as the greater of Actual Weight <span class="text-[#1E1E1E]">({{
+                  formatNumber(Number(totalActualWeight), 1) }} Kg)</span> or
+                Volumetric Weight <span class="text-[#1E1E1E]">({{ formatNumber(Number(totalVolumetricWeight), 1) }}
+                  Kg)</span>
               </p>
             </div>
           </div>
-          <div class="flex items-center gap-1 text-lg font-semibold text-[#1E1E1E] bg-white min-w-[100px] p-4 rounded-xl">
-            <div class="text-[18px] leading-[26px] font-bold w-full text-center">{{ formatNumber(Number(chargeableWeight), 1) }}</div>
+          <div
+            class="flex items-center gap-1 text-lg font-semibold text-[#1E1E1E] bg-white min-w-[100px] p-4 rounded-xl">
+            <div class="text-[18px] leading-[26px] font-bold w-full text-center">{{
+              formatNumber(Number(chargeableWeight), 1) }}</div>
             <div class="text-sm font-normal w-fit">Kg</div>
           </div>
         </div>

@@ -11,7 +11,6 @@
     fill: "white",
   });
   
-  const clipId = computed(() => `rimkirim-logo-clip-${Math.random().toString(36).slice(2)}`)
   </script>
 
 <template>
