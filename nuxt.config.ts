@@ -3,6 +3,12 @@
 import RimkirimPreset from './primevue/preset'
 
 export default defineNuxtConfig({
+  runtimeConfig: {
+    apiBaseUrl: process.env.API_BASE_URL, // server-only
+    public: {
+      apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL
+    }
+  },
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
   modules: [

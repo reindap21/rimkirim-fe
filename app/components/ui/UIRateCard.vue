@@ -1,0 +1,114 @@
+<script setup lang="ts">
+
+import { computed, ref } from 'vue'
+
+const props = withDefaults(defineProps<{
+  price: number
+  currency?: string
+  unit?: string
+  minWeight?: number
+  badge?: string
+  originCountry: string
+  originFlag: string
+  destinationCountry: string
+  destinationFlag: string
+  eta?: {
+    days_from: string,
+    days_to: string
+  },
+  isDirect?: boolean
+  terms?: string[]
+  collapsible?: boolean
+}>(), {
+  currency: 'IDR',
+  unit: 'Kg',
+  isDirect: true,
+  collapsible: true,
+  terms: () => []
+})
+
+defineEmits(['action'])
+
+const expanded = ref(false)
+
+const formattedPrice = computed(() =>
+  props.price.toLocaleString('id-ID')
+)
+
+const etaDays = `${props?.eta?.days_from} - ${props?.eta?.days_to}D`;
+
+</script>
+
+
+<template>
+  <div class="px-6 py-4 rounded-2xl border-[2px] border-[#EDEDED]">
+    <!-- TOP -->
+    <div class="relative grid grid-cols-[1.3fr_auto_1fr] items-center gap-3">
+      <!-- LEFT -->
+      <div>
+        <div class="flex items-center gap-3 mb-2">
+          <span v-if="badge" class="px-3 py-1 text-[12px] leading-5 rounded-full bg-[#D6EAE74D] text-[#309786]">
+            {{ badge }}
+          </span>
+        </div>
+
+        <div class="text-[32px] font-medium leading-[130%] text-gray-900">
+          {{ currency }} {{ formattedPrice }} / {{ unit }}
+        </div>
+
+        <p v-if="minWeight" class="text-[14px] leading-[22px] text-[#9E9E9E]">
+          For Minimum {{ minWeight }} {{ unit }} Shipment
+        </p>
+      </div>
+
+      <!-- CENTER -->
+      <div class="hidden md:flex flex-1 items-center justify-center gap-10">
+        <IUCountry :flag="originFlag" :label="originCountry" />
+
+        <div class="flex flex-col items-center text-sm text-[#9E9E9E]">
+          {{ etaDays }}
+          <IconDividerArrow />
+          {{ isDirect ? "Direct" : "Transit" }}
+        </div>
+
+        <IUCountry :flag="destinationFlag" :label="destinationCountry" />
+      </div>
+
+      <!-- CTA -->
+      <div class="flex justify-end">
+        <button
+          class="absolute top-0 right-0 w-[107px] h-[46px] rounded-[8px] bg-[#C1FF00] text-[14px] font-medium hover:opacity-90"
+          @click="$emit('action')">
+          Move Now
+        </button>
+      </div>
+    </div>
+
+    <!-- BOTTOM -->
+    <div class="relative mt-6 border-t border-gray-200 pt-4 text-[14px] text-[#9E9E9E]">
+      <template v-if="expanded">
+        <ul class="flex flex-col gap-2">
+          <li v-for="(term, i) in terms" :key="i" class="flex items-start gap-2">
+            <div class="mt-1">
+              <IconInfoRate />
+            </div>
+            <span v-html="term" />
+          </li>
+        </ul>
+      </template>
+
+      <template v-else>
+        <span>*Terms and conditions applied</span>
+      </template>
+
+      <div class="flex items-center">
+        <button v-if="collapsible" class="absolute right-0 bottom-0 flex items-center gap-1 font-medium text-[#1E1E1E]"
+          @click="expanded = !expanded">
+          {{ expanded ? 'Hide' : 'More Information' }}
+          <IconChevronUp v-if="expanded" />
+          <IconChevronDown v-else />
+        </button>
+      </div>
+    </div>
+  </div>
+</template>

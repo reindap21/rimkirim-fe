@@ -42,8 +42,10 @@ export default defineEventHandler(async (event) => {
       });
     }
 
+    const access_token = res.data.access_token;
+
     //* 1️⃣.1️⃣ Set Cookies at Nuxt Server
-    setCookie(event, "access_token", res.data.access_token, {
+    setCookie(event, "access_token", access_token, {
       httpOnly: true,
       secure: true,
       sameSite: "lax",
@@ -53,8 +55,10 @@ export default defineEventHandler(async (event) => {
 
     //* 2️⃣ Call BACKEND PROFILE API
     const resProfile: any = await $fetch(`${baseApiUrl}/api/auth/me`, {
-      method: "POST",
-      body,
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${access_token}`
+      }
     });
 
     /**

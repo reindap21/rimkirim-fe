@@ -42,8 +42,10 @@ export default defineEventHandler(async (event) => {
       });
     }
 
+    const access_token = res.data.access_token;
+
     //* 2️⃣ Set cookie (auto-login after register)
-    setCookie(event, "access_token", res.data.access_token, {
+    setCookie(event, "access_token", access_token, {
       httpOnly: true,
       secure: true,
       sameSite: "lax",
@@ -53,9 +55,9 @@ export default defineEventHandler(async (event) => {
 
     //* 3️⃣ Fetch user profile
     const resProfile: any = await $fetch(`${baseApiUrl}/api/auth/me`, {
-      method: "POST",
+      method: "GET",
       headers: {
-        Authorization: `Bearer ${res.data.access_token}`,
+        Authorization: `Bearer ${access_token}`,
       },
     });
 

@@ -1,15 +1,14 @@
 <script setup lang="ts">
+  
 import { ref } from "vue";
 
 // * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
 
+// State from Compoesable
+const { user, logout, loading } = useAuth()
+
 const showAuth = ref(false);
 const authMode = ref("login");
-
-// * ------- State
-
-const userState = useState('user')
-
 
 // * ------- Methods -----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -22,22 +21,22 @@ const closeAuth = () => {
   showAuth.value = false;
 }
 
-const logout = async () => {
-  try {
-    await $fetch('/api/auth/logout', {
-      method: 'POST',
-      credentials: 'include',
-    })
+// const logout = async () => {
+//   try {
+//     await $fetch('/api/auth/logout', {
+//       method: 'POST',
+//       credentials: 'include',
+//     })
 
-    // Reset state user
-    userState.value = null
+//     // Reset state user
+//     userState.value = null
 
-    // (optional) redirect
-    await navigateTo('/')
-  } catch (err) {
-    console.error('Logout failed', err)
-  }
-}
+//     // (optional) redirect
+//     await navigateTo('/')
+//   } catch (err) {
+//     console.error('Logout failed', err)
+//   }
+// }
 
 </script>
 
@@ -68,27 +67,31 @@ const logout = async () => {
         </nav>
         <div class="flex items-center gap-4">
           <span class="text-sm font-medium text-gray-600 cursor-pointer">EN</span>
-          <template v-if="!userState">
-            <button
-              class="text-sm font-medium text-white bg-[#1E1E1E] hover:bg-[#2E2E2E] rounded-full w-[102px] h-[46px] flex items-center justify-center"
-              @click="openLogin">
-              Login
-            </button>
-          </template>
 
+          <template v-if="loading">...</template>
           <template v-else>
-            <div class="relative flex gap-2 items-center">
-              <button class="flex items-center gap-2 text-sm font-medium text-[#1E1E1E]">
-                <span class="truncate max-w-[120px]">
-                  {{ userState?.name }}
-                </span>
-
+            <template v-if="!user">
+              <button
+                class="text-sm font-medium text-white bg-[#1E1E1E] hover:bg-[#2E2E2E] rounded-full w-[102px] h-[46px] flex items-center justify-center"
+                @click="openLogin">
+                Login
               </button>
+            </template>
 
-              <button class="w-full text-left text-sm text-red-600" @click="logout">
-                Logout
-              </button>
-            </div>
+            <template v-else>
+              <div class="relative flex gap-2 items-center cursor-pointer">
+                <button class="flex items-center gap-2 text-sm font-medium text-[#1E1E1E]">
+                  <span class="truncate max-w-[120px]">
+                    {{ user?.name?.split(" ")?.[0] }}
+                  </span>
+
+                </button>
+                <IconAvatar />
+                <!-- <button class="w-full text-left text-sm text-red-600" @click="logout">
+                  Logout
+                </button> -->
+              </div>
+            </template>
           </template>
         </div>
       </div>

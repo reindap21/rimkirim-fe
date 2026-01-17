@@ -24,10 +24,6 @@ defineProps({
 
 // * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
 
-const config = useRuntimeConfig()
-
-const baseApiUrl = config.API_BASE_URL;
-
 const emit = defineEmits(["close", "update:mode", "success"]);
 
 const showPasswordLogin = ref(false);
