@@ -1,8 +1,8 @@
-import type { GetSessionResponse } from "~/types/service"
-import type { UserType } from "~/types/user"
+import type { GetSessionResponse } from "~/interfaces/service"
+import type { User } from "~/interfaces/user"
 
 export const useAuth = () => {
-  const user = useState<UserType | null>('user', () => null)
+  const user = useState<User | null>('user', () => null)
   const loading = useState('auth-loading', () => false)
 
   const fetchUser = async () => {

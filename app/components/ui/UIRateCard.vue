@@ -8,6 +8,10 @@ const props = withDefaults(defineProps<{
   unit?: string
   minWeight?: number
   badge?: string
+  provider: {
+    url: string,
+    alt: string
+  }
   originCountry: string
   originFlag: string
   destinationCountry: string
@@ -24,18 +28,24 @@ const props = withDefaults(defineProps<{
   unit: 'Kg',
   isDirect: true,
   collapsible: true,
-  terms: () => []
+  terms: () => [],
 })
 
-defineEmits(['action'])
+const emit = defineEmits(['action'])
+
+// * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
 
 const expanded = ref(false)
+const etaDays = `${props?.eta?.days_from} - ${props?.eta?.days_to}D`;
+
+// * ------- Computed
 
 const formattedPrice = computed(() =>
   props.price.toLocaleString('id-ID')
 )
 
-const etaDays = `${props?.eta?.days_from} - ${props?.eta?.days_to}D`;
+// * ------- Methods ------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 </script>
 
@@ -50,6 +60,7 @@ const etaDays = `${props?.eta?.days_from} - ${props?.eta?.days_to}D`;
           <span v-if="badge" class="px-3 py-1 text-[12px] leading-5 rounded-full bg-[#D6EAE74D] text-[#309786]">
             {{ badge }}
           </span>
+          <img class="h-[28px] w-auto" :src="props?.provider?.url" :alt="props?.provider?.alt" />
         </div>
 
         <div class="text-[32px] font-medium leading-[130%] text-gray-900">
@@ -78,7 +89,7 @@ const etaDays = `${props?.eta?.days_from} - ${props?.eta?.days_to}D`;
       <div class="flex justify-end">
         <button
           class="absolute top-0 right-0 w-[107px] h-[46px] rounded-[8px] bg-[#C1FF00] text-[14px] font-medium hover:opacity-90"
-          @click="$emit('action')">
+          @click="emit('action')">
           Move Now
         </button>
       </div>

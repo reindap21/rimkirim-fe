@@ -7,14 +7,11 @@ const props = withDefaults(defineProps<Props>(), {
   label: "",
 });
 
-console.log('flag', props.flag)
-console.log('label', props.label)
-
 </script>
 
 <template>
-  <div class="text-center w-[105px]">
-    <div class="text-4xl">{{ props?.flag }}</div>
-    <div class="text-sm text-gray-500">{{ props?.label }}</div>
+  <div class="flex flex-col justify-center items-center gap-1 w-[105px]">
+    <div class="border border-[#F5F5F5] rounded-[4px]"><img :src="flag" class="w-[60px] h-[40px]" :alt="label" /></div>
+    <div class="text-sm text-gray-500">{{ label }}</div>
   </div>
 </template>

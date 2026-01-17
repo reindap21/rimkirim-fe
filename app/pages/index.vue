@@ -13,7 +13,6 @@ const getSpecialRates = async () => {
         is_special_rate: true
       }
     })
-    console.log("getSpecialRates res.data", res.data)
     specialRates.value = res.data; // Array of rates
   } catch (err) {
     console.error('fetch rates error:', err)

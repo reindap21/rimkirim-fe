@@ -1,14 +1,31 @@
 <script setup lang="ts">
+import type { Rate } from '~/interfaces/rate';
+
+
 
 interface Props {
-  rates: any[]
+  rates: Rate[]
 }
+
+// * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
 
 const props = withDefaults(defineProps<Props>(), {
   rates: () => []
 });
 
-console.log(props.rates)
+const router = useRouter()
+
+
+// * ------- Methods ------------------------------------------------------------------------------------------------------------------------------------------------
+
+const handleMoveNow = (rate: Rate) => {
+  router.push({
+    path: '/eligible',
+    query: {
+      rateId: rate._id
+    }
+  })
+}
 
 </script>
 
@@ -16,15 +33,18 @@ console.log(props.rates)
   <!-- SPECIAL RATES -->
   <section class="w-full max-w-5xl mx-auto py-0 flex flex-col gap-3 -mt-24">
 
-    <template v-for="rate in rates" :key="rate.id">
-      <UIRateCard :price="rate?.pricing?.amount" :currency="rate?.pricing?.currency" :unit="rate?.pricing?.unit"
-        :minWeight="rate?.pricing?.minimum?.value" badge="Special Rate"
-        :originCountry="rate?.route?.origin?.country_name" :originFlag="rate?.route?.origin?.country_code"
+    <template v-for="rate in rates" :key="rate._id">
+      <UIRateCard 
+        :price="rate?.pricing?.amount" 
+        :currency="rate?.pricing?.currency" 
+        :unit="rate?.pricing?.unit"
+        :minWeight="rate?.pricing?.minimum?.value" 
+        badge="Special Rate"
+        :provider="rate?.provider?.branding?.logo"
+        :originCountry="rate?.route?.origin?.country_name" :originFlag="rate?.assets?.flags?.origin"
         :destinationCountry="rate?.route?.destination?.country_name"
-        :destinationFlag="rate?.route?.destination?.country_code" :eta="rate?.eta"
-        :isDirect="rate?.route?.is_direct"
-        :terms="rate?.terms"  
-      />
+        :destinationFlag="rate?.assets?.flags?.destination" :eta="rate?.eta" :isDirect="rate?.route?.is_direct"
+        :terms="rate?.terms" @action="handleMoveNow(rate)" />
     </template>
 
     <!-- CTA BELOW SPECIAL RATES -->
