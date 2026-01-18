@@ -1,5 +1,5 @@
 export interface Rate {
-  _id: string,
+  id: string,
   assets: {
     flags: {
       destination: string;
@@ -21,7 +21,7 @@ export interface Rate {
     }
   },
   provider: {
-    _id: string,
+    id: string,
     code: string,
     name: string,
     service: {

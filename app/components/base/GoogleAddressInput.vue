@@ -1,33 +1,58 @@
-<script setup>
-import { ref, onMounted } from 'vue'
-import InputText from 'primevue/inputtext'
+<script setup lang="ts">
+import { onMounted, ref } from 'vue'
 
 const props = defineProps({
   modelValue: String,
-  placeholder: String,
+  placeholder: String
 })
 
 const emit = defineEmits(['update:modelValue', 'select'])
 
-const inputRef = ref(null)
+const containerRef = ref<HTMLElement | null>(null)
 
-onMounted(() => {
-  const autocomplete = new google.maps.places.Autocomplete(
-    inputRef.value.$el,
-    { types: ['geocode'] }
-  )
+onMounted(async () => {
+  await customElements.whenDefined('gmp-place-autocomplete')
 
-  autocomplete.addListener('place_changed', () => {
-    const place = autocomplete.getPlace()
-    if (!place.formatted_address) return
+  const el = document.createElement('gmp-place-autocomplete')
+  el.setAttribute('placeholder', props.placeholder || 'Enter address')
+  el.setAttribute('types', 'geocode')
 
-    emit('update:modelValue', place.formatted_address)
+  el.addEventListener('gmp-placeselect', (event: any) => {
+    const place = event.detail.place
+
+    console.log('PLACE FROM GOOGLE:', place)
+
+    if (!place?.formattedAddress) return
+
+    emit('update:modelValue', place.formattedAddress)
     emit('select', place)
   })
+
+
+  containerRef.value?.appendChild(el)
 })
 </script>
 
 <template>
-  <InputText ref="inputRef" :value="modelValue" :placeholder="placeholder" class="w-full h-[46px]"
-    @input="$emit('update:modelValue', $event.target.value)" />
+  <div ref="containerRef" class="w-full rounded-md border border-gray-300 py-2 h-[46px] flex items-center" />
 </template>
+
+<style>
+gmp-place-autocomplete {
+  background-color: transparent;
+  width: 100%;
+  max-width: 100%;
+}
+
+gmp-place-autocomplete input {
+  all: unset;
+  width: 100%;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+gmp-place-autocomplete input::placeholder {
+  font-size: 14px;
+  line-height: 22px;
+}
+</style>

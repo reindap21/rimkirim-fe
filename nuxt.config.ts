@@ -6,7 +6,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     apiBaseUrl: process.env.API_BASE_URL, // server-only
     public: {
-      apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL
+      apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL,
+      googleMapsApiKey: process.env.NUXT_PUBLIC_GOOGLE_MAPS_API_KEY
     }
   },
   compatibilityDate: "2025-07-15",
@@ -32,6 +33,13 @@ export default defineNuxtConfig({
         { charset: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
       ],
+      script: [
+        {
+          src: `https://maps.googleapis.com/maps/api/js?key=${process.env.NUXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`,
+          async: true,
+          defer: true
+        }
+      ]
     },
   },
   components: [

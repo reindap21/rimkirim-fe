@@ -3,6 +3,7 @@
 // * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
 
 const specialRates = ref([]);
+const specialRatesLoading = ref(true);
 
 const getSpecialRates = async () => {
   try {
@@ -13,13 +14,14 @@ const getSpecialRates = async () => {
         is_special_rate: true
       }
     })
-    specialRates.value = res.data; // Array of rates
+    specialRates.value = res.rates; // Array of rates
+    specialRatesLoading.value = false;
   } catch (err) {
     console.error('fetch rates error:', err)
+    specialRatesLoading.value = false;
   }
 }
 
-// ✅ pastikan jalan di client
 onMounted(() => {
   getSpecialRates()
 })
@@ -28,7 +30,7 @@ onMounted(() => {
 
 <template>
   <HeroSection />
-  <SpecialRateSection :rates="specialRates" />
+  <SpecialRateSection :rates="specialRates" :loading="specialRatesLoading" />
   <OurServiceSection />
   <HowItWorksSection />
   <OurCommitmentsSection />

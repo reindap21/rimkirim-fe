@@ -23,6 +23,7 @@ const props = withDefaults(defineProps<{
   isDirect?: boolean
   terms?: string[]
   collapsible?: boolean
+  loading?: boolean
 }>(), {
   currency: 'IDR',
   unit: 'Kg',
@@ -88,15 +89,17 @@ const formattedPrice = computed(() =>
       <!-- CTA -->
       <div class="flex justify-end">
         <button
-          class="absolute top-0 right-0 w-[107px] h-[46px] rounded-[8px] bg-[#C1FF00] text-[14px] font-medium hover:opacity-90"
+          class="absolute flex items-center justify-center top-0 right-0 w-[107px] h-[46px] rounded-[8px] hover:bg-[#A1D400] text-[14px] font-medium"
+          :class="loading ? 'bg-[#A1D400] cursor-default' : 'bg-[#C1FF00]'"
           @click="emit('action')">
-          Move Now
+          <IconSpinner v-if="loading" />
+          <span v-else>Move Now</span>
         </button>
       </div>
     </div>
 
     <!-- BOTTOM -->
-    <div class="relative mt-6 border-t border-gray-200 pt-4 text-[14px] text-[#9E9E9E]">
+    <div class="relative mt-6 border-t border-gray-200 pt-4 text-[14px] text-[#9E9E9E] transition-all duration-300 ease-out">
       <template v-if="expanded">
         <ul class="flex flex-col gap-2">
           <li v-for="(term, i) in terms" :key="i" class="flex items-start gap-2">
