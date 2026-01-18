@@ -75,7 +75,7 @@ const formattedPrice = computed(() =>
 
       <!-- CENTER -->
       <div class="hidden md:flex flex-1 items-center justify-center gap-10">
-        <IUCountry :flag="originFlag" :label="originCountry" />
+        <UICountry :flag="originFlag" :label="originCountry" />
 
         <div class="flex flex-col items-center text-sm text-[#9E9E9E]">
           {{ etaDays }}
@@ -83,7 +83,7 @@ const formattedPrice = computed(() =>
           {{ isDirect ? "Direct" : "Transit" }}
         </div>
 
-        <IUCountry :flag="destinationFlag" :label="destinationCountry" />
+        <UICountry :flag="destinationFlag" :label="destinationCountry" />
       </div>
 
       <!-- CTA -->
