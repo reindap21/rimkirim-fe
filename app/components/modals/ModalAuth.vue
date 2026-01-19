@@ -98,6 +98,10 @@ const handleLogin = async ({ values, valid }) => {
 
 };
 
+const handleLoginWithGoogle = () => {
+  window.location.href = '/api/auth/google'
+}
+
 const handleSignup = async ({ values, valid }) => {
   if (!valid) return;
 
@@ -216,7 +220,7 @@ const toggleShowPasswordSignup = () => {
               ]">Login</button>
               <!-- Google Login -->
               <button type="button"
-                class="flex h-[46px] items-center justify-center gap-2 rounded-md bg-white text-sm font-medium text-black">
+                class="flex h-[46px] items-center justify-center gap-2 rounded-md bg-white text-sm font-medium text-black" @click="handleLoginWithGoogle">
                 <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="h-4 w-4" />
                 Login with Google
               </button>

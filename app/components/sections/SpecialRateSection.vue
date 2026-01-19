@@ -21,14 +21,22 @@ const actionMoveNowLoading = ref<string | null>(null)
 
 // * ------- Methods ------------------------------------------------------------------------------------------------------------------------------------------------
 
-const handleActionMoveNow = (rate: Rate) => {
+const handleActionMoveNow = async (rate: Rate) => {
 
   // Set Loading
   actionMoveNowLoading.value = rate.id
 
   // Fetch API
+  // Sync with Page Rates
+  try {
+    await $fetch(`/api/eligibility`, {
+      method: "GET",
+      credentials: 'include', // Required
+      params: {
+        rateId: rate.id
+      }
+    })
 
-  setTimeout(() => {
     // If success
     router.push({
       path: '/eligible',
@@ -36,7 +44,11 @@ const handleActionMoveNow = (rate: Rate) => {
         rateId: rate.id
       }
     })
-  }, 1000);
+
+  } catch (err) {
+    console.error('fetch eligibility error:', err);
+    actionMoveNowLoading.value = ""
+  }
 }
 </script>
 

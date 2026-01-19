@@ -18,15 +18,16 @@ onMounted(async () => {
   el.setAttribute('types', 'geocode')
 
   el.addEventListener('gmp-placeselect', (event: any) => {
-    const place = event.detail.place
+  const place = event.place || event.detail?.place
 
-    console.log('PLACE FROM GOOGLE:', place)
+  console.log('PLACE FROM GOOGLE:', place)
 
-    if (!place?.formattedAddress) return
+  if (!place?.formattedAddress) return
 
-    emit('update:modelValue', place.formattedAddress)
-    emit('select', place)
-  })
+  emit('update:modelValue', place.formattedAddress)
+  emit('select', place)
+})
+
 
 
   containerRef.value?.appendChild(el)

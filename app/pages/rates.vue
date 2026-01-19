@@ -121,6 +121,9 @@ const formatNumber = (
 }
 
 
+/**
+ * 
+ */
 const handleGetSpecialRate = async () => {
 
   ratesLoading.value = true;
@@ -168,22 +171,38 @@ const handleGetSpecialRate = async () => {
   }
 }
 
-const handleActionMoveNow = (rate: Rate) => {
+/**
+ * 
+ * @param rate 
+ */
+const handleActionMoveNow = async (rate: Rate) => {
 
-// Set Loading
-actionMoveNowLoading.value = rate.id
+  // Set Loading
+  actionMoveNowLoading.value = rate.id
 
-// Fetch API
+  // Fetch API
+  // Sync with Special Rate Section
+  try {
+    await $fetch(`/api/eligibility`, {
+      method: "GET",
+      credentials: 'include', // Required
+      params: {
+        rateId: rate.id
+      }
+    })
 
-setTimeout(() => {
-  // If success
-  router.push({
-    path: '/eligible',
-    query: {
-      rateId: rate.id
-    }
-  })
-}, 1000);
+    // If success
+    router.push({
+      path: '/eligible',
+      query: {
+        rateId: rate.id
+      }
+    })
+
+  } catch (err) {
+    console.error('fetch eligibility error:', err);
+    actionMoveNowLoading.value = ""
+  }
 }
 
 // * ------- Compute -----------------------------------------------------------------------------------------------------------------------------------------------
@@ -201,9 +220,7 @@ const chargeableWeight = computed(() => {
 </script>
 
 <template>
-
   <section class="max-w-5xl mx-auto pt-40 pb-24 px-6">
-
     <!-- Title -->
     <div class="flex flex-col items-center justify-center gap-2 mb-8">
       <h1 class="text-[32px] leading-[130%] font-semibold text-[#1E1E1E]">Calculate Your Shipment</h1>
@@ -214,7 +231,7 @@ const chargeableWeight = computed(() => {
     <!-- Body -->
     <div class="flex flex-col gap-6 rounded-2xl bg-[#FAFAFC] border border-[#EDEDED]">
       <!-- Tabs -->
-      <div class="flex gap-6 p-6 bg-[#F6F6FA] border-b border-[#F6F6FA]">
+      <div class="flex gap-6 p-6 bg-[#F6F6FA] border-b border-[#F6F6FA] rounded-tl-[14px] rounded-tr-[14px]">
         <button class="flex-1 h-[50px] rounded-lg bg-[#1E1E1E] text-white text-[18px] leading-[26px] font-medium">Back
           for Good</button>
         <button class="flex-1 h-[50px] rounded-lg bg-white text-[#1E1E1E] text-[18px] leading-[26px] font-medium">Moving

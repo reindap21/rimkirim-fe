@@ -5,9 +5,10 @@ import RimkirimPreset from './primevue/preset'
 export default defineNuxtConfig({
   runtimeConfig: {
     apiBaseUrl: process.env.API_BASE_URL, // server-only
+    googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
+    googleClientId: process.env.GOOGLE_CLIENT_ID,
     public: {
-      apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL,
-      googleMapsApiKey: process.env.NUXT_PUBLIC_GOOGLE_MAPS_API_KEY
+      baseUrl: process.env.NUXT_PUBLIC_BASE_URL,
     }
   },
   compatibilityDate: "2025-07-15",
@@ -35,11 +36,11 @@ export default defineNuxtConfig({
       ],
       script: [
         {
-          src: `https://maps.googleapis.com/maps/api/js?key=${process.env.NUXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places`,
-          async: true,
-          defer: true
+          src: `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAPS_API_KEY}&libraries=places&v=weekly&loading=async`,
+          async: true
         }
       ]
+      
     },
   },
   components: [
@@ -49,4 +50,11 @@ export default defineNuxtConfig({
     },
   ],
   css: ["/assets/css/global.css"],
+  vite: {
+    server: {
+      allowedHosts: [
+        'rimkirimdev.com',
+      ]
+    }
+  }
 });

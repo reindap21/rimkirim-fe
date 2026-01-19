@@ -10,7 +10,7 @@
 
 <template>
   <!-- Eligibility Selection Section -->
-  <section class="max-w-6xl mx-auto px-6 pt-36 pb-24 text-center">
+  <section class="max-w-6xl mx-auto px-6 pt-40 pb-24 text-center">
     <div class="flex flex-col gap-1">
       <p class="text-[20px] leading-[130%] text-[#616161]">Based on your answer</p>
       <h2 class="text-[32px] leading-[130%] font-semibold text-[#1E1E1E]">You are eligible to choose</h2>
@@ -19,7 +19,7 @@
     <div class="mt-6 flex items-stretch justify-center gap-4">
       <!-- Skema Barang Pindahan -->
       <div
-        class="flex flex-col flex-1 gap-6 w-[400px] shrink-0 grow-0 rounded-2xl px-6 py-4 text-left" @click="$emit('select', 'pindahan')"
+        class="flex flex-col flex-1 gap-6 w-[400px] shrink-0 grow-0 rounded-2xl px-6 py-4 text-left" @click="$emit('select', 'moving_goods')"
         :class="isSKPAvailable ? 'bg-[#FAFAFC] hover:bg-[#D6EAE7] group hover:shadow-lg cursor-pointer' : 'bg-[#FAFAFC] opacity-50 cursor-disabled'"
         >
         <div class="flex items-center justify-center w-[338px] h-[211px]">
@@ -98,7 +98,7 @@
 
       <!-- Skema Barang Penumpang -->
       <div
-        class="flex flex-col flex-1 gap-6 w-[400px] shrink-0 grow-0 bg-[#FAFAFC] hover:bg-[#D6EAE7] group hover:shadow-lg rounded-2xl px-6 py-4 text-left cursor-pointer" @click="$emit('select', 'penumpang')">
+        class="flex flex-col flex-1 gap-6 w-[400px] shrink-0 grow-0 bg-[#FAFAFC] hover:bg-[#D6EAE7] group hover:shadow-lg rounded-2xl px-6 py-4 text-left cursor-pointer" @click="$emit('select', 'passenger_goods')">
         <div class="flex items-center justify-center w-[338px] h-[211px]">
           <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink">
