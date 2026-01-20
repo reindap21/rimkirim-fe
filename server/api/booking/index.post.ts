@@ -6,14 +6,19 @@ export default defineEventHandler(async (event) => {
      */
     const body = await readBody(event);
 
-    if (
-      !body?.rate_id ||
-      !body?.purpose_of_shipment ||
-      !body?.packing_list_code
-    ) {
+    if (!body?.rate_id || !body?.purpose_of_shipment) {
       throw createError({
         statusCode: 400,
-        statusMessage: "Rate ID, Purpose of Shipment and Packing List Code are required",
+        statusMessage: "Rate ID and Purpose of Shipment are required",
+      });
+    }
+
+    // Token Cookies
+    const token = getCookie(event, "access_token");
+    if (!token) {
+      throw createError({
+        statusCode: 401,
+        statusMessage: "Unauthenticated.",
       });
     }
 
@@ -25,6 +30,9 @@ export default defineEventHandler(async (event) => {
     const res: any = await $fetch(`${baseApiUrl}/api/bookings`, {
       method: "POST",
       body,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     /**
@@ -45,9 +53,7 @@ export default defineEventHandler(async (event) => {
     throw createError({
       statusCode: error?.statusCode || 500,
       statusMessage:
-        error?.data?.message ||
-        error?.statusMessage ||
-        "Booking failed",
+        error?.data?.message || error?.statusMessage || "Booking failed",
     });
   }
 });

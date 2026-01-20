@@ -1,19 +1,17 @@
 <script setup lang="ts">
 
-import { Form } from '@primevue/forms';
-import IconField from "primevue/iconfield";
 import InputIcon from "primevue/inputicon";
-import { ref, computed } from 'vue'
-import InputGroup from 'primevue/inputgroup';
-import InputGroupAddon from 'primevue/inputgroupaddon';
-import type { Rate } from '~/interfaces/rate';
+import { computed, ref } from 'vue';
+import type { EstimateRatesRequest, LocationPayload, Rate, ShipmentType } from '~/types/rate';
 
 
 // * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
 
 const router = useRouter()
 
+const origin = ref<LocationPayload | {}>({})
 const originAddress = ref("")
+const destination = ref<LocationPayload | {}>({})
 const destinationAddress = ref("")
 const shipmentType = ref("back_for_good"); // back_for_good | moving_abroad
 
@@ -94,14 +92,17 @@ const totalVolumetricWeight = computed(() => {
   }, 0)
 })
 
-const handleOriginSelect = (data: any) => {
-  console.log(data)
-  originAddress.value = data;
+
+const handleOriginSelect = (payload: any) => {
+  console.log(payload)
+  origin.value = payload
+  originAddress.value = payload?.address;
 }
 
-const handleDestinationSelect = (data: any) => {
-  console.log(data)
-  destinationAddress.value = data;
+const handleDestinationSelect = (payload: any) => {
+  console.log(payload)
+  destination.value = payload
+  destinationAddress.value = payload?.address;
 }
 
 // TODO: Refactor to Utils
@@ -128,34 +129,33 @@ const handleGetSpecialRate = async () => {
 
   ratesLoading.value = true;
 
-  console.log(originAddress.value)
-  console.log(destinationAddress.value)
-
-  const payload = {
-    shipment_type: shipmentType.value,
-    origin: {
-      "address": "Emirates Stadium, London N7 7AJ, United Kingdom",
-      "placeid": "ChIJd8BlQ2cbdkgR7aZc8fY1d_o", // kayanya ga perlu deh? iya lah
-      "latitude": 51.554888,
-      "longitude": -0.108438,
-      "postal_code": "N7 7AJ",
-      "city": "London",
-      "province": "England",
-      "country": "GB"
-    },
-    destination: {
-      "address": "Jl. Menteng Raya No.5 Blok FA5, Bintaro 15220",
-      "placeid": "ChIJq6qq6PjXaS4R7EwZ6yK4gkU", // kayanya ga perlu deh? iya lah
-      "latitude": -6.292348,
-      "longitude": 106.722233,
-      "postal_code": "15220",
-      "city": "South Tangerang",
-      "province": "Banten",
-      "country": "ID"
-    }
+  let payload: EstimateRatesRequest = {
+    shipment_type: shipmentType.value as ShipmentType,
+    origin: origin.value as LocationPayload,
+    destination: destination.value as LocationPayload,
   }
 
-  console.log('payload', payload)
+  if (isVisibleAdvanceCalc.value) {
+    const packages: EstimateRatesRequest['packages'] = items.value.map((item) => {
+      const { weight, length, width, height, quantity } = item
+      return {
+        weight,
+        weight_unit: "kg",
+        dimensions: {
+          length,
+          width,
+          height
+        },
+        dimension_unit: "cm",
+        quantity
+      }
+    })
+
+    payload = {
+      ...payload,
+      packages
+    }
+  }
 
   try {
     const res = await $fetch(`/api/rates/estimate`, {
@@ -195,7 +195,8 @@ const handleActionMoveNow = async (rate: Rate) => {
     router.push({
       path: '/eligible',
       query: {
-        rateId: rate.id
+        rateId: rate.id,
+        origin: (origin.value as any)?.country
       }
     })
 
@@ -215,7 +216,6 @@ const chargeableWeight = computed(() => {
     Math.max(totalActualWeight.value, totalVolumetricWeight.value)
   )
 })
-
 
 </script>
 
@@ -240,17 +240,21 @@ const chargeableWeight = computed(() => {
       <!-- Form -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end px-6">
         <div class="flex flex-col gap-2">
-          <label class="text-[14px] leading-[22px] font-medium text-[##404040]">Moving from</label>
+          <label class="text-[14px] leading-[22px] font-medium text-[#616161]">Moving from</label>
           <!-- <input type="text" placeholder="Origin Address"
             class="mt-1 w-full h-[46px] rounded-lg border border-[#E5E7EB] px-4 text-sm" /> -->
-          <GoogleAddressInput v-model="originAddress" placeholder="Origin address" @select="handleOriginSelect" />
+          <ClientOnly>
+            <GoogleAddressInput v-model="originAddress" placeholder="Origin address" @select="handleOriginSelect" />
+          </ClientOnly>
         </div>
         <div class="flex flex-col gap-2">
-          <label class="text-[14px] leading-[22px] font-medium text-[##404040]">Moving to</label>
+          <label class="text-[14px] leading-[22px] font-medium text-[#616161]">Moving to</label>
           <!-- <input type="text" placeholder="Destination Address"
             class="mt-1 w-full h-[46px] rounded-lg border border-[#E5E7EB] px-4 text-sm" />  -->
-          <GoogleAddressInput v-model="destinationAddress" placeholder="Destination address"
-            @select="handleDestinationSelect" />
+          <ClientOnly>
+            <GoogleAddressInput v-model="destinationAddress" placeholder="Destination address"
+              @select="handleDestinationSelect" />
+          </ClientOnly>
         </div>
 
       </div>
@@ -267,66 +271,99 @@ const chargeableWeight = computed(() => {
         </div>
 
 
-        <div class="flex flex-col gap-3">
-          <div v-for="(item, index) in items" :key="item.id"
-            class="relative grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+        <div class="flex flex-col gap-4">
+          <div v-for="(item, index) in items" :key="item.id" class="relative flex items-start gap-6">
             <!-- Weight -->
-            <div class="flex flex-col gap-2">
-              <label class="text-[14px] leading-[22px] font-medium" for="weight">Weight (KG)</label>
-              <InputGroup>
-                <InputNumber id="weight" v-model="item.weight" placeholder="Weight" />
-                <InputGroupAddon class="bg-[#F6F6FA] text-[#757575] text-[14px] leading-[22px] font-[400]">
-                  KG
-                </InputGroupAddon>
-              </InputGroup>
+            <div class="flex-[1]">
+              <div class="flex flex-col gap-[6px]">
+                <label class="text-[14px] font-medium">Weight (KG)</label>
+
+                <div class="relative h-[46px] border border-[#EDEDED] rounded-[6px]">
+                  <InputNumber v-model="item.weight" placeholder="Weight" class="w-full h-full"
+                    inputClass="w-full h-full pr-[56px]" />
+
+                  <InputIcon class="absolute right-0 top-0 h-full w-[49px]
+                   bg-[#F6F6FA] text-[#757575]
+                   flex items-center justify-center
+                   rounded-tr-[6px] rounded-br-[6px]">
+                    KG
+                  </InputIcon>
+                </div>
+              </div>
             </div>
 
             <!-- Dimension -->
-            <div class="md:col-span-2">
-              <div class="flex flex-col gap-2">
-                <label class="text-[14px] leading-[22px] font-medium">Dimension (L × W × H)</label>
-                <div class="flex gap-2">
-                  <InputGroup>
-                    <InputNumber id="L" v-model="item.length" placeholder="L" />
-                    <InputGroupAddon class="bg-[#F6F6FA] text-[#757575] text-[14px] leading-[22px] font-[400]">
+            <div class="flex-[3]">
+              <div class="flex flex-col gap-[6px]">
+                <label class="text-[14px] font-medium">
+                  Dimension (L × W × H)
+                </label>
+
+                <div class="flex items-center gap-2">
+                  <!-- L -->
+                  <div class="relative h-[46px] w-full border border-[#EDEDED] rounded-[6px]">
+                    <InputNumber v-model="item.length" placeholder="L" class="w-full h-full"
+                      inputClass="w-full h-full pr-[49px]" />
+                    <InputIcon
+                      class="absolute right-0 top-0 h-full w-[49px] bg-[#F6F6FA] text-[#757575] flex items-center justify-center rounded-tr-[6px] rounded-br-[6px]">
                       cm
-                    </InputGroupAddon>
-                  </InputGroup>
-                  <InputGroup>
-                    <InputNumber id="W" v-model="item.width" placeholder="W" />
-                    <InputGroupAddon class="bg-[#F6F6FA] text-[#757575] text-[14px] leading-[22px] font-[400]">
+                    </InputIcon>
+                  </div>
+
+                  <span class="text-[#9E9E9E] text-sm">×</span>
+
+                  <!-- W -->
+                  <div class="relative h-[46px] w-full border border-[#EDEDED] rounded-[6px]">
+                    <InputNumber v-model="item.width" placeholder="W" class="w-full h-full"
+                      inputClass="w-full h-full pr-[49px]" />
+                    <InputIcon
+                      class="absolute right-0 top-0 h-full w-[49px] bg-[#F6F6FA] text-[#757575] flex items-center justify-center rounded-tr-[6px] rounded-br-[6px]">
                       cm
-                    </InputGroupAddon>
-                  </InputGroup>
-                  <InputGroup>
-                    <InputNumber id="H" v-model="item.height" placeholder="H" />
-                    <InputGroupAddon class="bg-[#F6F6FA] text-[#757575] text-[14px] leading-[22px] font-[400]">
+                    </InputIcon>
+                  </div>
+
+                  <span class="text-[#9E9E9E] text-sm">×</span>
+
+                  <!-- H -->
+                  <div class="relative h-[46px] w-full border border-[#EDEDED] rounded-[6px]">
+                    <InputNumber v-model="item.height" placeholder="H" class="w-full h-full"
+                      inputClass="w-full h-full pr-[49px]" />
+                    <InputIcon
+                      class="absolute right-0 top-0 h-full w-[49px] bg-[#F6F6FA] text-[#757575] flex items-center justify-center rounded-tr-[6px] rounded-br-[6px]">
                       cm
-                    </InputGroupAddon>
-                  </InputGroup>
+                    </InputIcon>
+                  </div>
                 </div>
               </div>
             </div>
 
             <!-- Quantity -->
-            <div class="flex flex-col gap-2">
-              <label class="text-[14px] leading-[22px] font-medium" for="quantity">Quantity</label>
-              <InputGroup>
-                <InputNumber id="quantity" v-model="item.quantity" placeholder="Qty" />
-                <InputGroupAddon class="bg-[#F6F6FA] text-[#757575] text-[14px] leading-[22px] font-[400]">
-                  pcs
-                </InputGroupAddon>
-              </InputGroup>
+            <div class="flex-[1] relative">
+              <div class="flex flex-col gap-[6px]">
+                <label class="text-[14px] font-medium">Quantity</label>
+
+                <div class="relative h-[46px] border border-[#EDEDED] rounded-[6px]">
+                  <InputNumber v-model="item.quantity" placeholder="1" class="w-full h-full"
+                    inputClass="w-full h-full pr-[49px]" />
+                  <InputIcon class="absolute right-0 top-0 h-full w-[49px]
+                   bg-[#F6F6FA] text-[#757575]
+                   flex items-center justify-center
+                   rounded-tr-[6px] rounded-br-[6px]">
+                    pcs
+                  </InputIcon>
+                </div>
+              </div>
 
               <!-- Remove Item -->
-              <button v-if="items.length > 1" @click="removeItem(index)" class="absolute bottom-3 -right-5">
-                <IconTrash height="18" width="18" />
+              <button v-if="items.length > 1" @click="removeItem(index)"
+                class="absolute -right-6 top-[34px] text-[#9E9E9E] hover:text-red-500 transition">
+                <IconTrash width="18" height="18" />
               </button>
             </div>
           </div>
 
           <!-- Add Item -->
-          <button class="flex items-center gap-2 text-sm font-medium text-[#1E1E1E] w-fit" @click="addItem">
+          <button @click="addItem" class="flex items-center gap-2 text-sm font-medium text-[#1E1E1E] w-fit">
             <IconPlusCircle />
             Add Item
           </button>
@@ -370,12 +407,9 @@ const chargeableWeight = computed(() => {
           <IconCalculator />
           {{ isVisibleAdvanceCalc ? 'Hide' : 'Show' }} Advance Shipment Calculator
         </button>
-        <button
-          class="h-[46px] w-[158px] px-6 rounded-lg bg-[#C1FF00] text-[#1E1E1E] font-medium hover:bg-[#A1D400] text-[14px] leading-[22px] flex items-center justify-center"
-          @click="handleGetSpecialRate">
-          <IconSpinner v-if="ratesLoading" />
-          <span v-else>Get Special Rate</span>
-        </button>
+        <PrimaryButton class="w-[158px]" :loading="ratesLoading" @click="handleGetSpecialRate">
+          Get Special Rate
+        </PrimaryButton>
       </div>
     </div>
 

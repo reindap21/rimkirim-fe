@@ -1,5 +1,5 @@
-import type { GetSessionResponse } from "~/interfaces/service"
-import type { User } from "~/interfaces/user"
+import type { GetSessionResponse } from "~/types/service"
+import type { User } from "~/types/user"
 
 export const useAuth = () => {
   const user = useState<User | null>('user', () => null)

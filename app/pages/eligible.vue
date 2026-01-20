@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import { ref } from 'vue'
+import { ref } from 'vue';
 
 const router = useRouter();
 const route = useRoute();
@@ -9,6 +9,12 @@ const route = useRoute();
 const rateId = computed(() => {
   const id = route.query.rateId
   return Array.isArray(id) ? id[0] : id
+})
+
+// string | string[] | undefined
+const originCountryCode = computed(() => {
+  const origin = route.query.origin
+  return Array.isArray(origin) ? origin[0] : origin
 })
 
 const packingListCode = ref('');
@@ -24,10 +30,10 @@ const handleOnContinue = async (formData: any) => {
 
   continueLoading.value = true;
 
-  const { shippingToIndonesia, citizenship, livedInUK, canApplySKP, hasPackingList } = formData
+  const { shippingToIndonesia, citizenship, livedInUK, canApplySKP } = formData
 
   isSKPAvailable.value = canApplySKP;
-  packingListCode.value = hasPackingList;
+  packingListCode.value = formData?.packingListCode;
 
   const payload = {
     rate_id: rateId.value,
@@ -35,8 +41,8 @@ const handleOnContinue = async (formData: any) => {
     is_indonesian_citizen: citizenship === "indonesian",
     has_lived_abroad_min_12_months: livedInUK,
     is_eligible_for_skp: canApplySKP,
-    origin_country_code: "ID", // TODO
-    packing_list_code: hasPackingList
+    origin_country_code: originCountryCode.value,
+    packing_list_code: packingListCode.value
   }
 
   // Submit
@@ -62,7 +68,7 @@ const handleOnContinue = async (formData: any) => {
  * @param purposeOfShipment 
  */
 const handleOnSelect = async (purposeOfShipment: string) => {
-  
+
   const payload = {
     rate_id: rateId.value,
     purpose_of_shipment: purposeOfShipment,

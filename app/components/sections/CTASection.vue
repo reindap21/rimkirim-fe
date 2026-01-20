@@ -15,20 +15,17 @@
         <div class="flex items-center gap-4">
           <!-- Primary -->
           <NuxtLink to="/rates">
-            <button
-              class="h-[46px] px-[18px] rounded-[8px] bg-[#C1FF00] text-[14px] font-medium text-[#1E1E1E] hover:bg-[#A1D400] transition-colors">
+            <PrimaryButton class="w-[138px]">
               Back For Good
-            </button>
+            </PrimaryButton>
           </NuxtLink>
 
           <!-- Secondary -->
           <NuxtLink to="/rates">
-            <button
-              class="h-[46px] px-[18px] rounded-[8px] bg-[#1E1E1E] text-[14px] font-medium text-white hover:bg-black transition-colors">
+            <BlackButton class="w-[142px]">
               Moving Abroad
-            </button>
+            </BlackButton>
           </NuxtLink>
-
         </div>
       </div>
 

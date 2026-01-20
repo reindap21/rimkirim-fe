@@ -1,15 +1,13 @@
 <template>
-    <!-- FAQ -->
-    <section class="w-full max-w-5xl mx-auto py-10 flex flex-col gap-12">
+  <!-- FAQ -->
+  <section class="w-full max-w-5xl mx-auto py-10 flex flex-col gap-12">
     <div class="flex items-start justify-between">
       <h2 class="text-[40px] leading-[48px] font-bold text-[#1E1E1E]">
         Frequently Asked Questions
       </h2>
-      <button
-        class="h-[46px] px-6 rounded-[8px] bg-[#1E1E1E] text-white text-[14px] font-medium"
-      >
+      <BlackButton class="w-[138px]">
         Read More
-      </button>
+      </BlackButton>
     </div>
 
     <div class="space-y-24">
@@ -18,29 +16,16 @@
         <div class="text-[28px] font-semibold text-[#1E1E1E]">How it works</div>
         <div class="space-y-6">
           <div class="faq-item">
-            <button
-              class="faq-trigger w-full flex items-center justify-between text-left"
-            >
+            <button class="faq-trigger w-full flex items-center justify-between text-left">
               <p class="text-[18px] leading-[26px] text-[#1E1E1E]">
                 What exactly included in rimkirim services?
               </p>
-              <svg
-                class="chevron w-5 h-5 transition-transform duration-300"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                />
+              <svg class="chevron w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
-            <div
-              class="faq-content overflow-hidden max-h-0 transition-all duration-300"
-            >
+            <div class="faq-content overflow-hidden max-h-0 transition-all duration-300">
               <div class="pt-4 text-gray-600 space-y-4">
                 <p>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
@@ -55,29 +40,16 @@
           </div>
 
           <div class="faq-item">
-            <button
-              class="faq-trigger w-full flex items-center justify-between text-left"
-            >
+            <button class="faq-trigger w-full flex items-center justify-between text-left">
               <p class="text-[18px] leading-[26px] text-[#1E1E1E]">
                 Do I need to pack everything myself?
               </p>
-              <svg
-                class="chevron w-5 h-5 transition-transform duration-300"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                />
+              <svg class="chevron w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
-            <div
-              class="faq-content overflow-hidden max-h-0 transition-all duration-300"
-            >
+            <div class="faq-content overflow-hidden max-h-0 transition-all duration-300">
               <div class="pt-4 text-gray-600 space-y-4">
                 <p>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
@@ -92,29 +64,16 @@
           </div>
 
           <div class="faq-item">
-            <button
-              class="faq-trigger w-full flex items-center justify-between text-left"
-            >
+            <button class="faq-trigger w-full flex items-center justify-between text-left">
               <p class="text-[18px] leading-[26px] text-[#1E1E1E]">
                 What type of items can and cannot be shipped?
               </p>
-              <svg
-                class="chevron w-5 h-5 transition-transform duration-300"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                />
+              <svg class="chevron w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
-            <div
-              class="faq-content overflow-hidden max-h-0 transition-all duration-300"
-            >
+            <div class="faq-content overflow-hidden max-h-0 transition-all duration-300">
               <div class="pt-4 text-gray-600 space-y-4">
                 <p>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
@@ -135,29 +94,16 @@
         <div class="text-[28px] font-semibold text-[#1E1E1E]">Rates</div>
         <div class="space-y-6">
           <div class="faq-item">
-            <button
-              class="faq-trigger w-full flex items-center justify-between text-left"
-            >
+            <button class="faq-trigger w-full flex items-center justify-between text-left">
               <p class="text-[18px] leading-[26px] text-[#1E1E1E]">
                 How are Rimkirim’s rates calculated?
               </p>
-              <svg
-                class="chevron w-5 h-5 transition-transform duration-300"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                />
+              <svg class="chevron w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
-            <div
-              class="faq-content overflow-hidden max-h-0 transition-all duration-300"
-            >
+            <div class="faq-content overflow-hidden max-h-0 transition-all duration-300">
               <div class="pt-4 text-gray-600 space-y-4">
                 <p>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
@@ -178,29 +124,16 @@
         <div class="text-[28px] font-semibold text-[#1E1E1E]">Taxes</div>
         <div class="space-y-6">
           <div class="faq-item">
-            <button
-              class="faq-trigger w-full flex items-center justify-between text-left"
-            >
+            <button class="faq-trigger w-full flex items-center justify-between text-left">
               <p class="text-[18px] leading-[26px] text-[#1E1E1E]">
                 Are taxes and duties included in Rimkirim’s rates?
               </p>
-              <svg
-                class="chevron w-5 h-5 transition-transform duration-300"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                />
+              <svg class="chevron w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
-            <div
-              class="faq-content overflow-hidden max-h-0 transition-all duration-300"
-            >
+            <div class="faq-content overflow-hidden max-h-0 transition-all duration-300">
               <div class="pt-4 text-gray-600 space-y-4">
                 <p>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed

@@ -1,7 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
-import RimkirimPreset from './primevue/preset'
-
 export default defineNuxtConfig({
   runtimeConfig: {
     apiBaseUrl: process.env.API_BASE_URL, // server-only
@@ -22,9 +20,7 @@ export default defineNuxtConfig({
   ],
   primevue: {
     options: {
-      theme: {
-        preset: RimkirimPreset
-      }
+      unstyled: true
     }
   },
   app: {
@@ -36,8 +32,9 @@ export default defineNuxtConfig({
       ],
       script: [
         {
-          src: `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAPS_API_KEY}&libraries=places&v=weekly&loading=async`,
-          async: true
+          src: `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAPS_API_KEY}&libraries=places`,
+          async: true,
+          defer: true
         }
       ]
       

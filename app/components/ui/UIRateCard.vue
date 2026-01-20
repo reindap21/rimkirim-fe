@@ -88,13 +88,7 @@ const formattedPrice = computed(() =>
 
       <!-- CTA -->
       <div class="flex justify-end">
-        <button
-          class="absolute flex items-center justify-center top-0 right-0 w-[107px] h-[46px] rounded-[8px] hover:bg-[#A1D400] text-[14px] font-medium"
-          :class="loading ? 'bg-[#A1D400] cursor-default' : 'bg-[#C1FF00]'"
-          @click="emit('action')">
-          <IconSpinner v-if="loading" />
-          <span v-else>Move Now</span>
-        </button>
+        <PrimaryButton class="absolute top-0 right-0 w-[107px]" @click="emit('action')">Move Now</PrimaryButton>
       </div>
     </div>
 

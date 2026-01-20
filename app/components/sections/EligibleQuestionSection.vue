@@ -44,8 +44,6 @@ const canContinue = computed(() => {
     canApplySKP.value !== null &&
     hasPackingList.value !== null
 
-  console.log('packingListCode', packingListCode.value)
-
   if (hasPackingList.value) {
     return allRequiredFields && packingListCode.value !== null
   }
@@ -64,7 +62,9 @@ const handleContinue = () => {
     citizenship: citizenship.value,
     livedInUK: livedInUK.value,
     canApplySKP: canApplySKP.value,
-    hasPackingList: hasPackingList.value
+    hasPackingList: hasPackingList.value,
+    packingListCode: packingListCode.value
+
   }
   emit('continue', payload);
 }
@@ -155,17 +155,10 @@ const handleContinue = () => {
 
       <!-- CONTINUE -->
       <div class="flex justify-center">
-        <button
-          class="w-[126px] h-[46px] flex items-center justify-center rounded-[8px] text-[14px] font-medium transition"
-          :class="!canContinue
-            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            : loading ? 'bg-[#A1D400] cursor-default' : 'bg-[#C1FF00] text-[#1E1E1E] hover:bg-[#A1D400]'"
-          :disabled="!canContinue" @click="handleContinue">
-          <IconSpinner v-if="loading" />
-          <span v-else>Continue</span>
-        </button>
+        <PrimaryButton class="w-[126px]" :loading="loading" :disabled="!canContinue" @click="handleContinue">
+          Continue
+        </PrimaryButton>
       </div>
-
     </div>
   </section>
 </template>

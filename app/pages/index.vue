@@ -29,7 +29,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <HeroSection />
+  <!-- <HeroSection />
   <SpecialRateSection :rates="specialRates" :loading="specialRatesLoading" />
   <OurServiceSection />
   <HowItWorksSection />
@@ -37,5 +37,5 @@ onMounted(() => {
   <OurShippingPartnerSection />
   <TestimonialSection />
   <FAQSection />
-  <CTASection />
+  <CTASection /> -->
 </template>
