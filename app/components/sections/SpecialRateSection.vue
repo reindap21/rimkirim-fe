@@ -54,7 +54,8 @@ const handleActionMoveNow = async (rate: Rate) => {
     router.push({
       path: '/eligible',
       query: {
-        rateId: rate.id
+        rateId: rate.id,
+        origin: rate?.route?.origin?.country_code
       }
     })
 

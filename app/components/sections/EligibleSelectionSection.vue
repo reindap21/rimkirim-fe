@@ -18,7 +18,7 @@
 
     <div class="mt-6 flex items-stretch justify-center gap-4">
       <!-- Skema Barang Pindahan -->
-      <div
+      <button
         class="flex flex-col flex-1 gap-6 w-[400px] shrink-0 grow-0 rounded-2xl px-6 py-4 text-left" @click="$emit('select', 'moving_goods')"
         :class="isSKPAvailable ? 'bg-[#FAFAFC] hover:bg-[#D6EAE7] group hover:shadow-lg cursor-pointer' : 'bg-[#FAFAFC] opacity-50 cursor-disabled'"
         >
@@ -94,10 +94,10 @@
             </ul>
           </div>
         </div>
-      </div>
+      </button>
 
       <!-- Skema Barang Penumpang -->
-      <div
+      <button
         class="flex flex-col flex-1 gap-6 w-[400px] shrink-0 grow-0 bg-[#FAFAFC] hover:bg-[#D6EAE7] group hover:shadow-lg rounded-2xl px-6 py-4 text-left cursor-pointer" @click="$emit('select', 'passenger_goods')">
         <div class="flex items-center justify-center w-[338px] h-[211px]">
           <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg"
@@ -161,7 +161,7 @@
             <p>No SKP needed</p>
           </div>
         </div>
-      </div>
+      </button>
     </div>
 
     <p class="mt-16 text-[14px] leading-[22px] text-[#1E1E1E]">By continuing, you agree with our <span
