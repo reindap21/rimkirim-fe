@@ -6,19 +6,12 @@ import { ref } from "vue";
 
 // State from Compoesable
 const { user, logout, loading } = useAuth()
-
-const showAuth = ref(false);
-const authMode = ref("login");
+const authModal = useAuthModal()
 
 // * ------- Methods -----------------------------------------------------------------------------------------------------------------------------------------------
 
 const openLogin = () => {
-  authMode.value = "login";
-  showAuth.value = true;
-}
-
-const closeAuth = () => {
-  showAuth.value = false;
+  authModal.openLogin()
 }
 
 // const logout = async () => {
@@ -47,7 +40,7 @@ const closeAuth = () => {
       class="fixed top-8 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-3rem)] max-w-[1072px] transition-all duration-300">
       <div id="navbarInner"
         class="bg-white/90 backdrop-blur-md rounded-full shadow-lg px-6 py-4 h-[70px] flex items-center justify-between transition-all duration-300">
-        <NuxtLink to="/">
+        <NuxtLink to="/" class="brand-logo">
           <div class="font-bold text-xl cursor-pointer">
             <UIBrandLogo fill="#1E1E1E" />
           </div>
@@ -99,7 +92,7 @@ const closeAuth = () => {
 
     <slot />
 
-    <ModalAuth :open="showAuth" :mode="authMode" @close="closeAuth" @update:mode="authMode = $event" />
+    <ModalAuth :open="authModal.isOpen.value" :mode="authModal.mode.value" @close="authModal.close" @update:mode="authModal.mode = $event" />
 
     <!-- FOOTER -->
     <footer class="w-full bg-[#1E1E1E] text-white pt-[68px] pb-8">

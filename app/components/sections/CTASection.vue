@@ -1,3 +1,9 @@
+<script setup lang="ts">
+
+const router = useRouter()
+
+</script>
+
 <template>
   <!-- CTA -->
   <section class="w-full relative bg-[#FAFAFC] py-20">
@@ -14,18 +20,14 @@
 
         <div class="flex items-center gap-4">
           <!-- Primary -->
-          <NuxtLink to="/rates">
-            <PrimaryButton class="w-[138px]">
-              Back For Good
-            </PrimaryButton>
-          </NuxtLink>
+          <PrimaryButton class="w-[138px]" @click="router.push('/rates')">
+            Back For Good
+          </PrimaryButton>
 
           <!-- Secondary -->
-          <NuxtLink to="/rates">
-            <BlackButton class="w-[142px]">
-              Moving Abroad
-            </BlackButton>
-          </NuxtLink>
+          <BlackButton class="w-[142px]" @click="router.push('/rates')">
+            Moving Abroad
+          </BlackButton>
         </div>
       </div>
 

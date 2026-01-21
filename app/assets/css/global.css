@@ -1,29 +1,101 @@
-/* CARD */
-@keyframes opacity-wave {
-  0% { opacity: .55 }
-  50% { opacity: .9 }
-  100% { opacity: .55 }
+/* General */
+
+:focus-visible {
+  @apply outline-none ring ring-[#C1FF00] ring-offset-2;
 }
 
-.wave > * {
+header a.brand-logo:focus-visible,
+header button:focus-visible {
+  @apply outline-none ring ring-[#C1FF00] ring-offset-[6px] ring-offset-white rounded-[4px];
+}
+
+footer a:focus-visible {
+  @apply outline-none ring ring-[#C1FF00] ring-offset-[6px] ring-offset-[#1E1E1E] rounded-[4px];
+}
+
+/* Input */
+
+input,
+baseinput {
+  @apply h-[46px] bg-white outline-none focus:outline-[#C1FF00] focus:outline-offset-0 rounded-[6px] px-4 py-3 text-[#1E1E1E] text-[14px] leading-[22px] font-[400];
+}
+
+input::placeholder,
+baseinput::placeholder {
+  @apply text-[#9E9E9E];
+}
+
+input:focus-visible,
+baseinput:focus-visible {
+  @apply ring-offset-0;
+}
+
+div[role='alert'] {
+  @apply text-[12px] text-red-500;
+}
+
+
+/* CARD */
+@keyframes opacity-wave {
+  0% {
+    opacity: .55
+  }
+
+  50% {
+    opacity: .9
+  }
+
+  100% {
+    opacity: .55
+  }
+}
+
+.wave>* {
   animation: opacity-wave 6s ease-in-out infinite;
 }
 
-.wave > *:nth-child(2) { animation-delay: 1.2s }
-.wave > *:nth-child(3) { animation-delay: 2.4s }
-.wave > *:nth-child(4) { animation-delay: 3.6s }
-.wave > *:nth-child(5) { animation-delay: 4.8s }
+.wave>*:nth-child(2) {
+  animation-delay: 1.2s
+}
+
+.wave>*:nth-child(3) {
+  animation-delay: 2.4s
+}
+
+.wave>*:nth-child(4) {
+  animation-delay: 3.6s
+}
+
+.wave>*:nth-child(5) {
+  animation-delay: 4.8s
+}
 
 /* FLOATING SHAPES */
 @keyframes float {
-  0% { transform: translateY(0) rotate(var(--r, 0deg)) }
-  50% { transform: translateY(-12px) rotate(var(--r, 0deg)) }
-  100% { transform: translateY(0) rotate(var(--r, 0deg)) }
+  0% {
+    transform: translateY(0) rotate(var(--r, 0deg))
+  }
+
+  50% {
+    transform: translateY(-12px) rotate(var(--r, 0deg))
+  }
+
+  100% {
+    transform: translateY(0) rotate(var(--r, 0deg))
+  }
 }
 
-.animate-float { animation: float 6s ease-in-out infinite }
-.animate-float-slow { animation: float 8s ease-in-out infinite }
-.animate-float-slower { animation: float 10s ease-in-out infinite }
+.animate-float {
+  animation: float 6s ease-in-out infinite
+}
+
+.animate-float-slow {
+  animation: float 8s ease-in-out infinite
+}
+
+.animate-float-slower {
+  animation: float 10s ease-in-out infinite
+}
 
 /* TESTIMONIAL CARD */
 .testimonial-card {
@@ -50,13 +122,23 @@
 
 /* MARQUEE */
 @keyframes marquee-left {
-  from { transform: translateX(0) }
-  to { transform: translateX(-50%) }
+  from {
+    transform: translateX(0)
+  }
+
+  to {
+    transform: translateX(-50%)
+  }
 }
 
 @keyframes marquee-right {
-  from { transform: translateX(-50%) }
-  to { transform: translateX(0) }
+  from {
+    transform: translateX(-50%)
+  }
+
+  to {
+    transform: translateX(0)
+  }
 }
 
 .marquee-left {
@@ -93,20 +175,4 @@
 .mask::after {
   right: -4px;
   background: linear-gradient(to left, white, transparent);
-}
-
-/* Input */
-
-input,
-baseinput {
-  @apply h-[46px] bg-white outline-none focus:outline-[#C1FF00] focus:outline-offset-0 rounded-[6px] px-4 py-3 text-[#1E1E1E] text-[14px] leading-[22px] font-[400];
-}
-
-input::placeholder,
-baseinput::placeholder {
-  @apply text-[#9E9E9E];
-}
-
-div[role='alert'] {
-  @apply text-[12px] text-red-500;
 }

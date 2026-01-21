@@ -16,7 +16,7 @@
         <div class="text-[28px] font-semibold text-[#1E1E1E]">How it works</div>
         <div class="space-y-6">
           <div class="faq-item">
-            <button class="faq-trigger w-full flex items-center justify-between text-left">
+            <button class="faq-trigger w-full flex items-center justify-between text-left focus-visible:rounded-md focus-visible:ring-offset-[6px]">
               <p class="text-[18px] leading-[26px] text-[#1E1E1E]">
                 What exactly included in rimkirim services?
               </p>
@@ -40,7 +40,7 @@
           </div>
 
           <div class="faq-item">
-            <button class="faq-trigger w-full flex items-center justify-between text-left">
+            <button class="faq-trigger w-full flex items-center justify-between text-left focus-visible:rounded-md focus-visible:ring-offset-[6px]">
               <p class="text-[18px] leading-[26px] text-[#1E1E1E]">
                 Do I need to pack everything myself?
               </p>
@@ -64,7 +64,7 @@
           </div>
 
           <div class="faq-item">
-            <button class="faq-trigger w-full flex items-center justify-between text-left">
+            <button class="faq-trigger w-full flex items-center justify-between text-left focus-visible:rounded-md focus-visible:ring-offset-[6px]">
               <p class="text-[18px] leading-[26px] text-[#1E1E1E]">
                 What type of items can and cannot be shipped?
               </p>
@@ -94,7 +94,7 @@
         <div class="text-[28px] font-semibold text-[#1E1E1E]">Rates</div>
         <div class="space-y-6">
           <div class="faq-item">
-            <button class="faq-trigger w-full flex items-center justify-between text-left">
+            <button class="faq-trigger w-full flex items-center justify-between text-left focus-visible:rounded-md focus-visible:ring-offset-[6px]">
               <p class="text-[18px] leading-[26px] text-[#1E1E1E]">
                 How are Rimkirim’s rates calculated?
               </p>
@@ -124,7 +124,7 @@
         <div class="text-[28px] font-semibold text-[#1E1E1E]">Taxes</div>
         <div class="space-y-6">
           <div class="faq-item">
-            <button class="faq-trigger w-full flex items-center justify-between text-left">
+            <button class="faq-trigger w-full flex items-center justify-between text-left focus-visible:rounded-md focus-visible:ring-offset-[6px]">
               <p class="text-[18px] leading-[26px] text-[#1E1E1E]">
                 Are taxes and duties included in Rimkirim’s rates?
               </p>

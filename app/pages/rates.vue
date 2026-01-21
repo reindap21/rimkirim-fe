@@ -4,6 +4,10 @@ import InputIcon from "primevue/inputicon";
 import { computed, ref } from 'vue';
 import type { EstimateRatesRequest, LocationPayload, Rate, ShipmentType } from '~/types/rate';
 
+// * ------- Composable --------------------------------------------------------------------------------------------------------------------------------------------
+
+const authModal = useAuthModal()
+const { user } = useAuth()
 
 // * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -94,13 +98,11 @@ const totalVolumetricWeight = computed(() => {
 
 
 const handleOriginSelect = (payload: any) => {
-  console.log(payload)
   origin.value = payload
   originAddress.value = payload?.address;
 }
 
 const handleDestinationSelect = (payload: any) => {
-  console.log(payload)
   destination.value = payload
   destinationAddress.value = payload?.address;
 }
@@ -172,10 +174,16 @@ const handleGetSpecialRate = async () => {
 }
 
 /**
- * 
+ * Sync with SpecialRateSection
  * @param rate 
  */
 const handleActionMoveNow = async (rate: Rate) => {
+
+  // If not loggedin then open popup login
+  if (!user.value) {
+    authModal.openLogin();
+    return;
+  }
 
   // Set Loading
   actionMoveNowLoading.value = rate.id
@@ -217,6 +225,37 @@ const chargeableWeight = computed(() => {
   )
 })
 
+/**
+ * Disbaled Submit Button
+ */
+const isSubmitDisabled = computed(() => {
+
+  let isFormFilled = true
+
+  // 1️⃣ Origin & Destination required
+  if (!originAddress.value || !destinationAddress.value) {
+    isFormFilled = false
+  }
+
+  if (isVisibleAdvanceCalc.value) {
+    // 2️⃣ Check every item
+    const hasInvalidItem = items.value.some(item => {
+      return (
+        !item.weight ||
+        !item.length ||
+        !item.width ||
+        !item.height ||
+        !item.quantity ||
+        item.quantity <= 0
+      )
+    })
+
+    isFormFilled = isFormFilled && !hasInvalidItem
+  }
+
+  return !isFormFilled
+})
+
 </script>
 
 <template>
@@ -232,9 +271,11 @@ const chargeableWeight = computed(() => {
     <div class="flex flex-col gap-6 rounded-2xl bg-[#FAFAFC] border border-[#EDEDED]">
       <!-- Tabs -->
       <div class="flex gap-6 p-6 bg-[#F6F6FA] border-b border-[#F6F6FA] rounded-tl-[14px] rounded-tr-[14px]">
-        <button class="flex-1 h-[50px] rounded-lg bg-[#1E1E1E] text-white text-[18px] leading-[26px] font-medium">Back
+        <button
+          class="flex-1 h-[50px] rounded-lg bg-[#1E1E1E] text-white text-[18px] leading-[26px] font-medium cursor-default">Back
           for Good</button>
-        <button class="flex-1 h-[50px] rounded-lg bg-white text-[#1E1E1E] text-[18px] leading-[26px] font-medium">Moving
+        <button
+          class="flex-1 h-[50px] rounded-lg bg-white text-[#1E1E1E] text-[18px] leading-[26px] font-medium cursor-default">Moving
           Abroad</button>
       </div>
       <!-- Form -->
@@ -259,9 +300,9 @@ const chargeableWeight = computed(() => {
 
       </div>
       <!-- Advance -->
-      <div class="flex flex-col gap-6 px-6 transition-all duration-300 ease-out" :class="isVisibleAdvanceCalc
-        ? 'max-h-fit opacity-100'
-        : 'max-h-0 opacity-0 -mt-6 -z-10'
+      <div class="flex-col gap-6 px-6 transition-all duration-300 ease-out" :class="isVisibleAdvanceCalc
+        ? 'max-h-fit opacity-100 flex'
+        : 'max-h-0 opacity-0 -mt-6 -z-10 hidden'
         ">
         <div class="h-[1px] border-y border-[#EDEDED]" />
 
@@ -356,14 +397,14 @@ const chargeableWeight = computed(() => {
 
               <!-- Remove Item -->
               <button v-if="items.length > 1" @click="removeItem(index)"
-                class="absolute -right-6 top-[34px] text-[#9E9E9E] hover:text-red-500 transition">
+                class="absolute -right-[21px] top-[41px] text-[#9E9E9E] hover:text-red-500 transition">
                 <IconTrash width="18" height="18" />
               </button>
             </div>
           </div>
 
           <!-- Add Item -->
-          <button @click="addItem" class="flex items-center gap-2 text-sm font-medium text-[#1E1E1E] w-fit">
+          <button @click="addItem" class="flex items-center gap-2 text-sm font-medium text-[#1E1E1E] w-fit focus-visible:ring-offset-[6px] focus-visible:ring-offset-[#FAFAFC] focus-visible:rounded-md">
             <IconPlusCircle />
             Add Item
           </button>
@@ -402,12 +443,13 @@ const chargeableWeight = computed(() => {
       </div>
 
       <div class="flex items-start justify-between w-full h-[70px] px-6">
-        <button class="flex items-center gap-2 py-2 text-[14px] leading-[22px] font-[400] text-[#1E1E1E] cursor-pointer"
+        <button class="flex items-center gap-2 py-2 text-[14px] leading-[22px] font-[400] text-[#1E1E1E] cursor-pointer focus-visible:ring-offset-[6px] focus-visible:ring-offset-[#FAFAFC] focus-visible:rounded-md"
           @click="toggleCalculator">
           <IconCalculator />
           {{ isVisibleAdvanceCalc ? 'Hide' : 'Show' }} Advance Shipment Calculator
         </button>
-        <PrimaryButton class="w-[158px]" :loading="ratesLoading" @click="handleGetSpecialRate">
+        <PrimaryButton class="w-[158px]" :loading="ratesLoading" :disabled="isSubmitDisabled"
+          @click="handleGetSpecialRate">
           Get Special Rate
         </PrimaryButton>
       </div>

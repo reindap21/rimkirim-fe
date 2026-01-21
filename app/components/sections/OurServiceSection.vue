@@ -37,11 +37,9 @@
             for you.
           </p>
         </div>
-        <NuxtLink to="/rates">
-          <button
-            class="mt-8 inline-flex items-center gap-2 px-6 py-3 rounded-full border border-gray-300 text-gray-900 hover:bg-gray-100 transition">
-            More Details <span>→</span>
-          </button>
+        <NuxtLink to="/rates"
+          class="mt-8 inline-flex items-center gap-2 px-6 py-3 rounded-full border border-gray-300 text-gray-900 hover:bg-gray-100 transition">
+          More Details <span>→</span>
         </NuxtLink>
 
       </div>
@@ -70,11 +68,9 @@
           </p>
         </div>
         <div class="mt-8 flex justify-end">
-          <NuxtLink to="/rates">
-            <button
-              class="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-gray-300 text-gray-900 hover:bg-gray-100 transition">
-              More Details <span>→</span>
-            </button>
+          <NuxtLink to="/rates"
+            class="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-gray-300 text-gray-900 hover:bg-gray-100 transition">
+            More Details <span>→</span>
           </NuxtLink>
         </div>
       </div>

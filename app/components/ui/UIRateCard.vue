@@ -88,7 +88,7 @@ const formattedPrice = computed(() =>
 
       <!-- CTA -->
       <div class="flex justify-end">
-        <PrimaryButton class="absolute top-0 right-0 w-[107px]" @click="emit('action')">Move Now</PrimaryButton>
+        <PrimaryButton class="absolute top-0 right-0 w-[107px]" :loading="loading" @click="emit('action')">Move Now</PrimaryButton>
       </div>
     </div>
 
@@ -110,7 +110,7 @@ const formattedPrice = computed(() =>
       </template>
 
       <div class="flex items-center">
-        <button v-if="collapsible" class="absolute right-0 bottom-0 flex items-center gap-1 font-medium text-[#1E1E1E]"
+        <button v-if="collapsible" class="absolute right-0 bottom-0 flex items-center gap-1 font-medium text-[#1E1E1E] focus-visible:rounded-md focus-visible:ring-offset-[6px]"
           @click="expanded = !expanded">
           {{ expanded ? 'Hide' : 'More Information' }}
           <IconChevronUp v-if="expanded" />

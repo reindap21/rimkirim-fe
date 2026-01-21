@@ -31,18 +31,16 @@
       </p>
 
       <div class="flex justify-center">
-        <NuxtLink to="/rates">
-          <button
-            class="group relative w-[147px] h-[46px] rounded-full bg-[#C1FF00] text-[#1E1E1E] font-medium inline-flex items-center justify-center transition-colors duration-300 hover:bg-[#A1D400] overflow-hidden text-[14px] leading-[22px]">
-            <span
-              class="absolute inset-0 -ml-4 flex items-center justify-center transition-transform duration-300 group-hover:translate-x-2">
-              Check Rates
-            </span>
-            <span
-              class="absolute right-4 flex text-[20px] leading-[22px] items-center justify-center transition-all duration-300 opacity-100 group-hover:opacity-0 group-hover:translate-x-2">
-              →
-            </span>
-          </button>
+        <NuxtLink to="/rates"
+          class="group relative w-[147px] h-[46px] rounded-full bg-[#C1FF00] text-[#1E1E1E] font-medium inline-flex items-center justify-center transition-colors duration-300 hover:bg-[#A1D400] overflow-hidden text-[14px] leading-[22px]">
+          <span
+            class="absolute inset-0 -ml-4 flex items-center justify-center transition-transform duration-300 group-hover:translate-x-2">
+            Check Rates
+          </span>
+          <span
+            class="absolute right-4 flex text-[20px] leading-[22px] items-center justify-center transition-all duration-300 opacity-100 group-hover:opacity-0 group-hover:translate-x-2">
+            →
+          </span>
         </NuxtLink>
 
       </div>

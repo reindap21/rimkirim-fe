@@ -237,7 +237,7 @@
     <!-- CTA BELOW TESTIMONIAL -->
     <div class="flex justify-center">
       <button
-        class="group inline-flex items-center gap-2 text-[18px] font-normal text-[#1E1E1E] transition"
+        class="group inline-flex items-center gap-2 text-[18px] font-normal text-[#1E1E1E] transition focus-visible:rounded-md focus-visible:ring-offset-[6px]"
       >
         <span class="relative">
           Book Your International Moving Now

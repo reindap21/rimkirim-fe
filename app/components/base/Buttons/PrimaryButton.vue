@@ -14,9 +14,6 @@ const props = withDefaults(defineProps<Props>(), {
   rounded: 'rounded-lg', // lg -> 8px
   fontWeight: 'font-medium'
 })
-
-console.log("disabled", props.disabled)
-
 </script>
 
 <template>
