@@ -1,5 +1,5 @@
 <template>
-  <div class="px-6 py-4 rounded-2xl border-[2px] border-[#EDEDED] animate-pulse">
+  <div class="px-6 py-4 rounded-2xl border-[2px] border-[#EDEDED] animate-pulse z-10">
     <!-- TOP -->
     <div class="relative grid grid-cols-[1.3fr_auto_1fr] items-center gap-3">
       <!-- LEFT -->
