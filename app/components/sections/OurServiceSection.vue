@@ -3,12 +3,11 @@
   <section class="w-full max-w-5xl mx-auto py-10 relative">
     <!-- Decorative Shapes -->
 
-    <div class="text-center mb-16 relative z-10">
-      <span
-        class="inline-block px-4 py-1.5 text-[14px] font-medium rounded-full bg-[#FAFAFC] text-[#616161]/80 mb-4">Our
-        Service</span>
-      <h2 class="text-[40px] font-bold text-gray-900">How Do We Assist?</h2>
-    </div>
+    <SectionHeader 
+      pillLabel="Our Service"
+      title="How Do We Assist?"
+      class="mb-16"
+    />
 
     <div class="relative grid grid-cols-1 md:grid-cols-2 gap-0 max-w-6xl mx-auto">
       <!-- Card 1 (supporting) -->

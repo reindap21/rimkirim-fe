@@ -78,7 +78,7 @@ const handleContinue = () => {
 </script>
 
 <template>
-  <section class="max-w-4xl mx-auto px-6 pt-40 pb-24">
+  <section class="max-w-4xl mx-auto px-6 pt-32 pb-24">
     <div class="flex flex-col gap-4">
       <div class="flex flex-col gap-6 rounded-2xl border border-[#E0E0E0] bg-[#FAFAFC] overflow-hidden">
 

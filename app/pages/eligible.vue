@@ -2,6 +2,12 @@
 
 import { ref } from 'vue';
 
+definePageMeta({
+  layout: 'order',
+  // middleware: 'auth'
+})
+
+
 const router = useRouter();
 const route = useRoute();
 
@@ -87,7 +93,7 @@ const handleOnSelect = async (purposeOfShipment: string) => {
     router.push({
       path: '/booking',
       query: {
-        code: (res as any)?.data?.booking_code
+        code: (res as any)?.booking?.booking_code
       }
     })
 

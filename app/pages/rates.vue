@@ -262,7 +262,7 @@ const isSubmitDisabled = computed(() => {
   <section class="max-w-5xl mx-auto pt-40 pb-24 px-6">
     <!-- Title -->
     <div class="flex flex-col items-center justify-center gap-2 mb-8">
-      <h1 class="text-[32px] leading-[130%] font-semibold text-[#1E1E1E]">Calculate Your Shipment</h1>
+      <h1 class="text-[32px] leading-[130%] font-semibold text-[#1E1E1E] text-center">Calculate Your Shipment</h1>
       <p class="text-[14px] leading-[22px] font-[400] text-[#757575] uppercase">GET AN INSTANT ESTIMATE FOR YOUR
         INTERNATIONAL MOVE</p>
     </div>
