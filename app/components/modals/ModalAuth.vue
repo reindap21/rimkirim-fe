@@ -1,4 +1,5 @@
 <script setup>
+// TODO: update jadi ts
 
 import { Form } from '@primevue/forms';
 import { zodResolver } from '@primevue/forms/resolvers/zod';
@@ -6,6 +7,7 @@ import InputIcon from "primevue/inputicon";
 import { ref } from 'vue';
 import { z } from 'zod';
 
+// * ------- Defines -----------------------------------------------------------------------------------------------------------------------------------------------
 
 defineProps({
   open: Boolean,
@@ -20,17 +22,17 @@ defineProps({
   },
 });
 
-// * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
-
 const emit = defineEmits(["close", "update:mode", "success"]);
+
+// * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
 
 const showPasswordLogin = ref(false);
 const showPasswordSignUp = ref(false);
 
 const loginLoading = ref(false);
 const signUpLoading = ref(false);
-const loginError = ref('');
-const signupError = ref('');
+const errorLogin = ref('');
+const errorSignup = ref('');
 
 const initialLoginValues = {
   email: '',
@@ -69,7 +71,7 @@ const resolverSignup = ref(zodResolver(
 const handleLogin = async ({ values, valid }) => {
   if (!valid || loginLoading.value) return
 
-  loginError.value = ''
+  errorLogin.value = ''
   loginLoading.value = true
 
   try {
@@ -85,7 +87,7 @@ const handleLogin = async ({ values, valid }) => {
     emit('success', res.user)
     emit('close')
   } catch (err) {
-    loginError.value =
+    errorLogin.value =
       err?.data?.message || 'Login failed'
   } finally {
     loginLoading.value = false
@@ -101,7 +103,7 @@ const handleLoginWithGoogle = () => {
 const handleSignup = async ({ values, valid }) => {
   if (!valid || signUpLoading.value) return
 
-  signupError.value = ''
+  errorSignup.value = ''
   signUpLoading.value = true
 
   try {
@@ -117,7 +119,7 @@ const handleSignup = async ({ values, valid }) => {
     emit('success', res.user)
     emit('close')
   } catch (err) {
-    signupError.value =
+    errorSignup.value =
       err?.data?.message || 'Sign up failed'
   } finally {
     signUpLoading.value = false
@@ -128,8 +130,8 @@ const handleSignUpWithGoogle = () => { }
 
 const handleClose = () => {
   emit('close');
-  loginError.value = ''
-  signupError.value = ''
+  errorLogin.value = ''
+  errorSignup.value = ''
 }
 
 const toggleShowPasswordLogin = () => {
@@ -140,7 +142,7 @@ const toggleShowPasswordSignUp = () => {
   showPasswordSignUp.value = !showPasswordSignUp.value
 }
 
-// * ------- Compute -----------------------------------------------------------------------------------------------------------------------------------------------
+// * ------- Computed ----------------------------------------------------------------------------------------------------------------------------------------------
 
 
 </script>
@@ -148,7 +150,7 @@ const toggleShowPasswordSignUp = () => {
 <template>
   <Transition name="fade">
     <div v-if="open" id="modal-auth" class="fixed inset-0 z-50 flex items-center justify-center bg-white/50">
-      <div class="relative w-[450px] bg-[#1E1E1E] flex flex-col gap-6 rounded-2xl px-6 py-8 text-white overflow-hidden">
+      <div class="relative w-[450px] bg-neutral-100 flex flex-col gap-6 rounded-2xl px-6 py-8 text-white overflow-hidden">
 
         <div class="flex items-center justify-between">
           <UIBrandLogo width="95" height="32" />
@@ -167,25 +169,25 @@ const toggleShowPasswordSignUp = () => {
             </p>
           </div>
 
-          <p v-if="loginError"
+          <p v-if="errorLogin"
             class="flex gap-4 px-4 py-3 text-[14px] leading-[22px] font-[400] bg-[#FFEDED] text-[#FF4D4F] rounded-[12px]">
             <IconExclamationError />
             <span>
-              {{ loginError }}
+              {{ errorLogin }}
             </span>
           </p>
 
           <div class="flex flex-col gap-6">
             <!-- Form -->
-            <Form v-slot="$form" :resolver="resolverLogin" :initialValues="initialLoginValues" validateOnValueUpdate
+            <Form v-slot="$form" :resolver="resolverLogin" :initialValues="initialLoginValues" validateOnBlur
               @submit="handleLogin" class="flex justify-center flex-col gap-6">
               <!-- Forms -->
               <div class="flex flex-col gap-4">
                 <!-- Email -->
                 <div class="flex flex-col gap-[6px]">
-                  <label class="text-sm">Email</label>
+                  <label class="font-medium">Email</label>
                   <div class="relative">
-                    <InputIcon class="absolute top-3 left-4">
+                    <InputIcon class="absolute top-5 left-4">
                       <IconEmail />
                     </InputIcon>
                     <InputText name="email" type="email" placeholder="Enter your email" class="w-full pl-12" />
@@ -195,9 +197,9 @@ const toggleShowPasswordSignUp = () => {
                 </div>
                 <!-- Password -->
                 <div class="flex flex-col gap-[6px]">
-                  <label class="text-sm">Password</label>
+                  <label class="font-medium">Password</label>
                   <div class="relative">
-                    <InputIcon class="absolute top-3 left-4 cursor-pointer" @click="toggleShowPasswordLogin">
+                    <InputIcon class="absolute top-5 left-4 cursor-pointer" @click="toggleShowPasswordLogin">
                       <IconEyeClosed v-if="showPasswordLogin" />
                       <IconEyeOpen v-else />
                     </InputIcon>
@@ -248,25 +250,25 @@ const toggleShowPasswordSignUp = () => {
             </p>
           </div>
 
-          <p v-if="signupError"
+          <p v-if="errorSignup"
             class="flex gap-4 px-4 py-3 text-[14px] leading-[22px] font-[400] bg-[#FFEDED] text-[#FF4D4F] rounded-[12px]">
             <IconExclamationError />
             <span>
-              {{ signupError }}
+              {{ errorSignup }}
             </span>
           </p>
 
           <div class="flex flex-col gap-6">
             <!-- Form -->
             <Form v-slot="$form" :resolver="resolverSignup" :initialValues="initialSignupValues" @submit="handleSignup"
-              class="flex justify-center flex-col gap-6">
+              validateOnBlur class="flex justify-center flex-col gap-6">
               <!-- Forms -->
               <div class="flex flex-col gap-4">
                 <!-- Name -->
                 <div class="flex flex-col gap-[6px]">
-                  <label class="text-sm">Name</label>
+                  <label class="font-medium">Name</label>
                   <div class="relative">
-                    <InputIcon class="absolute top-3 left-4">
+                    <InputIcon class="absolute top-5 left-4">
                       <IconUser />
                     </InputIcon>
                     <InputText name="name" type="text" placeholder="Enter your name" class="w-full pl-12" />
@@ -276,9 +278,9 @@ const toggleShowPasswordSignUp = () => {
                 </div>
                 <!-- Email -->
                 <div class="flex flex-col gap-[6px]">
-                  <label class="text-sm">Email</label>
+                  <label class="font-medium">Email</label>
                   <div class="relative">
-                    <InputIcon class="absolute top-3 left-4">
+                    <InputIcon class="absolute top-5 left-4">
                       <IconEmail />
                     </InputIcon>
                     <InputText name="email" type="email" placeholder="Enter your email" class="w-full pl-12" />
@@ -288,9 +290,9 @@ const toggleShowPasswordSignUp = () => {
                 </div>
                 <!-- Password -->
                 <div class="flex flex-col gap-[6px]">
-                  <label class="text-sm">Password</label>
+                  <label class="font-medium">Password</label>
                   <div class="relative">
-                    <InputIcon class="absolute top-3 left-4 cursor-pointer" @click="toggleShowPasswordSignUp">
+                    <InputIcon class="absolute top-5 left-4 cursor-pointer" @click="toggleShowPasswordSignUp">
                       <IconEyeClosed v-if="showPasswordSignUp" />
                       <IconEyeOpen v-else />
                     </InputIcon>
@@ -302,9 +304,9 @@ const toggleShowPasswordSignUp = () => {
                 </div>
                 <!-- Password Confirm -->
                 <div class="flex flex-col gap-[6px]">
-                  <label class="text-sm">Confirm Password</label>
+                  <label class="font-medium">Confirm Password</label>
                   <div class="relative">
-                    <InputIcon class="absolute top-3 left-4 cursor-pointer" @click="toggleShowPasswordSignUp">
+                    <InputIcon class="absolute top-5 left-4 cursor-pointer" @click="toggleShowPasswordSignUp">
                       <IconEyeClosed v-if="showPasswordSignUp" />
                       <IconEyeOpen v-else />
                     </InputIcon>

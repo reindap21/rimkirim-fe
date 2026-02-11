@@ -1,9 +1,10 @@
 <script setup lang="ts">
 
 import { ref } from 'vue';
+import { MENU } from '~/config';
 
 definePageMeta({
-  layout: 'order',
+  layout: 'eligible',
   // middleware: 'auth'
 })
 
@@ -91,12 +92,8 @@ const handleOnSelect = async (purposeOfShipment: string) => {
 
     // If success
     router.push({
-      path: '/booking',
-      query: {
-        code: (res as any)?.booking?.booking_code
-      }
+      path: `${MENU.ORDER_HUB}/${(res as any)?.booking?.booking_code}`,
     })
-
   } catch (err) {
     console.error('booking error:', err);
     continueLoading.value = false;

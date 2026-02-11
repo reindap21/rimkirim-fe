@@ -1,0 +1,29 @@
+:root {
+
+  --rimkirim-primary-main: #c1ff00;
+  --rimkirim-primary-main-opacity-70: rgba(193, 255, 0, 0.7);
+
+  --rimkirim-neutral-10: #FAFAFC;
+  --rimkirim-neutral-20: #F6F6FA;
+  --rimkirim-neutral-30: #EDEDED;
+  --rimkirim-neutral-40: #E0E0E0;
+  --rimkirim-neutral-60: #9E9E9E;
+  --rimkirim-neutral-70: #757575;
+  --rimkirim-neutral-80: #616161;
+  --rimkirim-neutral-90: #404040;
+  --rimkirim-neutral-100: #1E1E1E;
+
+  --rimkirim-background-10: var(--rimkirim-neutral-10);
+  --rimkirim-background-30: var(--rimkirim-neutral-20);
+  
+  --rimkirim-semantic-success: #27C827;
+  --rimkirim-semantic-danger: #FF4D4F;
+  --rimkirim-semantic-info: #3DADFF;
+  --rimkirim-semantic-warning: #FF9E42;
+
+  --rimkirim-semantic-bg-success: #CDF4D3;
+  --rimkirim-semantic-bg-danger: #ee8384;
+  --rimkirim-semantic-bg-info: #C2E5FF;
+  --rimkirim-semantic-bg-warning: #FFE0C2;
+
+}

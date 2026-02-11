@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { MENU } from '~/config';
 import type { Rate } from '~/types/rate';
 
 
@@ -52,7 +53,7 @@ const handleActionMoveNow = async (rate: Rate) => {
 
     // If success
     router.push({
-      path: '/eligible',
+      path: MENU.ELIGIBLE,
       query: {
         rateId: rate.id,
         origin: rate?.route?.origin?.country_code
@@ -85,12 +86,12 @@ const handleActionMoveNow = async (rate: Rate) => {
 
       <!-- CTA BELOW SPECIAL RATES -->
       <div class="py-8 flex justify-center">
-        <NuxtLink to="/rates"
-          class="group inline-flex items-center gap-2 text-[18px] font-normal text-[#1E1E1E] transition focus-visible:rounded-md focus-visible:ring-offset-[6px]">
+        <NuxtLink :to="MENU.RATES"
+          class="group inline-flex items-center gap-2 text-[18px] font-normal text-neutral-100 transition focus-visible:rounded-md focus-visible:ring-offset-[6px]">
           <span class="relative">
             Check more country
             <span
-              class="absolute left-0 -bottom-1 h-px w-0 bg-[#1E1E1E] transition-all duration-300 group-hover:w-full"></span>
+              class="absolute left-0 -bottom-1 h-px w-0 bg-neutral-100 transition-all duration-300 group-hover:w-full"></span>
           </span>
           <span class="transition-transform duration-300 group-hover:translate-x-1">→</span>
         </NuxtLink>

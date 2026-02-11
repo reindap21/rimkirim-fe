@@ -5,7 +5,7 @@ export default defineEventHandler((event) => {
 
   const params = new URLSearchParams({
     client_id: config.googleClientId,
-    redirect_uri: redirectUri,
+    redirect_uri: 'http://localhost:3000/auth/google/callback', // FE
     response_type: 'code',
     scope: 'openid email profile',
     access_type: 'offline',

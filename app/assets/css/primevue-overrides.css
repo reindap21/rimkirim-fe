@@ -1,0 +1,23 @@
+:root {
+
+  --p-primary-color: var(--rimkirim-primary-main);
+
+  --p-focus-ring-color: var(--rimkirim-primary-main);
+
+  /* Form Field */
+  --p-form-field-border-color: var(--rimkirim-neutral-30);
+  --p-form-field-hover-border-color: var(--rimkirim-primary-main-opacity-70);
+  --p-form-field-placeholder-font-size: 12px;
+  --p-form-field-placeholder-color: var(--rimkirim-neutral-60);
+  --p-form-field-border-radius: 6px;
+
+  /* Input Text */
+  --p-inputtext-focus-border-color: var(--p-primary-color);
+  --p-inputtext-color: var(--rimkirim-neutral-100);
+
+  /* Text */
+  --p-text-muted-color: var(--rimkirim-neutral-60);
+
+  /* Popover */
+  --p-popover-background: var(--rimkirim-neutral-100);
+}

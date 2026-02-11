@@ -1,32 +1,32 @@
 export default defineEventHandler(async (event) => {
+  // 0️⃣ REQUIRED; Token Check
+  const token = getCookie(event, "access_token");
+  if (!token) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: "Unauthenticated",
+    });
+  }
+
+  /**
+   * 1️⃣ Client req body
+   * ...
+   */
+  const body = await readBody(event);
+
+  if (!body?.rate_id || !body?.purpose_of_shipment) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: "Rate ID and Purpose of Shipment are required",
+    });
+  }
+
+  // 1️⃣.1️⃣ Get Config
+  const config = useRuntimeConfig();
+  const baseApiUrl = config.apiBaseUrl;
+
+  // 2️⃣ Fetch API
   try {
-    /**
-     * Client req body
-     * ...
-     */
-    const body = await readBody(event);
-
-    if (!body?.rate_id || !body?.purpose_of_shipment) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: "Rate ID and Purpose of Shipment are required",
-      });
-    }
-
-    // Token Cookies
-    const token = getCookie(event, "access_token");
-    if (!token) {
-      throw createError({
-        statusCode: 401,
-        statusMessage: "Unauthenticated.",
-      });
-    }
-
-    //* Runtime config
-    const config = useRuntimeConfig();
-    const baseApiUrl = config.apiBaseUrl;
-
-    //* 1️⃣ Call BACKEND BOOKINGS API
     const res: any = await $fetch(`${baseApiUrl}/api/bookings`, {
       method: "POST",
       body,
@@ -36,16 +36,16 @@ export default defineEventHandler(async (event) => {
     });
 
     /**
-     * Expected response: Booking Response
+     * 2️⃣.1️⃣ Expected response: Booking Response
      */
     if (!res?.data?.booking_code) {
       throw createError({
-        statusCode: 400,
-        statusMessage: "Invalid get booking response",
+        statusCode: 500,
+        statusMessage: "Invalid booking response",
       });
     }
 
-    //* 2️⃣ Return response
+    //* 3️⃣ Return response
     return {
       booking: res.data,
     };

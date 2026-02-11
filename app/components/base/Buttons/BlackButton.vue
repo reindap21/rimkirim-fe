@@ -24,9 +24,9 @@
         'h-[46px] text-[14px] leading-[22px] text-white transition',
         'flex items-center justify-center gap-2',
         'hover:bg-black',
-        'disabled:bg-[#E0E0E0] disabled:text-[#757575] disabled:cursor-not-allowed',
+        'disabled:bg-neutral-40 disabled:text-neutral-70 disabled:cursor-not-allowed',
         rounded,
-        loading ? 'bg-black' : 'bg-[#1E1E1E]',
+        loading ? 'bg-black' : 'bg-neutral-100',
         fontWeight
       ]"
       >

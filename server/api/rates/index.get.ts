@@ -1,13 +1,13 @@
-import { getCookie } from "h3";
-
 export default defineEventHandler(async (event) => {
-  try {
-    const config = useRuntimeConfig();
-    const baseApiUrl = config.apiBaseUrl;
+  // 1️⃣ Get Config
+  const config = useRuntimeConfig();
+  const baseApiUrl = config.apiBaseUrl;
 
-    // 2️⃣ Forward ke Backend API
+  // 2️⃣ Fetch API
+  try {
     const res = await $fetch(`${baseApiUrl}/api/rates`);
 
+    //* 3️⃣ Return response
     return {
       rates: res.data,
     };
@@ -15,9 +15,7 @@ export default defineEventHandler(async (event) => {
     throw createError({
       statusCode: error?.statusCode || 500,
       statusMessage:
-        error?.data?.message ||
-        error?.statusMessage ||
-        "Get special rate failed",
+        error?.data?.message || error?.statusMessage || "Failed to get rates",
     });
   }
 });

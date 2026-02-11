@@ -2,6 +2,7 @@
 
 import InputIcon from "primevue/inputicon";
 import { computed, ref } from 'vue';
+import { MENU } from "~/config";
 import type { EstimateRatesRequest, LocationPayload, Rate, ShipmentType } from '~/types/rate';
 
 // * ------- Composable --------------------------------------------------------------------------------------------------------------------------------------------
@@ -201,7 +202,7 @@ const handleActionMoveNow = async (rate: Rate) => {
 
     // If success
     router.push({
-      path: '/eligible',
+      path: MENU.ELIGIBLE,
       query: {
         rateId: rate.id,
         origin: (origin.value as any)?.country
@@ -214,7 +215,7 @@ const handleActionMoveNow = async (rate: Rate) => {
   }
 }
 
-// * ------- Compute -----------------------------------------------------------------------------------------------------------------------------------------------
+// * ------- Computed ----------------------------------------------------------------------------------------------------------------------------------------------
 
 /**
  * The chargable weight
@@ -262,20 +263,20 @@ const isSubmitDisabled = computed(() => {
   <section class="max-w-5xl mx-auto pt-40 pb-24 px-6">
     <!-- Title -->
     <div class="flex flex-col items-center justify-center gap-2 mb-8">
-      <h1 class="text-[32px] leading-[130%] font-semibold text-[#1E1E1E] text-center">Calculate Your Shipment</h1>
-      <p class="text-[14px] leading-[22px] font-[400] text-[#757575] uppercase">GET AN INSTANT ESTIMATE FOR YOUR
+      <h1 class="text-[32px] leading-[130%] font-semibold text-neutral-100 text-center">Calculate Your Shipment</h1>
+      <p class="text-[14px] leading-[22px] font-[400] text-neutral-70 uppercase">GET AN INSTANT ESTIMATE FOR YOUR
         INTERNATIONAL MOVE</p>
     </div>
 
     <!-- Body -->
-    <div class="flex flex-col gap-6 rounded-2xl bg-[#FAFAFC] border border-[#EDEDED]">
+    <div class="flex flex-col gap-6 rounded-2xl bg-neutral-10 border border-[#EDEDED]">
       <!-- Tabs -->
-      <div class="flex gap-6 p-6 bg-[#F6F6FA] border-b border-[#F6F6FA] rounded-tl-[14px] rounded-tr-[14px]">
+      <div class="flex gap-6 p-6 bg-neutral-20 border-b border-[#F6F6FA] rounded-tl-[14px] rounded-tr-[14px]">
         <button
-          class="flex-1 h-[50px] rounded-lg bg-[#1E1E1E] text-white text-[18px] leading-[26px] font-medium cursor-default">Back
+          class="flex-1 h-[50px] rounded-lg bg-neutral-100 text-white text-[18px] leading-[26px] font-medium cursor-default">Back
           for Good</button>
         <button
-          class="flex-1 h-[50px] rounded-lg bg-white text-[#1E1E1E] text-[18px] leading-[26px] font-medium cursor-default">Moving
+          class="flex-1 h-[50px] rounded-lg bg-white text-neutral-100 text-[18px] leading-[26px] font-medium cursor-default">Moving
           Abroad</button>
       </div>
       <!-- Form -->
@@ -304,9 +305,11 @@ const isSubmitDisabled = computed(() => {
         ? 'max-h-fit opacity-100 flex'
         : 'max-h-0 opacity-0 -mt-6 -z-10 hidden'
         ">
+
+        <!-- Divider -->
         <div class="h-[1px] border-y border-[#EDEDED]" />
 
-        <div class="flex items-center gap-2 text-[18px] leading-[26px] font-medium text-[#1E1E1E]">
+        <div class="flex items-center gap-2 text-[18px] leading-[26px] font-medium text-neutral-100">
           <IconPackageDetails />
           PACKAGE DETAILS
         </div>
@@ -319,14 +322,14 @@ const isSubmitDisabled = computed(() => {
               <div class="flex flex-col gap-[6px]">
                 <label class="text-[14px] font-medium">Weight (KG)</label>
 
-                <div class="relative h-[46px] border border-[#EDEDED] rounded-[6px]">
+                <div class="relative h-[46px]">
                   <InputNumber v-model="item.weight" placeholder="Weight" class="w-full h-full"
                     inputClass="w-full h-full pr-[56px]" />
 
-                  <InputIcon class="absolute right-0 top-0 h-full w-[49px]
-                   bg-[#F6F6FA] text-[#757575]
+                  <InputIcon class="absolute right-[1px] top-[9px] h-[44px] w-[45px]
+                   bg-neutral-20 text-neutral-70
                    flex items-center justify-center
-                   rounded-tr-[6px] rounded-br-[6px]">
+                   rounded-tr-[5px] rounded-br-[5px]">
                     KG
                   </InputIcon>
                 </div>
@@ -342,35 +345,41 @@ const isSubmitDisabled = computed(() => {
 
                 <div class="flex items-center gap-2">
                   <!-- L -->
-                  <div class="relative h-[46px] w-full border border-[#EDEDED] rounded-[6px]">
+                  <div class="relative h-[46px] w-full">
                     <InputNumber v-model="item.length" placeholder="L" class="w-full h-full"
                       inputClass="w-full h-full pr-[49px]" />
-                    <InputIcon
-                      class="absolute right-0 top-0 h-full w-[49px] bg-[#F6F6FA] text-[#757575] flex items-center justify-center rounded-tr-[6px] rounded-br-[6px]">
+                    <InputIcon class="absolute right-[1px] top-[9px] h-[44px] w-[45px]
+                   bg-neutral-20 text-neutral-70
+                   flex items-center justify-center
+                   rounded-tr-[5px] rounded-br-[5px]">
                       cm
                     </InputIcon>
                   </div>
 
-                  <span class="text-[#9E9E9E] text-sm">×</span>
+                  <span class="text-neutral-60 text-sm">×</span>
 
                   <!-- W -->
-                  <div class="relative h-[46px] w-full border border-[#EDEDED] rounded-[6px]">
+                  <div class="relative h-[46px] w-full">
                     <InputNumber v-model="item.width" placeholder="W" class="w-full h-full"
                       inputClass="w-full h-full pr-[49px]" />
-                    <InputIcon
-                      class="absolute right-0 top-0 h-full w-[49px] bg-[#F6F6FA] text-[#757575] flex items-center justify-center rounded-tr-[6px] rounded-br-[6px]">
+                    <InputIcon class="absolute right-[1px] top-[9px] h-[44px] w-[45px]
+                   bg-neutral-20 text-neutral-70
+                   flex items-center justify-center
+                   rounded-tr-[5px] rounded-br-[5px]">
                       cm
                     </InputIcon>
                   </div>
 
-                  <span class="text-[#9E9E9E] text-sm">×</span>
+                  <span class="text-neutral-60 text-sm">×</span>
 
                   <!-- H -->
-                  <div class="relative h-[46px] w-full border border-[#EDEDED] rounded-[6px]">
+                  <div class="relative h-[46px] w-full">
                     <InputNumber v-model="item.height" placeholder="H" class="w-full h-full"
                       inputClass="w-full h-full pr-[49px]" />
-                    <InputIcon
-                      class="absolute right-0 top-0 h-full w-[49px] bg-[#F6F6FA] text-[#757575] flex items-center justify-center rounded-tr-[6px] rounded-br-[6px]">
+                    <InputIcon class="absolute right-[1px] top-[9px] h-[44px] w-[45px]
+                   bg-neutral-20 text-neutral-70
+                   flex items-center justify-center
+                   rounded-tr-[5px] rounded-br-[5px]">
                       cm
                     </InputIcon>
                   </div>
@@ -383,13 +392,13 @@ const isSubmitDisabled = computed(() => {
               <div class="flex flex-col gap-[6px]">
                 <label class="text-[14px] font-medium">Quantity</label>
 
-                <div class="relative h-[46px] border border-[#EDEDED] rounded-[6px]">
+                <div class="relative h-[46px]">
                   <InputNumber v-model="item.quantity" placeholder="1" class="w-full h-full"
                     inputClass="w-full h-full pr-[49px]" />
-                  <InputIcon class="absolute right-0 top-0 h-full w-[49px]
-                   bg-[#F6F6FA] text-[#757575]
+                  <InputIcon class="absolute right-[1px] top-[9px] h-[44px] w-[45px]
+                   bg-neutral-20 text-neutral-70
                    flex items-center justify-center
-                   rounded-tr-[6px] rounded-br-[6px]">
+                   rounded-tr-[5px] rounded-br-[5px]">
                     pcs
                   </InputIcon>
                 </div>
@@ -397,14 +406,15 @@ const isSubmitDisabled = computed(() => {
 
               <!-- Remove Item -->
               <button v-if="items.length > 1" @click="removeItem(index)"
-                class="absolute -right-[21px] top-[41px] text-[#9E9E9E] hover:text-red-500 transition">
+                class="absolute -right-[21px] top-[41px] text-neutral-60 hover:text-red-500 transition">
                 <IconTrash width="18" height="18" />
               </button>
             </div>
           </div>
 
           <!-- Add Item -->
-          <button @click="addItem" class="flex items-center gap-2 text-sm font-medium text-[#1E1E1E] w-fit focus-visible:ring-offset-[6px] focus-visible:ring-offset-[#FAFAFC] focus-visible:rounded-md">
+          <button @click="addItem"
+            class="flex items-center gap-2 text-sm font-medium text-neutral-100 w-fit focus-visible:ring-offset-[6px] focus-visible:ring-offset-[#FAFAFC] focus-visible:rounded-md">
             <IconPlusCircle />
             Add Item
           </button>
@@ -412,27 +422,27 @@ const isSubmitDisabled = computed(() => {
 
 
         <!-- Chargeable Weight -->
-        <div class="flex items-center justify-between bg-[#F6F6FA] p-4 border-b border-[#F6F6FA]">
+        <div class="flex items-center justify-between bg-neutral-20 p-4 border-b border-[#F6F6FA]">
           <div class="flex gap-3">
             <div class="flex justify-center items-center w-[44px] h-[44px] bg-white rounded-[8px]">
               <IconChargeableWeight />
             </div>
 
             <div class="flex flex-col gap-1">
-              <p class="flex items-center gap-1 text-[14px] leading-[22px] font-medium text-[#1E1E1E]">
+              <p class="flex items-center gap-1 text-[14px] leading-[22px] font-medium text-neutral-100">
                 Chargeable Weight for this Package
                 <IconQuestionMarkCircle />
               </p>
-              <p class="text-[14px] leading-[22px] text-[#9E9E9E]">
-                Calculated as the greater of Actual Weight <span class="text-[#1E1E1E]">({{
+              <p class="text-[14px] leading-[22px] text-neutral-60">
+                Calculated as the greater of Actual Weight <span class="text-neutral-100">({{
                   formatNumber(Number(totalActualWeight)) }} Kg)</span> or
-                Volumetric Weight <span class="text-[#1E1E1E]">({{ formatNumber(Number(totalVolumetricWeight)) }}
+                Volumetric Weight <span class="text-neutral-100">({{ formatNumber(Number(totalVolumetricWeight)) }}
                   Kg)</span>
               </p>
             </div>
           </div>
           <div
-            class="flex items-center gap-1 text-lg font-semibold text-[#1E1E1E] bg-white min-w-[100px] p-4 rounded-xl">
+            class="flex items-center gap-1 text-lg font-semibold text-neutral-100 bg-white min-w-[100px] p-4 rounded-xl">
             <div class="text-[18px] leading-[26px] font-bold w-full text-center">{{
               formatNumber(Number(chargeableWeight)) }}</div>
             <div class="text-sm font-normal w-fit">Kg</div>
@@ -443,7 +453,8 @@ const isSubmitDisabled = computed(() => {
       </div>
 
       <div class="flex items-start justify-between w-full h-[70px] px-6">
-        <button class="flex items-center gap-2 py-2 text-[14px] leading-[22px] font-[400] text-[#1E1E1E] cursor-pointer focus-visible:ring-offset-[6px] focus-visible:ring-offset-[#FAFAFC] focus-visible:rounded-md"
+        <button
+          class="flex items-center gap-2 py-2 text-[14px] leading-[22px] font-[400] text-neutral-100 cursor-pointer focus-visible:ring-offset-[6px] focus-visible:ring-offset-[#FAFAFC] focus-visible:rounded-md"
           @click="toggleCalculator">
           <IconCalculator />
           {{ isVisibleAdvanceCalc ? 'Hide' : 'Show' }} Advance Shipment Calculator
@@ -457,7 +468,7 @@ const isSubmitDisabled = computed(() => {
 
     <!-- Shipping Rate Options -->
     <div class="flex flex-col gap-3 mt-8" v-if="rates.length > 0">
-      <h3 class="text-[24px] leading-[130%] text-[#1E1E1E] font-medium">Shipping Option</h3>
+      <h3 class="text-[24px] leading-[130%] text-neutral-100 font-medium">Shipping Option</h3>
       <template v-for="rate in rates" :key="rate.id">
         <UIRateCard :price="rate?.pricing?.amount" :currency="rate?.pricing?.currency" :unit="rate?.pricing?.unit"
           :minWeight="rate?.pricing?.minimum?.value" badge="Special Rate" :provider="rate?.provider?.branding?.logo"

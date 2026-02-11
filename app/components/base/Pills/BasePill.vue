@@ -31,7 +31,7 @@ defineProps({
   /** Background color Tailwind */
   bg: {
     type: String,
-    default: 'bg-[#FAFAFC]'
+    default: 'bg-neutral-10'
   },
 
   /** Text color Tailwind */

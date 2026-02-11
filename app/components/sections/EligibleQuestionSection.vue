@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 
-const emit = defineEmits<{
-  (e: 'continue', payload: any): void
-}>()
+// * ------- Defines -----------------------------------------------------------------------------------------------------------------------------------------------
 
 interface Props { loading: boolean }
 
 const props = withDefaults(defineProps<Props>(), {
   loading: false
 });
+
+const emit = defineEmits<{
+  (e: 'continue', payload: any): void
+}>()
+
+// * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
 
 /**
  * State
@@ -29,8 +33,8 @@ const searchPackingListCodeLoading = ref(false);
 const buttonClass = (active: boolean) => [
   'w-[110px] h-[46px] rounded-full text-[14px] font-medium transition',
   active
-    ? 'bg-[#1E1E1E] text-white'
-    : 'border border-gray-300 text-[#1E1E1E] hover:bg-gray-100'
+    ? 'bg-neutral-100 text-white'
+    : 'border border-gray-300 text-neutral-100 hover:bg-gray-100'
 ]
 
 /**
@@ -80,14 +84,14 @@ const handleContinue = () => {
 <template>
   <section class="max-w-4xl mx-auto px-6 pt-32 pb-24">
     <div class="flex flex-col gap-4">
-      <div class="flex flex-col gap-6 rounded-2xl border border-[#E0E0E0] bg-[#FAFAFC] overflow-hidden">
+      <div class="flex flex-col gap-6 rounded-2xl border border-neutral-40 bg-neutral-10 overflow-hidden">
 
         <!-- HEADER -->
-        <div class="flex flex-col gap-1 p-8 bg-[#F6F6FA]">
-          <h1 class="text-[28px] font-semibold text-[#1E1E1E]">
+        <div class="flex flex-col gap-1 p-8 bg-neutral-20">
+          <h1 class="text-[28px] font-semibold text-neutral-100">
             Let’s start your International Moving!
           </h1>
-          <p class="text-[14px] text-[#9E9E9E]">
+          <p class="text-[14px] text-neutral-60">
             To help us match you with the right service based on your needs, please select the options below.
           </p>
         </div>
@@ -152,7 +156,7 @@ const handleContinue = () => {
             <div class="flex justify-center gap-4">
               <InputText name="packing_list_code" v-model="packingListCode" type="text"
                 placeholder="Input packing list code"
-                class="flex-1 text-[14px] leading-[22px] text-[400] px-4 py-3 bg-white rounded-[6px] text-[#1E1E1E] placeholder:text-[#9E9E9E] border border-[#EDEDED]"
+                class="flex-1 text-[14px] leading-[22px] text-[400] px-4 py-3 bg-white rounded-[6px] text-neutral-100 placeholder:text-neutral-60 border border-[#EDEDED]"
                 variant="filled" fluid />
               <BlackButton class="w-[83px]" :loading="searchPackingListCodeLoading"
                 @click="handleSearchPackingListCode">Search</BlackButton>
