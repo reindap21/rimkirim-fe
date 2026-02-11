@@ -6,11 +6,11 @@ const router = useRouter()
 
 <template>
   <!-- CTA -->
-  <section class="w-full relative bg-[#FAFAFC] py-20">
+  <section class="w-full relative bg-neutral-10 py-20">
     <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 items-center gap-16">
       <div class="flex flex-col gap-6">
         <div class="flex flex-col gap-2">
-          <h2 class="text-[40px] leading-tight font-semibold text-[#1E1E1E]">
+          <h2 class="text-[40px] leading-tight font-semibold text-neutral-100">
             Moving is part of your<br />
             International Journey
           </h2>

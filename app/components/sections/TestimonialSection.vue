@@ -2,7 +2,7 @@
   <!-- TESTIMONIAL -->
   <section class="w-full flex flex-col gap-12 py-10 overflow-hidden">
     <div class="flex flex-col items-center justify-center gap-2">
-      <h2 class="text-[40px] leading-[48px] font-bold text-[#1E1E1E]">
+      <h2 class="text-[40px] leading-[48px] font-bold text-neutral-100">
         See what people are saying
       </h2>
     </div>
@@ -237,12 +237,12 @@
     <!-- CTA BELOW TESTIMONIAL -->
     <div class="flex justify-center">
       <button
-        class="group inline-flex items-center gap-2 text-[18px] font-normal text-[#1E1E1E] transition focus-visible:rounded-md focus-visible:ring-offset-[6px]"
+        class="group inline-flex items-center gap-2 text-[18px] font-normal text-neutral-100 transition focus-visible:rounded-md focus-visible:ring-offset-[6px]"
       >
         <span class="relative">
           Book Your International Moving Now
           <span
-            class="absolute left-0 -bottom-1 h-px w-0 bg-[#1E1E1E] transition-all duration-300 group-hover:w-full"
+            class="absolute left-0 -bottom-1 h-px w-0 bg-neutral-100 transition-all duration-300 group-hover:w-full"
           ></span>
         </span>
         <span

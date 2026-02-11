@@ -13,20 +13,20 @@
   <section class="max-w-6xl mx-auto px-6 pt-32 pb-24 text-center">
     <div class="flex flex-col gap-1">
       <p class="text-[20px] leading-[130%] text-[#616161]">Based on your answer</p>
-      <h2 class="text-[32px] leading-[130%] font-semibold text-[#1E1E1E] text-center">You are eligible to choose</h2>
+      <h2 class="text-[32px] leading-[130%] font-semibold text-neutral-100 text-center">You are eligible to choose</h2>
     </div>
 
     <div class="mt-6 flex items-stretch justify-center gap-4">
       <!-- Skema Barang Pindahan -->
       <button
         class="flex flex-col flex-1 gap-6 w-[400px] shrink-0 grow-0 rounded-2xl px-6 py-4 text-left" @click="$emit('select', 'moving_goods')"
-        :class="isSKPAvailable ? 'bg-[#FAFAFC] hover:bg-[#D6EAE7] group hover:shadow-lg cursor-pointer' : 'bg-[#FAFAFC] opacity-50 cursor-disabled'"
+        :class="isSKPAvailable ? 'bg-neutral-10 hover:bg-[#D6EAE7] group hover:shadow-lg cursor-pointer' : 'bg-neutral-10 opacity-50 cursor-disabled'"
         >
         <div class="flex items-center justify-center w-[338px] h-[211px]">
           <IconBarangPindahan />
         </div>
         <div class="flex flex-col gap-4">
-          <h3 class="text-[24px] leading-[130%] font-semibold text-[#1E1E1E] group-hover:text-[#309786]">Skema Barang
+          <h3 class="text-[24px] leading-[130%] font-semibold text-neutral-100 group-hover:text-[#309786]">Skema Barang
             Pindahan</h3>
 
           <!-- Benefits -->
@@ -34,7 +34,7 @@
             <div class="flex items-center gap-[2px] text-[14px] leading-[22px]">
               <div class="flex items-center gap-1">
                 <IconThumbsUp />
-                <span class="font-normal text-[#404040]">
+                <span class="font-normal text-neutral-90">
                   Benefits :
                 </span>
               </div>
@@ -48,7 +48,7 @@
             <div class="flex items-center gap-[2px] text-[14px] leading-[22px]">
               <div class="flex items-center gap-1">
                 <IconDocumentRequirement />
-                <span class="font-normal text-[#404040]">
+                <span class="font-normal text-neutral-90">
                   Requirements :
                 </span>
               </div>
@@ -76,12 +76,12 @@
 
       <!-- Skema Barang Penumpang -->
       <button
-        class="flex flex-col flex-1 gap-6 w-[400px] shrink-0 grow-0 bg-[#FAFAFC] hover:bg-[#D6EAE7] group hover:shadow-lg rounded-2xl px-6 py-4 text-left cursor-pointer" @click="$emit('select', 'passenger_goods')">
+        class="flex flex-col flex-1 gap-6 w-[400px] shrink-0 grow-0 bg-neutral-10 hover:bg-[#D6EAE7] group hover:shadow-lg rounded-2xl px-6 py-4 text-left cursor-pointer" @click="$emit('select', 'passenger_goods')">
         <div class="flex items-center justify-center w-[338px] h-[211px]">
           <IconBarangPenumpang />
         </div>
         <div class="flex flex-col gap-4">
-          <h3 class="text-[24px] leading-[130%] font-semibold text-[#1E1E1E] group-hover:text-[#309786]">Skema Barang
+          <h3 class="text-[24px] leading-[130%] font-semibold text-neutral-100 group-hover:text-[#309786]">Skema Barang
             Penumpang</h3>
 
           <!-- Benefits -->
@@ -89,7 +89,7 @@
             <div class="flex items-center gap-[2px] text-[14px] leading-[22px]">
               <div class="flex items-center gap-1">
                 <IconThumbsUp />
-                <span class="font-normal text-[#404040]">
+                <span class="font-normal text-neutral-90">
                   Benefits :
                 </span>
               </div>
@@ -108,7 +108,7 @@
             <div class="flex items-center gap-[2px] text-[14px] leading-[22px]">
               <div class="flex items-center gap-1">
                 <IconDocumentRequirement />
-                <span class="font-normal text-[#404040]">
+                <span class="font-normal text-neutral-90">
                   Requirements :
                 </span>
               </div>
@@ -120,7 +120,7 @@
       </button>
     </div>
 
-    <p class="mt-8 text-[14px] leading-[22px] text-[#1E1E1E]">By continuing, you agree with our <span
+    <p class="mt-8 text-[14px] leading-[22px] text-neutral-100">By continuing, you agree with our <span
         class="underline cursor-pointer">terms of
         service</span></p>
   </section>

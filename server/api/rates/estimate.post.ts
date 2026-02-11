@@ -1,7 +1,9 @@
 export default defineEventHandler(async (event) => {
-  try {
+
+
+
     /**
-     * Client req body
+   * 1️⃣ Client req body
      * (shipment_type, origin, destination)
      */
     const body = await readBody(event);
@@ -13,11 +15,12 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    //* Runtime config
-    const config = useRuntimeConfig();
-    const baseApiUrl = config.apiBaseUrl;
+  // 1️⃣.1️⃣ Get Config
+        const config = useRuntimeConfig();
+        const baseApiUrl = config.apiBaseUrl;
 
-    //* 1️⃣ Call BACKEND REGISTER API
+  // 2️⃣ Fetch API
+  try {
     const res: any = await $fetch(`${baseApiUrl}/api/rates/estimate`, {
       method: "POST",
       body,
@@ -28,8 +31,8 @@ export default defineEventHandler(async (event) => {
      */
     if (!res?.data) {
       throw createError({
-        statusCode: 400,
-        statusMessage: "Invalid get special rate response",
+        statusCode: 500,
+        statusMessage: "Invalid special rate response", // TODO: Update message ini
       });
     }
 
@@ -43,7 +46,7 @@ export default defineEventHandler(async (event) => {
       statusMessage:
         error?.data?.message ||
         error?.statusMessage ||
-        "Get special rate failed",
+        "Failed to estimate rate",
     });
   }
 });

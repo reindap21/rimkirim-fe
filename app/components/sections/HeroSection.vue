@@ -1,3 +1,8 @@
+<script setup lang="ts">
+import { MENU } from '~/config';
+
+</script>
+
 <template>
   <!-- HERO WRAPPER -->
   <section class="relative overflow-visible h-[695px] mt-[134px] pt-[145px]">
@@ -12,7 +17,7 @@
     <!-- HERO CONTENT -->
     <div class="relative z-10 max-w-5xl mx-auto px-6 flex flex-col items-center justify-center gap-4">
       <div
-        class="flex gap-1 text-[14px] leading-[22px] font-normal px-5 py-2 rounded-full bg-[#FAFAFC] w-fit shrink-0 mt-24">
+        class="flex gap-1 text-[14px] leading-[22px] font-normal px-5 py-2 rounded-full bg-neutral-10 w-fit shrink-0 mt-24">
         <div class="relative flex gap-0.5 max-w-[232px] whitespace-nowrap overflow-hidden">
           <div>New:</div>
           <div>Regulasi Pajak Barang Pindahan</div>
@@ -22,17 +27,17 @@
         <div class="text-[#9C26F5]">Learn More</div>
       </div>
 
-      <h1 class="text-[52px] leading-[60px] font-bold text-[#1E1E1E] max-w-[3xl] mx-auto text-center">
+      <h1 class="text-[52px] leading-[60px] font-bold text-neutral-100 max-w-[3xl] mx-auto text-center">
         INTERNATIONAL<br />MOVING ASSISTANT
       </h1>
 
-      <p class="text-[18px] leading-[26px] text-[#404040]/90 max-w-[480px] mx-auto text-center">
+      <p class="text-[18px] leading-[26px] text-neutral-90/90 max-w-[480px] mx-auto text-center">
         Every step of your move is carefully managed for a seamless experience.
       </p>
 
       <div class="flex justify-center">
-        <NuxtLink to="/rates"
-          class="group relative w-[147px] h-[46px] rounded-full bg-[#C1FF00] text-[#1E1E1E] font-medium inline-flex items-center justify-center transition-colors duration-300 hover:bg-[#A1D400] overflow-hidden text-[14px] leading-[22px]">
+        <NuxtLink :to="MENU.RATES"
+          class="group relative w-[147px] h-[46px] rounded-full bg-primary text-neutral-100 font-medium inline-flex items-center justify-center transition-colors duration-300 hover:bg-[#A1D400] overflow-hidden text-[14px] leading-[22px]">
           <span
             class="absolute inset-0 -ml-4 flex items-center justify-center transition-transform duration-300 group-hover:translate-x-2">
             Check Rates

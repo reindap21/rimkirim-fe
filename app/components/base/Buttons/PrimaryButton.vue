@@ -1,4 +1,7 @@
 <script setup lang="ts">
+
+// * ------- Types
+
 interface Props {
   loading?: boolean
   disabled?: boolean
@@ -6,6 +9,8 @@ interface Props {
   rounded?: string // rounded-[8px] 
   fontWeight?: string  // font-medium
 }
+
+// * ------- Defines
 
 const props = withDefaults(defineProps<Props>(), {
   loading: false,
@@ -21,12 +26,12 @@ const props = withDefaults(defineProps<Props>(), {
     :type="type" 
     :disabled="disabled" 
     :class="[
-      'h-[46px] text-[14px] leading-[22px] text-[#1E1E1E] transition',
+      'h-[46px] text-[14px] leading-[22px] text-neutral-100 transition',
       'flex items-center justify-center gap-2',
       'hover:bg-[#A1D400]',
-      'disabled:bg-[#E0E0E0] disabled:text-[#757575] disabled:cursor-not-allowed',
+      'disabled:bg-neutral-40 disabled:text-neutral-70 disabled:cursor-not-allowed',
       rounded,
-      loading ? 'bg-[#A1D400]' : 'bg-[#C1FF00]',
+      loading ? 'bg-[#A1D400]' : 'bg-primary',
       fontWeight
     ]"
     >

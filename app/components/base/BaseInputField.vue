@@ -3,7 +3,12 @@ import InputText from 'primevue/inputtext'
 import { computed } from 'vue'
 import type { Component } from 'vue'
 
+// * ------- Types -------------------------------------------------------------------------------------------------------------------------------------------------
+
 type IconPosition = 'left' | 'right'
+
+
+// * ------- Defines -----------------------------------------------------------------------------------------------------------------------------------------------
 
 const props = withDefaults(defineProps<{
   modelValue?: string
@@ -20,6 +25,8 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{
   (e: 'update:modelValue', value: string): void
 }>()
+
+// * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
 
 /**
  * Wrapper (always boxed)
@@ -40,8 +47,8 @@ const wrapperClass = computed(() => [
  */
 const iconClass = computed(() =>
   props.boxed
-    ? 'flex items-center justify-center w-8 h-8 rounded-md bg-[#F5F5F5] text-[#1E1E1E]'
-    : 'text-[#9E9E9E]'
+    ? 'flex items-center justify-center w-8 h-8 rounded-md bg-[#F5F5F5] text-neutral-100'
+    : 'text-neutral-60'
 )
 </script>
 

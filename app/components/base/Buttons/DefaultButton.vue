@@ -21,10 +21,10 @@
       :type="type" 
       :disabled="disabled" 
       :class="[
-        'h-[46px] text-[14px] leading-[22px] text-[#1E1E1E] transition',
+        'h-[46px] text-[14px] leading-[22px] text-neutral-100 transition',
         'flex items-center justify-center gap-2',
         'hover:bg-gray-300',
-        'disabled:bg-[#E0E0E0] disabled:text-[#757575] disabled:cursor-not-allowed',
+        'disabled:bg-neutral-40 disabled:text-neutral-70 disabled:cursor-not-allowed',
         rounded,
         loading ? 'bg-gray-300' : 'bg-white',
         fontWeight

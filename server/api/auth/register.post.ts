@@ -1,32 +1,37 @@
 import { setCookie } from "h3";
 
 export default defineEventHandler(async (event) => {
+  /**
+   * 1️⃣ Client req body
+   * (name, email, password, password_confirmation)
+   */
+  const body = await readBody(event);
+
+  if (
+    !body?.name ||
+    !body?.email ||
+    !body?.password ||
+    !body?.password_confirmation
+  ) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: "Name, email, password, and confirm password are required",
+    });
+  }
+
+  // 1️⃣.1️⃣ Get Config
+  const config = useRuntimeConfig();
+  const baseApiUrl = config.apiBaseUrl;
+
+  // 2️⃣ Fetch API
   try {
-    /**
-     * Client req body
-     * (name, email, password, password_confirmation)
-     */
-    const body = await readBody(event);
-
-    if (!body?.name || !body?.email || !body?.password || !body?.password_confirmation) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: "Name, email, password, and confirm password are required",
-      });
-    }
-
-    //* Runtime config
-    const config = useRuntimeConfig();
-    const baseApiUrl = config.apiBaseUrl;
-
-    //* 1️⃣ Call BACKEND REGISTER API
     const res: any = await $fetch(`${baseApiUrl}/api/auth/register`, {
       method: "POST",
       body,
     });
 
     /**
-     * Expected response:
+     * 2️⃣.1️⃣ Expected response:
      * {
      *   message,
      *   data: {
@@ -42,9 +47,8 @@ export default defineEventHandler(async (event) => {
       });
     }
 
+    //* 3️⃣ Set Cookies at Nuxt Server
     const access_token = res.data.access_token;
-
-    //* 2️⃣ Set cookie (auto-login after register)
     setCookie(event, "access_token", access_token, {
       httpOnly: true,
       secure: true,
@@ -53,7 +57,7 @@ export default defineEventHandler(async (event) => {
       maxAge: 60 * 60 * 24, // 1 hari
     });
 
-    //* 3️⃣ Fetch user profile
+    // 4️⃣ Fetch API PROFILE
     const resProfile: any = await $fetch(`${baseApiUrl}/api/auth/me`, {
       method: "GET",
       headers: {
@@ -61,6 +65,20 @@ export default defineEventHandler(async (event) => {
       },
     });
 
+    /**
+     * 4️⃣.1️⃣ Expected response:
+     * {
+     *   message,
+     *   data: {
+     *     id,
+     *     name,
+     *     email,
+     *     email_verified_at,
+     *     created_at,
+     *     updated_at,
+     *   }
+     * }
+     */
     if (!resProfile?.data?.id) {
       throw createError({
         statusCode: 500,
@@ -68,7 +86,7 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    //* 4️⃣ Return user
+    //* 5️⃣ Return user profile
     return {
       user: resProfile.data,
     };
@@ -76,9 +94,7 @@ export default defineEventHandler(async (event) => {
     throw createError({
       statusCode: error?.statusCode || 500,
       statusMessage:
-        error?.data?.message ||
-        error?.statusMessage ||
-        "Register failed",
+        error?.data?.message || error?.statusMessage || "Register failed",
     });
   }
 });

@@ -4,7 +4,7 @@
     class="w-full flex flex-col gap-[30px] py-10 overflow-hidden bg-white"
   >
     <div class="max-w-5xl mx-auto mb-10">
-      <h2 class="text-[40px] leading-[48px] font-bold text-[#1E1E1E]">
+      <h2 class="text-[40px] leading-[48px] font-bold text-neutral-100">
         Our Shipping Partner
       </h2>
     </div>

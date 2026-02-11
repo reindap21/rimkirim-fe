@@ -22,12 +22,12 @@ const pillStyleMap: Record<PillType, {
 }> = {
   base: {},
   gray: {
-    bg: 'bg-[#FAFAFC]',
-    color: 'text-[#1E1E1E]'
+    bg: 'bg-neutral-10',
+    color: 'text-neutral-100'
   },
   white: {
     bg: 'bg-white',
-    color: 'text-[#1E1E1E]',
+    color: 'text-neutral-100',
     class: 'border border-[#F5F5F5]'
   }
 }
@@ -42,10 +42,10 @@ const pillStyle = pillStyleMap[props.pillType]
       {{ pillLabel }}
     </BasePill>
     <div class="flex flex-col items-center gap-2">
-      <h2 class="text-[40px] leading-[48px] font-bold tracking-[-0.5%] text-[#1E1E1E]">
+      <h2 class="text-[40px] leading-[48px] font-bold tracking-[-0.5%] text-neutral-100">
         {{ title }}
       </h2>
-      <p class="text-[14px] leading-[22px] font-[400] text-[#757575]" v-if="subtitle">{{ subtitle }}</p>
+      <p class="text-[14px] leading-[22px] font-[400] text-neutral-70" v-if="subtitle">{{ subtitle }}</p>
     </div>
   </div>
 </template>ƒ

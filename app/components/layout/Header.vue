@@ -3,7 +3,7 @@
 // * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
 
 interface Props {
-  use?: "order" | "home" | null | undefined;
+  use?: "eligible" | "order-hub" | "home" | null | undefined;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -16,7 +16,8 @@ const authModal = useAuthModal()
 // When use home; fetching user will appear
 // Default loggedin for order
 const useNavHome = !props?.use || props.use === 'home';
-const useNavOrder = !props?.use || props.use === 'order';
+const useNavOrderHub = props.use === 'order-hub';
+const useNavEligible = props.use === 'eligible';
 
 // * ------- Methods -----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -40,26 +41,27 @@ const openLogin = () => {
           <UIBrandLogo fill="#1E1E1E" />
         </NuxtLink>
       </div>
-      <nav class="hidden md:flex items-center gap-3 text-[14px] leading-[22px] text-gray-700 magnetic-group" v-if="use === 'home'">
+      <nav class="hidden md:flex items-center gap-3 text-[14px] leading-[22px] text-gray-700 magnetic-group"
+        v-if="use === 'home'">
         <a href="#"
-          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-[#C1FF00] hover:text-[#1E1E1E]">Moving</a>
+          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-primary hover:text-neutral-100">Moving</a>
         <a href="#"
-          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-[#C1FF00] hover:text-[#1E1E1E]">About
+          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-primary hover:text-neutral-100">About
           Us</a>
         <a href="#"
-          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-[#C1FF00] hover:text-[#1E1E1E]">Articles</a>
+          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-primary hover:text-neutral-100">Articles</a>
         <a href="#"
-          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-[#C1FF00] hover:text-[#1E1E1E]">Jobs</a>
+          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-primary hover:text-neutral-100">Jobs</a>
         <a href="#"
-          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-[#C1FF00] hover:text-[#1E1E1E]">FAQs</a>
+          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-primary hover:text-neutral-100">FAQs</a>
       </nav>
       <div class="flex items-center gap-4">
-        <div class="text-[14px] leading-[22px] px-4 py-2 font-medium text-[#1E1E1E] cursor-pointer">EN</div>
+        <div class="text-[14px] leading-[22px] px-4 py-2 font-medium text-neutral-100 cursor-pointer">EN</div>
         <template v-if="loading">...</template>
         <template v-else>
           <template v-if="!user && useNavHome">
             <button
-              class="text-[14px] leading-[22px] font-medium text-white bg-[#1E1E1E] hover:bg-[#2E2E2E] rounded-full w-[102px] h-[46px] flex items-center justify-center"
+              class="text-[14px] leading-[22px] font-medium text-white bg-neutral-100 hover:bg-[#2E2E2E] rounded-full w-[102px] h-[46px] flex items-center justify-center"
               @click="openLogin">
               Login
             </button>
@@ -67,39 +69,35 @@ const openLogin = () => {
 
           <template v-else>
             <div class="relative flex gap-2 items-center cursor-pointer">
-              <button class="flex items-center gap-2 text-[14px] leading-[22px] font-medium text-[#1E1E1E]">
+              <button class="flex items-center gap-2 text-[14px] leading-[22px] font-medium text-neutral-100">
                 <span class="truncate max-w-[120px]">
                   {{ user?.name?.split(" ")?.[0] || '...' }}
                 </span>
 
               </button>
               <IconAvatar />
-              <!-- <button class="w-full text-left text-[14px] leading-[22px] text-red-600" @click="logout">
-                  Logout
-                </button> -->
             </div>
           </template>
         </template>
       </div>
     </div>
   </header>
-  <header id="navbar" class="fixed top-0 left-0 z-50 px-[28px] py-4 w-full transition-all duration-300 bg-[#FAFAFC]"
-    v-if="useNavOrder">
+  <header id="navbar" class="fixed top-0 left-0 z-50 px-[28px] py-4 w-full transition-all duration-300"
+    :class="useNavEligible ? 'bg-white' : 'bg-neutral-10'" v-if="useNavOrderHub || useNavEligible">
     <div class="flex justify-between items-center">
       <UIBrandLogo fill="#1E1E1E" />
       <div class="flex items-center gap-2 px-4 py-2 bg-white shadow-lg rounded-full">
-        <div class="text-[18px] leading-[26px] px-4 py-2 font-medium text-[#1E1E1E] cursor-pointer">EN</div>
+        <div class="text-[18px] leading-[26px] px-4 py-2 font-medium text-neutral-100 cursor-pointer">EN</div>
+        <!-- <button class="w-full text-left text-[14px] leading-[22px] text-red-600" @click="logout">
+          Logout
+        </button> -->
         <div class="relative flex gap-2 items-center cursor-pointer">
-          <button class="flex items-center gap-2 text-[14px] leading-[22px] font-medium text-[#1E1E1E]">
+          <button class="flex items-center gap-2 text-[14px] leading-[22px] font-medium text-neutral-100">
             <span class="truncate max-w-[120px]">
               {{ user?.name?.split(" ")?.[0] || '...' }}
             </span>
-
           </button>
           <IconAvatar />
-          <!-- <button class="w-full text-left text-[14px] leading-[22px] text-red-600" @click="logout">
-                  Logout
-                </button> -->
         </div>
       </div>
     </div>

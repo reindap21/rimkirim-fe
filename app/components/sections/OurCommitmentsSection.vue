@@ -1,7 +1,7 @@
 <template>
   <!-- OUR COMMITMENTS -->
   <section class="w-full max-w-5xl mx-auto">
-    <div class="bg-[#FAFAFC] rounded-[24px] px-[100px] py-10 flex flex-col gap-8">
+    <div class="bg-neutral-10 rounded-[24px] px-[100px] py-10 flex flex-col gap-8">
       <SectionHeader pillLabel="Our Commitments" pillType="white" title="Simple, Clear, Trust-Building" />
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
         <!-- Item 1 -->
@@ -13,7 +13,7 @@
                 stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
           </div>
-          <h3 class="font-bold text-[#1E1E1E]">
+          <h3 class="font-bold text-neutral-100">
             End-to-end International Moving Assistant
           </h3>
           <p class="text-[#616161] text-[14px] leading-[22px] font-[400]">
@@ -36,7 +36,7 @@
                 fill="black" />
             </svg>
           </div>
-          <h3 class="font-bold text-[#1E1E1E]">
+          <h3 class="font-bold text-neutral-100">
             Clear as Crystal Pricing Model
           </h3>
           <p class="text-[#616161] text-[14px] leading-[22px] font-[400]">
@@ -55,7 +55,7 @@
                 fill="black" />
             </svg>
           </div>
-          <h3 class="font-bold text-[#1E1E1E]">Flexible Payment Options</h3>
+          <h3 class="font-bold text-neutral-100">Flexible Payment Options</h3>
           <p class="text-[#616161] text-[14px] leading-[22px] font-[400]">
             Our team is always ready to assist and is patient in answering all
             your questions. We ensure your communication is smooth and support
@@ -72,7 +72,7 @@
                 fill="black" />
             </svg>
           </div>
-          <h3 class="font-bold text-[#1E1E1E]">
+          <h3 class="font-bold text-neutral-100">
             Customer Support Always Available
           </h3>
           <p class="text-[#616161] text-[14px] leading-[22px] font-[400]">

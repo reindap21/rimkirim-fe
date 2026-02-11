@@ -1,6 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import RimkirimPreset from './primevue/preset'
 
 export default defineNuxtConfig({
+  compatibilityDate: "2025-07-15",
+
   runtimeConfig: {
     apiBaseUrl: process.env.API_BASE_URL, // server-only
     googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
@@ -9,8 +12,9 @@ export default defineNuxtConfig({
       baseUrl: process.env.NUXT_PUBLIC_BASE_URL,
     }
   },
-  compatibilityDate: "2025-07-15",
+
   devtools: { enabled: true },
+
   modules: [
     "@nuxt/eslint",
     "@nuxt/image",
@@ -18,11 +22,16 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "@primevue/nuxt-module",
   ],
+
   primevue: {
     options: {
-      unstyled: true
+      theme: {
+        preset: RimkirimPreset
+      }
     }
   },
+
+
   app: {
     head: {
       title: "Rimkirim",
@@ -37,21 +46,25 @@ export default defineNuxtConfig({
           defer: true
         }
       ]
-      
     },
   },
+
   components: [
     {
       path: "~/components",
       pathPrefix: false,
     },
   ],
-  css: ["/assets/css/global.css"],
+
+  css: [
+    "/assets/css/global.css",
+    "/assets/css/rimkirim-tokens.css",
+    "/assets/css/primevue-overrides.css"
+  ],
+
   vite: {
     server: {
-      allowedHosts: [
-        'rimkirimdev.com',
-      ]
+      allowedHosts: ['rimkirimdev.com']
     }
   }
-});
+})

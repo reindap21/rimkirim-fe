@@ -2,7 +2,9 @@
 
 import { computed, ref } from 'vue'
 
-const props = withDefaults(defineProps<{
+// * ------- Types -------------------------------------------------------------------------------------------------------------------------------------------------
+
+type UIRateCard  = {
   price: number
   currency?: string
   unit?: string
@@ -24,7 +26,11 @@ const props = withDefaults(defineProps<{
   terms?: string[]
   collapsible?: boolean
   loading?: boolean
-}>(), {
+}
+
+// * ------- Defines -----------------------------------------------------------------------------------------------------------------------------------------------
+
+const props = withDefaults(defineProps<UIRateCard>(), {
   currency: 'IDR',
   unit: 'Kg',
   isDirect: true,
@@ -68,7 +74,7 @@ const formattedPrice = computed(() =>
           {{ currency }} {{ formattedPrice }} / {{ unit }}
         </div>
 
-        <p v-if="minWeight" class="text-[14px] leading-[22px] text-[#9E9E9E]">
+        <p v-if="minWeight" class="text-[14px] leading-[22px] text-neutral-60">
           For Minimum {{ minWeight }} {{ unit }} Shipment
         </p>
       </div>
@@ -77,7 +83,7 @@ const formattedPrice = computed(() =>
       <div class="hidden md:flex flex-1 items-center justify-center gap-10">
         <UICountry :flag="originFlag" :label="originCountry" />
 
-        <div class="flex flex-col items-center text-sm text-[#9E9E9E]">
+        <div class="flex flex-col items-center text-sm text-neutral-60">
           {{ etaDays }}
           <IconDividerArrow />
           {{ isDirect ? "Direct" : "Transit" }}
@@ -93,7 +99,7 @@ const formattedPrice = computed(() =>
     </div>
 
     <!-- BOTTOM -->
-    <div class="relative mt-6 border-t border-gray-200 pt-4 text-[14px] text-[#9E9E9E] transition-all duration-300 ease-out">
+    <div class="relative mt-6 border-t border-gray-200 pt-4 text-[14px] text-neutral-60 transition-all duration-300 ease-out">
       <template v-if="expanded">
         <ul class="flex flex-col gap-2">
           <li v-for="(term, i) in terms" :key="i" class="flex items-start gap-2">
@@ -110,7 +116,7 @@ const formattedPrice = computed(() =>
       </template>
 
       <div class="flex items-center">
-        <button v-if="collapsible" class="absolute right-0 bottom-0 flex items-center gap-1 font-medium text-[#1E1E1E] focus-visible:rounded-md focus-visible:ring-offset-[6px]"
+        <button v-if="collapsible" class="absolute right-0 bottom-0 flex items-center gap-1 font-medium text-neutral-100 focus-visible:rounded-md focus-visible:ring-offset-[6px]"
           @click="expanded = !expanded">
           {{ expanded ? 'Hide' : 'More Information' }}
           <IconChevronUp v-if="expanded" />

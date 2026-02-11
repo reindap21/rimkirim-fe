@@ -1,38 +1,49 @@
-import { getCookie } from 'h3'
+import { getCookie } from "h3";
 
 export default defineEventHandler(async (event) => {
-  const token = getCookie(event, 'access_token')
-
+  // 0️⃣ REQUIRED; Token Check
+  const token = getCookie(event, "access_token");
   if (!token) {
-    return { user: null }
+    throw createError({
+      statusCode: 401,
+      statusMessage: "Unauthenticated",
+    });
   }
 
   // 1️⃣ Get query param
-  const query = getQuery(event)
-  const rateId = query.rateId
+  const query = getQuery(event);
+  const rateId = query.rateId?.toString();
 
   if (!rateId) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'rateId is required'
-    })
+      statusMessage: "rateId is required",
+    });
   }
 
-  const config = useRuntimeConfig()
-  const baseApiUrl = config.apiBaseUrl
+  // 1️⃣.1️⃣ Get Config
+  const config = useRuntimeConfig();
+  const baseApiUrl = config.apiBaseUrl;
 
   // 2️⃣ Fetch API
   try {
     const res: any = await $fetch(`${baseApiUrl}/api/eligibility/${rateId}`, {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
+    //* 3️⃣ Return response
     return {
-      eligibility: res.data
-    }
-  } catch {
-    return { eligibility: null }
+      eligibility: res.data,
+    };
+  } catch (error: any) {
+    console.error("[Eligibility API Error]", error);
+
+    throw createError({
+      statusCode: error?.statusCode || 404,
+      statusMessage:
+        error?.data?.message || error?.statusMessage || "Eligibility not found",
+    });
   }
-})
+});
