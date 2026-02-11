@@ -97,7 +97,10 @@ const handleLogin = async ({ values, valid }) => {
 };
 
 const handleLoginWithGoogle = () => {
-  window.location.href = '/api/auth/google'
+  navigateTo('https://dev.core.rimkirim.com/oauth/google', {
+    external: true,
+  })
+
 }
 
 const handleSignup = async ({ values, valid }) => {
@@ -126,7 +129,11 @@ const handleSignup = async ({ values, valid }) => {
   }
 };
 
-const handleSignUpWithGoogle = () => { }
+const handleSignUpWithGoogle = () => {
+  navigateTo('https://dev.core.rimkirim.com/oauth/google', {
+    external: true,
+  })
+}
 
 const handleClose = () => {
   emit('close');
