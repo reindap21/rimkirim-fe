@@ -9,8 +9,12 @@ const authModal = useAuthModal()
   <div>
     <Header />
     <slot />
-    <ModalAuth :open="authModal.isOpen.value" :mode="authModal.mode.value" @close="authModal.close"
-      @update:mode="authModal.mode = $event" />
+    <ModalAuth 
+      :open="authModal.isOpen.value" 
+      :mode="authModal.mode.value" 
+      @close="authModal.close"
+      @update:mode="authModal.mode.value = $event" 
+    />
     <Footer />
   </div>
 </template>

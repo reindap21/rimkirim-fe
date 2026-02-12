@@ -157,7 +157,8 @@ const toggleShowPasswordSignUp = () => {
 <template>
   <Transition name="fade">
     <div v-if="open" id="modal-auth" class="fixed inset-0 z-50 flex items-center justify-center bg-white/50">
-      <div class="relative w-[450px] bg-neutral-100 flex flex-col gap-6 rounded-2xl px-6 py-8 text-white overflow-hidden">
+      <div
+        class="relative w-[450px] bg-neutral-100 flex flex-col gap-6 rounded-2xl px-6 py-8 text-white overflow-hidden">
 
         <div class="flex items-center justify-between">
           <UIBrandLogo width="95" height="32" />
@@ -176,8 +177,10 @@ const toggleShowPasswordSignUp = () => {
             </p>
           </div>
 
-          <p v-if="errorLogin"
-            class="flex gap-4 px-4 py-3 text-[14px] leading-[22px] font-[400] bg-[#FFEDED] text-[#FF4D4F] rounded-[12px]">
+          <p 
+            v-if="errorLogin"
+            class="flex gap-4 px-4 py-3 text-[14px] leading-[22px] font-[400] bg-[#FFEDED] text-[#FF4D4F] rounded-[12px]"
+          >
             <IconExclamationError />
             <span>
               {{ errorLogin }}
@@ -186,8 +189,14 @@ const toggleShowPasswordSignUp = () => {
 
           <div class="flex flex-col gap-6">
             <!-- Form -->
-            <Form v-slot="$form" :resolver="resolverLogin" :initialValues="initialLoginValues" validateOnBlur
-              @submit="handleLogin" class="flex justify-center flex-col gap-6">
+            <Form 
+              v-slot="$form" 
+              class="flex justify-center flex-col gap-6"
+              :resolver="resolverLogin" 
+              :initial-values="initialLoginValues" 
+              validate-on-blur
+              @submit="handleLogin" 
+            >
               <!-- Forms -->
               <div class="flex flex-col gap-4">
                 <!-- Email -->

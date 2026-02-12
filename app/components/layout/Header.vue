@@ -44,16 +44,16 @@ const openLogin = () => {
       <nav class="hidden md:flex items-center gap-3 text-[14px] leading-[22px] text-gray-700 magnetic-group"
         v-if="use === 'home'">
         <a href="#"
-          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-primary hover:text-neutral-100">Moving</a>
+          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-[#C1FF00] hover:text-[#1E1E1E]">Moving</a>
         <a href="#"
-          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-primary hover:text-neutral-100">About
+          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-[#C1FF00] hover:text-[#1E1E1E]">About
           Us</a>
         <a href="#"
-          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-primary hover:text-neutral-100">Articles</a>
+          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-[#C1FF00] hover:text-[#1E1E1E]">Articles</a>
         <a href="#"
-          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-primary hover:text-neutral-100">Jobs</a>
+          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-[#C1FF00] hover:text-[#1E1E1E]">Jobs</a>
         <a href="#"
-          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-primary hover:text-neutral-100">FAQs</a>
+          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-[#C1FF00] hover:text-[#1E1E1E]">FAQs</a>
       </nav>
       <div class="flex items-center gap-4">
         <div class="text-[14px] leading-[22px] px-4 py-2 font-medium text-neutral-100 cursor-pointer">EN</div>
