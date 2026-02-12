@@ -1,3 +1,8 @@
+<script setup lang="ts">
+import UIShippingLogo from '../ui/UIShippingLogo.vue';
+
+</script>
+
 <template>
     <!-- OUR SHIPPING PARTNER -->
     <section
@@ -12,58 +17,10 @@
     <div class="max-w-[63rem] mx-auto relative mask overflow-hidden">
       <div class="flex gap-16 w-max marquee-right items-center wave">
         <div class="flex gap-16 items-center">
-          <div
-            class="h-10 px-6 flex items-center justify-center border border-gray-200 rounded-lg text-gray-700 font-medium"
-          >
-            DHL
-          </div>
-          <div
-            class="h-10 px-6 flex items-center justify-center border border-gray-200 rounded-lg text-gray-700 font-medium"
-          >
-            FedEx
-          </div>
-          <div
-            class="h-10 px-6 flex items-center justify-center border border-gray-200 rounded-lg text-gray-700 font-medium"
-          >
-            UPS
-          </div>
-          <div
-            class="h-10 px-6 flex items-center justify-center border border-gray-200 rounded-lg text-gray-700 font-medium"
-          >
-            USPS
-          </div>
-          <div
-            class="h-10 px-6 flex items-center justify-center border border-gray-200 rounded-lg text-gray-700 font-medium"
-          >
-            MAERSK
-          </div>
+          <UIShippingLogo />
         </div>
         <div class="flex gap-16 items-center">
-          <div
-            class="h-10 px-6 flex items-center justify-center border border-gray-200 rounded-lg text-gray-700 font-medium"
-          >
-            DHL
-          </div>
-          <div
-            class="h-10 px-6 flex items-center justify-center border border-gray-200 rounded-lg text-gray-700 font-medium"
-          >
-            FedEx
-          </div>
-          <div
-            class="h-10 px-6 flex items-center justify-center border border-gray-200 rounded-lg text-gray-700 font-medium"
-          >
-            UPS
-          </div>
-          <div
-            class="h-10 px-6 flex items-center justify-center border border-gray-200 rounded-lg text-gray-700 font-medium"
-          >
-            USPS
-          </div>
-          <div
-            class="h-10 px-6 flex items-center justify-center border border-gray-200 rounded-lg text-gray-700 font-medium"
-          >
-            MAERSK
-          </div>
+          <UIShippingLogo />
         </div>
       </div>
     </div>
