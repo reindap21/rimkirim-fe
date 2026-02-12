@@ -8,6 +8,7 @@ export const useAuthModal = () => {
   }
 
   const openSignup = () => {
+    console.log("[CALL] openSignup")
     mode.value = 'signup'
     isOpen.value = true
   }
