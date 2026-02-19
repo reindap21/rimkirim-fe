@@ -1,23 +1,81 @@
 :root {
+  /* Primary Color */
+  /* --p-primary-color: var(--rimkirim-primary-main); */
 
-  --p-primary-color: var(--rimkirim-primary-main);
-
+  /* Focus Ring */
   --p-focus-ring-color: var(--rimkirim-primary-main);
+  --p-focus-ring-width: 1px;
+  --p-focus-ring-style: solid;
+  --p-focus-ring-offset: 0px;
 
   /* Form Field */
-  --p-form-field-border-color: var(--rimkirim-neutral-30);
+  /* --p-form-field-border-color: var(--rimkirim-neutral-30);
   --p-form-field-hover-border-color: var(--rimkirim-primary-main-opacity-70);
-  --p-form-field-placeholder-font-size: 12px;
+  --p-form-field-focus-border-color: var(--rimkirim-primary-main);
+  --p-form-field-invalid-border-color: var(--rimkirim-semantic-danger);
+  --p-form-field-bg: #ffffff;
+  --p-form-field-disabled-bg: var(--rimkirim-background-30);
   --p-form-field-placeholder-color: var(--rimkirim-neutral-60);
+  --p-form-field-color: var(--rimkirim-neutral-100);
   --p-form-field-border-radius: 6px;
+  --p-form-field-padding-x: 1rem;
+  --p-form-field-padding-y: 0.75rem;
+  --p-form-field-font-size: 14px;
+  --p-form-field-sm-font-size: 12px;
+  --p-form-field-lg-font-size: 16px; */
 
   /* Input Text */
-  --p-inputtext-focus-border-color: var(--p-primary-color);
+  /* --p-inputtext-focus-border-color: var(--rimkirim-primary-main);
+  --p-inputtext-hover-border-color: var(--rimkirim-primary-main-opacity-70);
   --p-inputtext-color: var(--rimkirim-neutral-100);
+  --p-inputtext-bg: #ffffff;
+  --p-inputtext-disabled-bg: var(--rimkirim-background-30); */
+
+  /* Button */
+  /* --p-button-primary-bg: var(--rimkirim-primary-main); */
+  --p-button-primary-hover-bg: #a1d400;
+  --p-button-primary-active-bg: #8cb800;
+  --p-button-primary-text-color: var(--rimkirim-neutral-100);
+  --p-button-primary-border-color: var(--rimkirim-primary-main);
+  --p-button-disabled-bg: var(--rimkirim-neutral-40);
+  --p-button-disabled-text-color: var(--rimkirim-neutral-70);
 
   /* Text */
   --p-text-muted-color: var(--rimkirim-neutral-60);
+  --p-text-color: var(--rimkirim-neutral-100);
 
   /* Popover */
-  --p-popover-background: var(--rimkirim-neutral-100);
+  --p-popover-background: rgba(30, 30, 30, 0.9);
+  --p-overlay-popover-background: rgba(30, 30, 30, 0.9);
+  --p-popover-border-color: var(--rimkirim-neutral-30);
+  --p-popover-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+
+  /* Calendar/DatePicker */
+  --p-datepicker-background: #ffffff;
+  --p-datepicker-border-color: var(--rimkirim-neutral-30);
+
+  /* Dropdown */
+  --p-dropdown-background: #ffffff;
+  --p-dropdown-border-color: var(--rimkirim-neutral-30);
+  --p-dropdown-option-focus-bg: var(--rimkirim-background-10);
+
+  /* Select */
+  /* --p-select-background: #ffffff; */
+  /* --p-select-border-color: var(--rimkirim-neutral-30); */
+  /* --p-select-hover-border-color: var(--rimkirim-primary-main-opacity-70); */
+  /* --p-select-focus-border-color: var(--rimkirim-primary-main); */
+  /* --p-select-dropdown-background: #ffffff; */
+  /* --p-select-option-focus-bg: var(--rimkirim-background-10); */
+  --p-select-font-size: 14px;
+  --p-select-label-color: var(--rimkirim-neutral-100);
+  --p-select-placeholder-color: var(--rimkirim-neutral-60);
+
+  /* Checkbox */
+  --p-checkbox-border-color: var(--rimkirim-neutral-30);
+  --p-checkbox-bg: #ffffff;
+  --p-checkbox-checked-bg: var(--rimkirim-primary-main);
+  --p-checkbox-checked-border-color: var(--rimkirim-primary-main);
+
+  /* Upload */
+  --p-fileupload-content-padding: 0;
 }

@@ -67,7 +67,9 @@ export default defineEventHandler(async (event) => {
 const DUMMY = {
     "shipperFullName": "John Doe",
     "shipperEmail": "john.doe@example.com",
-    "senderSameAsShipper": true,
+    "shipperOriginPhoneNumber": "+628123456789",
+    "shipperDestinationPhoneNumber": "+628123456789",
+    "shipmentOwnerSameAs": "sender",
     "senderContactName": "John Doe",
     "senderPhoneNumber": "+628123456789",
     "senderEmail": "sender@example.com",

@@ -1,112 +1,104 @@
 <script setup lang="ts">
-import { zodResolver } from "@primevue/forms/resolvers/zod";
-import { ref } from "vue";
-import { z } from "zod";
-import { MENU } from "~/config";
+  import { zodResolver } from "@primevue/forms/resolvers/zod";
+  import { ref } from "vue";
+  import { z } from "zod";
+  import { MENU } from "~/config";
 
-// * ------- Types -------------------------------------------------------------------------------------------------------------------------------------------------
+  // * ------- Types -------------------------------------------------------------------------------------------------------------------------------------------------
 
-// * ------- Dedines -----------------------------------------------------------------------------------------------------------------------------------------------
+  // * ------- Dedines -----------------------------------------------------------------------------------------------------------------------------------------------
 
-definePageMeta({
-  layout: "order-hub",
-  // middleware: 'auth'
-});
+  definePageMeta({
+    layout: "order-hub",
+    // middleware: 'auth'
+  });
 
-// * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
+  // * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
 
-const route = useRoute();
-const router = useRouter();
-const { user, loading } = useAuth();
+  const route = useRoute();
+  const router = useRouter();
+  const { user, loading } = useAuth();
 
-const bookingCode = route.params.id as string;
+  const bookingCode = route.params.id as string;
 
-const purposeOfShipment = ref<"" | "moving_goods" | "passenger_goods">("");
-const packingListCode = ref("-");
+  const purposeOfShipment = ref<"" | "moving_goods" | "passenger_goods">("");
+  const packingListCode = ref("-");
 
-const viewMode = ref<"form" | "success">("form");
+  const viewMode = ref<"form" | "success">("form");
 
-// * ------- Form Handling
+  // * ------- Form Handling
 
-const formRef = ref<any>(null);
-const submitLoading = ref(false);
-const errorSubmit = ref("");
+  const formRef = ref<any>(null);
+  const submitLoading = ref(false);
+  const errorSubmit = ref("");
 
-const initialValues = {};
+  const initialValues = {};
 
-const resolver = ref(
-  zodResolver(
-    z.object({
-      // Sender
-      // senderContactName: z.string().min(1, { message: 'Full name is required.' }),
-    }),
-  ),
-);
+  const resolver = ref(
+    zodResolver(
+      z.object({
+        // Sender
+        // senderContactName: z.string().min(1, { message: 'Full name is required.' }),
+      }),
+    ),
+  );
 
-// * ------- Methods -----------------------------------------------------------------------------------------------------------------------------------------------
+  // * ------- Methods -----------------------------------------------------------------------------------------------------------------------------------------------
 
-const handleSubmit = async ({
-  values,
-  valid,
-}: {
-  values: any;
-  valid: boolean;
-}) => {
-  if (!valid || submitLoading.value) return;
+  const handleSubmit = async ({ values, valid }: { values: any; valid: boolean }) => {
+    if (!valid || submitLoading.value) return;
 
-  viewMode.value = "success";
+    viewMode.value = "success";
 
-  errorSubmit.value = "";
-  submitLoading.value = true;
+    errorSubmit.value = "";
+    submitLoading.value = true;
 
-  const payload = {
-    ...values,
-    bookingCode: bookingCode,
+    const payload = {
+      ...values,
+      bookingCode: bookingCode,
+    };
+
+    try {
+      const res = await $fetch("/order-hub/item-and-package", {
+        method: "POST",
+        body: payload,
+        credentials: "include", // Required
+      });
+
+      // Store state
+      // userState.value = res.user
+
+      if (res?.statusCode === 200) viewMode.value = "success";
+    } catch (err: any) {
+      errorSubmit.value = err?.data?.message || "Error submit item and packages";
+    } finally {
+      submitLoading.value = false;
+    }
   };
 
-  try {
-    const res = await $fetch("/order-hub/item-and-package", {
-      method: "POST",
-      body: payload,
-      credentials: "include", // Required
+  const handleFinishLater = () => {
+    // actionForm.value = ""
+  };
+
+  const handleBack = () => {
+    router.push({
+      path: `${MENU.ORDER_HUB}/${bookingCode}`,
     });
+  };
 
-    // Store state
-    // userState.value = res.user
+  const handleGoToOrderHubPage = () => {
+    router.push({
+      path: `${MENU.ORDER_HUB}/${bookingCode}`,
+    });
+  };
 
-    if (res?.statusCode === 200) viewMode.value = "success";
-  } catch (err: any) {
-    errorSubmit.value = err?.data?.message || "Error submit item and packages";
-  } finally {
-    submitLoading.value = false;
-  }
-};
+  // * ------- onMounted ---------------------------------------------------------------------------------------------------------------------------------------------
 
-const handleFinishLater = () => {
-  // actionForm.value = ""
-};
-
-const handleBack = () => {
-  router.push({
-    path: `${MENU.ORDER_HUB}/${bookingCode}`,
-  });
-};
-
-const handleGoToOrderHubPage = () => {
-  router.push({
-    path: `${MENU.ORDER_HUB}/${bookingCode}`,
-  });
-};
-
-// * ------- onMounted ---------------------------------------------------------------------------------------------------------------------------------------------
-
-onMounted(() => {});
+  onMounted(() => {});
 </script>
 
 <template>
-  <section
-    class="flex flex-col relative gap-6 max-w-7xl mx-auto px-6 pt-28 pb-24"
-  >
+  <section class="flex flex-col relative gap-6 max-w-7xl mx-auto px-6 pt-28 pb-24">
     <!-- <div
       class="fixed top-[14px] left-1/2  transform -translate-x-1/2 flex items-center gap-2 px-4 py-2 bg-white shadow-lg rounded-full w-fit z-[100]">
       <div class="text-[12px] leading-[22px] px-8 py-3 font-medium cursor-pointer rounded-full"
@@ -147,9 +139,7 @@ onMounted(() => {});
                 <div class="flex items-center justify-center">
                   <IconPickup42 />
                 </div>
-                <div
-                  class="text-[20px] leading-[130%] font-medium text-neutral-90"
-                >
+                <div class="text-[20px] leading-[130%] font-medium text-neutral-90">
                   Pickup Details
                 </div>
               </div>
@@ -157,24 +147,17 @@ onMounted(() => {});
 
             <!-- Shipment Owner Information Body -->
             <div class="flex flex-col px-6 gap-6">
-              <div
-                class="flex items-center justify-between px-6 py-4 bg-neutral-20 w-full"
-              >
+              <div class="flex items-center justify-between px-6 py-4 bg-neutral-20 w-full">
                 <!-- Sender Details -->
                 <div class="flex flex-col gap-2">
                   <div class="flex-1 flex items-center gap-2">
                     <IconQuickFill />
-                    <div
-                      class="text-[20px] leading-[130%] font-medium text-neutral-90"
-                    >
+                    <div class="text-[20px] leading-[130%] font-medium text-neutral-90">
                       Quick Fill
                     </div>
                   </div>
-                  <p
-                    class="text-[14px] leading-[22px] spacing-[0%] font-[400] text-neutral-60"
-                  >
-                    Pre-fill Information from Sender or Owner details to save
-                    time.
+                  <p class="text-[14px] leading-[22px] spacing-[0%] font-[400] text-neutral-60">
+                    Pre-fill Information from Sender or Owner details to save time.
                   </p>
                 </div>
                 <div class="flex gap-2">
@@ -205,9 +188,7 @@ onMounted(() => {});
               <div class="flex flex-col gap-6">
                 <!-- PIC for Pickup Name -->
                 <div class="flex flex-col gap-[6px]">
-                  <label class="font-medium text-neutral-90"
-                    >PIC for Pickup Name</label
-                  >
+                  <label class="font-medium text-neutral-90">PIC for Pickup Name</label>
                   <div class="relative">
                     <InputText
                       name="shipperFullName"
@@ -215,7 +196,9 @@ onMounted(() => {});
                       placeholder="e.g. Dzulfan Fadli"
                       class="w-full pr-12"
                     />
-                    <InputIcon class="absolute top-5 right-4">
+                    <InputIcon
+                      class="absolute h-[44px] !top-[1px] !mt-0 right-[1px] flex items-center justify-center py-3 w-[51px]"
+                    >
                       <IconUser />
                     </InputIcon>
                   </div>
@@ -232,9 +215,7 @@ onMounted(() => {});
 
                 <!-- Street Address -->
                 <div class="flex flex-col gap-[6px]">
-                  <label class="font-medium text-neutral-90"
-                    >Street Address</label
-                  >
+                  <label class="font-medium text-neutral-90">Street Address</label>
                   <ClientOnly>
                     <!-- @select="handleOriginSelect" -->
                     <GoogleAddressInput
@@ -259,7 +240,7 @@ onMounted(() => {});
                   >
                   <div class="relative">
                     <InputIcon
-                      class="absolute top-[9px] h-[44px] left-[1px] flex items-center justify-center py-3 w-[51px] bg-neutral-20 text-neutral-70 rounded-tl-[5px] rounded-bl-[5px]"
+                      class="absolute !top-[1px] !mt-0 h-[44px] left-[1px] flex items-center justify-center py-3 w-[51px] bg-neutral-20 !text-neutral-70 rounded-tl-[5px] rounded-bl-[5px]"
                     >
                       +62
                     </InputIcon>
@@ -267,7 +248,7 @@ onMounted(() => {});
                       name="shipperOriginPhoneNumber"
                       type="phone"
                       placeholder="Enter phone number"
-                      class="w-full pl-[67px]"
+                      class="w-full !pl-[67px]"
                     />
                   </div>
                   <Message
@@ -291,11 +272,7 @@ onMounted(() => {});
                 Finish Later
               </TextButton>
               <!--  :disabled="$form.invalid && $form.touched" -->
-              <PrimaryButton
-                type="submit"
-                class="w-[100px]"
-                :loading="submitLoading"
-              >
+              <PrimaryButton type="submit" class="w-[100px]" :loading="submitLoading">
                 Done
               </PrimaryButton>
             </div>
@@ -331,9 +308,7 @@ onMounted(() => {});
           </svg>
 
           <!-- Title -->
-          <h3
-            class="text-[24px] leading-[32px] font-semibold text-neutral-100 text-center"
-          >
+          <h3 class="text-[24px] leading-[32px] font-semibold text-neutral-100 text-center">
             <!-- {{ props.title }} -->
             Customer Information <br />
             Saved!
@@ -342,8 +317,8 @@ onMounted(() => {});
           <!-- Description -->
           <p class="text-neutral-60 text-center px-2">
             <!-- {{ props.description }} -->
-            Your Customer Information has been successfully saved. Please
-            proceed to finish the remaining form for your booking.
+            Your Customer Information has been successfully saved. Please proceed to finish the
+            remaining form for your booking.
           </p>
         </div>
 

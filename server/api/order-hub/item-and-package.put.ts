@@ -15,11 +15,17 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event);
 
   // TODO: tambah payload lainnya
-  if (
-    !body?.bookingCode) {
+  if (!body?.bookingCode) {
     throw createError({
       statusCode: 400,
       statusMessage: "Booking code are required",
+    });
+  }
+
+  if (!body?.currencyCode) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: "Currency code is required",
     });
   }
 

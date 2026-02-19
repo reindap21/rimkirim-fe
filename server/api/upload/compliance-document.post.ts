@@ -1,4 +1,5 @@
 import { readMultipartFormData } from 'h3'
+import type { UploadDocumentResponse } from '~/types/order-hub'
 
 export default defineEventHandler(async (event) => {
   // 0️⃣ REQUIRED; Token Check
@@ -65,7 +66,7 @@ export default defineEventHandler(async (event) => {
 
   // 5️⃣ Forward to backend
   try {
-    const res: any = await $fetch(
+    const res = await $fetch<UploadDocumentResponse>(
       `${baseApiUrl}/api/upload/compliance-document`,
       {
         method: 'POST',
@@ -84,10 +85,8 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    return {
-      success: true,
-      files: res.data,
-    }
+    // Return backend response data directly
+    return res.data
   } catch (error: any) {
     console.error('[UPLOAD DOCUMENT COMPLIANCE ERROR]', error)
 

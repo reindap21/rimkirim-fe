@@ -1,165 +1,182 @@
 <script setup>
-// TODO: update jadi ts
+  // TODO: update jadi ts
 
-import { Form } from '@primevue/forms';
-import { zodResolver } from '@primevue/forms/resolvers/zod';
-import InputIcon from "primevue/inputicon";
-import { ref } from 'vue';
-import { z } from 'zod';
+  import { Form } from "@primevue/forms";
+  import { zodResolver } from "@primevue/forms/resolvers/zod";
+  import InputIcon from "primevue/inputicon";
+  import { ref } from "vue";
+  import { z } from "zod";
 
-// * ------- Defines -----------------------------------------------------------------------------------------------------------------------------------------------
+  // * ------- Defines -----------------------------------------------------------------------------------------------------------------------------------------------
 
-defineProps({
-  open: Boolean,
-  mode: {
-    type: String,
-    default: "login",
-    validator: (v) => ["login", "signup"].includes(v),
-  },
-  source: {
-    type: String,
-    default: "header",
-  },
-});
+  defineProps({
+    open: Boolean,
+    mode: {
+      type: String,
+      default: "login",
+      validator: (v) => ["login", "signup"].includes(v),
+    },
+    source: {
+      type: String,
+      default: "header",
+    },
+  });
 
-const emit = defineEmits(["close", "update:mode", "success"]);
+  const emit = defineEmits(["close", "update:mode", "success"]);
 
-// * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
+  // * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
 
-const showPasswordLogin = ref(false);
-const showPasswordSignUp = ref(false);
+  const showPasswordLogin = ref(false);
+  const showPasswordSignUp = ref(false);
 
-const loginLoading = ref(false);
-const signUpLoading = ref(false);
-const errorLogin = ref('');
-const errorSignup = ref('');
+  const loginLoading = ref(false);
+  const signUpLoading = ref(false);
+  const errorLogin = ref("");
+  const errorSignup = ref("");
 
-const initialLoginValues = {
-  email: '',
-  password: ''
-};
+  const initialLoginValues = {
+    email: "",
+    password: "",
+  };
 
-const initialSignupValues = {
-  name: '',
-  email: '',
-  password: '',
-  password_confirmation: '',
-};
+  const initialSignupValues = {
+    name: "",
+    email: "",
+    password: "",
+    password_confirmation: "",
+  };
 
-// * ------- State
+  // * ------- State
 
-const userState = useState('user', () => null)
+  const userState = useState("user", () => null);
 
-// * ------- Methods -----------------------------------------------------------------------------------------------------------------------------------------------
+  // * ------- Config -----------------------------------------------------------------------------------------------------------------------------------------------
 
-const resolverLogin = ref(zodResolver(
-  z.object({
-    email: z.string().min(1, { message: 'Email is required.' }).email({ message: 'Invalid email address.' }),
-    password: z.string().min(1, { message: 'Password is required.' }),
-  })
-));
+  const config = useRuntimeConfig();
+  const apiBaseUrl = config.public.apiBaseUrl;
 
-const resolverSignup = ref(zodResolver(
-  z.object({
-    name: z.string().min(4, { message: 'Minimum 4 characters.' }),
-    email: z.string().min(1, { message: 'Email is required.' }).email({ message: 'Invalid email address.' }),
-    password: z.string().min(3, { message: 'Minimum 3 characters.' }),
-    password_confirmation: z.string().min(3, { message: 'Minimum 3 characters.' }),
-  })
-));
+  // * ------- Methods -----------------------------------------------------------------------------------------------------------------------------------------------
 
-const handleLogin = async ({ values, valid }) => {
-  if (!valid || loginLoading.value) return
+  const resolverLogin = ref(
+    zodResolver(
+      z.object({
+        email: z
+          .string()
+          .min(1, { message: "Email is required." })
+          .email({ message: "Invalid email address." }),
+        password: z.string().min(1, { message: "Password is required." }),
+      }),
+    ),
+  );
 
-  errorLogin.value = ''
-  loginLoading.value = true
+  const resolverSignup = ref(
+    zodResolver(
+      z
+        .object({
+          name: z.string().min(4, { message: "Minimum 4 characters." }),
+          email: z
+            .string()
+            .min(1, { message: "Email is required." })
+            .email({ message: "Invalid email address." }),
+          password: z.string().min(3, { message: "Minimum 3 characters." }),
+          password_confirmation: z.string().min(3, { message: "Minimum 3 characters." }),
+        })
+        .refine((data) => data.password === data.password_confirmation, {
+          message: "Passwords do not match",
+          path: ["password_confirmation"],
+        }),
+    ),
+  );
 
-  try {
-    const res = await $fetch('/api/auth/login', {
-      method: 'POST',
-      body: values,
-      credentials: 'include', // Required
-    })
+  const handleLogin = async ({ values, valid }) => {
+    if (!valid || loginLoading.value) return;
 
-    // Store state
-    userState.value = res.user
+    errorLogin.value = "";
+    loginLoading.value = true;
 
-    emit('success', res.user)
-    emit('close')
-  } catch (err) {
-    errorLogin.value =
-      err?.data?.message || 'Login failed'
-  } finally {
-    loginLoading.value = false
-  }
+    try {
+      const res = await $fetch("/api/auth/login", {
+        method: "POST",
+        body: values,
+        credentials: "include", // Required
+      });
 
+      // Store state
+      userState.value = res.user;
 
-};
+      emit("success", res.user);
+      emit("close");
+    } catch (err) {
+      errorLogin.value = err?.data?.message || "Login failed";
+    } finally {
+      loginLoading.value = false;
+    }
+  };
 
-const handleLoginWithGoogle = () => {
-  navigateTo('https://dev.core.rimkirim.com/oauth/google', {
-    external: true,
-  })
+  const handleLoginWithGoogle = () => {
+    navigateTo(`${apiBaseUrl}/oauth/google`, {
+      external: true,
+    });
+  };
 
-}
+  const handleSignup = async ({ values, valid }) => {
+    if (!valid || signUpLoading.value) return;
 
-const handleSignup = async ({ values, valid }) => {
-  if (!valid || signUpLoading.value) return
+    errorSignup.value = "";
+    signUpLoading.value = true;
 
-  errorSignup.value = ''
-  signUpLoading.value = true
+    try {
+      const res = await $fetch("/api/auth/register", {
+        method: "POST",
+        body: values,
+        credentials: "include", // Required
+      });
 
-  try {
-    const res = await $fetch('/api/auth/register', {
-      method: 'POST',
-      body: values,
-      credentials: 'include', // Required
-    })
+      // Store state
+      userState.value = res.user;
 
-    // Store state
-    userState.value = res.user
+      emit("success", res.user);
+      emit("close");
+    } catch (err) {
+      errorSignup.value = err?.data?.message || "Sign up failed";
+    } finally {
+      signUpLoading.value = false;
+    }
+  };
 
-    emit('success', res.user)
-    emit('close')
-  } catch (err) {
-    errorSignup.value =
-      err?.data?.message || 'Sign up failed'
-  } finally {
-    signUpLoading.value = false
-  }
-};
+  const handleSignUpWithGoogle = () => {
+    navigateTo(`${apiBaseUrl}/oauth/google`, {
+      external: true,
+    });
+  };
 
-const handleSignUpWithGoogle = () => {
-  navigateTo('https://dev.core.rimkirim.com/oauth/google', {
-    external: true,
-  })
-}
+  const handleClose = () => {
+    emit("close");
+    errorLogin.value = "";
+    errorSignup.value = "";
+  };
 
-const handleClose = () => {
-  emit('close');
-  errorLogin.value = ''
-  errorSignup.value = ''
-}
+  const toggleShowPasswordLogin = () => {
+    showPasswordLogin.value = !showPasswordLogin.value;
+  };
 
-const toggleShowPasswordLogin = () => {
-  showPasswordLogin.value = !showPasswordLogin.value
-}
+  const toggleShowPasswordSignUp = () => {
+    showPasswordSignUp.value = !showPasswordSignUp.value;
+  };
 
-const toggleShowPasswordSignUp = () => {
-  showPasswordSignUp.value = !showPasswordSignUp.value
-}
-
-// * ------- Computed ----------------------------------------------------------------------------------------------------------------------------------------------
-
-
+  // * ------- Computed ----------------------------------------------------------------------------------------------------------------------------------------------
 </script>
 
 <template>
   <Transition name="fade">
-    <div v-if="open" id="modal-auth" class="fixed inset-0 z-50 flex items-center justify-center bg-white/50">
+    <div
+      v-if="open"
+      id="modal-auth"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-white/50"
+    >
       <div
-        class="relative w-[450px] bg-neutral-100 flex flex-col gap-6 rounded-2xl px-6 py-8 text-white overflow-hidden">
-
+        class="relative w-[450px] bg-neutral-100 flex flex-col gap-6 rounded-2xl px-6 py-8 text-white overflow-hidden"
+      >
         <div class="flex items-center justify-between">
           <UIBrandLogo width="95" height="32" />
           <button @click="handleClose">
@@ -177,7 +194,7 @@ const toggleShowPasswordSignUp = () => {
             </p>
           </div>
 
-          <p 
+          <p
             v-if="errorLogin"
             class="flex gap-4 px-4 py-3 text-[14px] leading-[22px] font-[400] bg-[#FFEDED] text-[#FF4D4F] rounded-[12px]"
           >
@@ -189,13 +206,13 @@ const toggleShowPasswordSignUp = () => {
 
           <div class="flex flex-col gap-6">
             <!-- Form -->
-            <Form 
-              v-slot="$form" 
+            <Form
+              v-slot="$form"
               class="flex justify-center flex-col gap-6"
-              :resolver="resolverLogin" 
-              :initial-values="initialLoginValues" 
+              :resolver="resolverLogin"
+              :initial-values="initialLoginValues"
               validate-on-blur
-              @submit="handleLogin" 
+              @submit="handleLogin"
             >
               <!-- Forms -->
               <div class="flex flex-col gap-4">
@@ -203,29 +220,53 @@ const toggleShowPasswordSignUp = () => {
                 <div class="flex flex-col gap-[6px]">
                   <label class="font-medium">Email</label>
                   <div class="relative">
-                    <InputIcon class="absolute top-5 left-4">
+                    <InputIcon class="absolute !top-[13px] left-4 !mt-0">
                       <IconEmail />
                     </InputIcon>
-                    <InputText name="email" type="email" placeholder="Enter your email" class="w-full pl-12" />
+                    <InputText
+                      name="email"
+                      type="email"
+                      placeholder="Enter your email"
+                      class="w-full !pl-12"
+                    />
                   </div>
-                  <Message v-if="$form.email?.invalid" severity="error" size="small" variant="simple">{{
-                    $form.email.error?.message }}</Message>
+                  <Message
+                    v-if="$form.email?.invalid"
+                    severity="error"
+                    size="small"
+                    variant="simple"
+                    >{{ $form.email.error?.message }}</Message
+                  >
                 </div>
                 <!-- Password -->
                 <div class="flex flex-col gap-[6px]">
                   <label class="font-medium">Password</label>
                   <div class="relative">
-                    <InputIcon class="absolute top-5 left-4 cursor-pointer" @click="toggleShowPasswordLogin">
+                    <InputIcon
+                      class="absolute !top-[13px] left-4 !mt-0 cursor-pointer"
+                      @click="toggleShowPasswordLogin"
+                    >
                       <IconEyeClosed v-if="showPasswordLogin" />
                       <IconEyeOpen v-else />
                     </InputIcon>
-                    <InputText name="password" :type="showPasswordLogin ? 'text' : 'password'"
-                      placeholder="Enter your password" class="w-full pl-12" />
+                    <InputText
+                      name="password"
+                      :type="showPasswordLogin ? 'text' : 'password'"
+                      placeholder="Enter your password"
+                      class="w-full !pl-12"
+                    />
                   </div>
-                  <Message v-if="$form.password?.invalid" severity="error" size="small" variant="simple">{{
-                    $form.password.error?.message }}</Message>
+                  <Message
+                    v-if="$form.password?.invalid"
+                    severity="error"
+                    size="small"
+                    variant="simple"
+                    >{{ $form.password.error?.message }}</Message
+                  >
                   <!-- Forgot Password -->
-                  <p class="text-[14px] leading-[22px] font-[400] text-right text-[#399CE5] cursor-default">
+                  <p
+                    class="text-[14px] leading-[22px] font-[400] text-right text-[#399CE5] cursor-default"
+                  >
                     Forgot password?
                   </p>
                 </div>
@@ -234,13 +275,26 @@ const toggleShowPasswordSignUp = () => {
               <!-- Buttons -->
               <div class="flex flex-col gap-4">
                 <!-- Submit Button -->
-                <PrimaryButton type="submit" :loading="loginLoading" :disabled="$form.invalid && $form.touched"
-                  class="w-full">
+                <PrimaryButton
+                  type="submit"
+                  :loading="loginLoading"
+                  :disabled="$form.invalid && $form.touched"
+                  class="w-full"
+                >
                   Login
                 </PrimaryButton>
                 <!-- Google Login -->
-                <DefaultButton type="button" class="w-full" @click="handleLoginWithGoogle" :disabled="loginLoading">
-                  <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="h-4 w-4" />
+                <DefaultButton
+                  type="button"
+                  class="w-full"
+                  @click="handleLoginWithGoogle"
+                  :disabled="loginLoading"
+                >
+                  <img
+                    src="https://www.svgrepo.com/show/475656/google-color.svg"
+                    alt="Google"
+                    class="h-4 w-4"
+                  />
                   Login with Google
                 </DefaultButton>
               </div>
@@ -266,8 +320,10 @@ const toggleShowPasswordSignUp = () => {
             </p>
           </div>
 
-          <p v-if="errorSignup"
-            class="flex gap-4 px-4 py-3 text-[14px] leading-[22px] font-[400] bg-[#FFEDED] text-[#FF4D4F] rounded-[12px]">
+          <p
+            v-if="errorSignup"
+            class="flex gap-4 px-4 py-3 text-[14px] leading-[22px] font-[400] bg-[#FFEDED] text-[#FF4D4F] rounded-[12px]"
+          >
             <IconExclamationError />
             <span>
               {{ errorSignup }}
@@ -276,69 +332,123 @@ const toggleShowPasswordSignUp = () => {
 
           <div class="flex flex-col gap-6">
             <!-- Form -->
-            <Form v-slot="$form" :resolver="resolverSignup" :initialValues="initialSignupValues" @submit="handleSignup"
-              validateOnBlur class="flex justify-center flex-col gap-6">
+            <Form
+              v-slot="$form"
+              :resolver="resolverSignup"
+              :initialValues="initialSignupValues"
+              @submit="handleSignup"
+              validateOnBlur
+              class="flex justify-center flex-col gap-6"
+            >
               <!-- Forms -->
               <div class="flex flex-col gap-4">
                 <!-- Name -->
                 <div class="flex flex-col gap-[6px]">
                   <label class="font-medium">Name</label>
                   <div class="relative">
-                    <InputIcon class="absolute top-5 left-4">
+                    <InputIcon class="absolute !top-[13px] left-4 !mt-0">
                       <IconUser />
                     </InputIcon>
-                    <InputText name="name" type="text" placeholder="Enter your name" class="w-full pl-12" />
+                    <InputText
+                      name="name"
+                      type="text"
+                      placeholder="Enter your name"
+                      class="w-full !pl-12"
+                    />
                   </div>
-                  <Message v-if="$form.name?.invalid" severity="error" size="small" variant="simple">{{
-                    $form.name.error?.message }}</Message>
+                  <Message
+                    v-if="$form.name?.invalid"
+                    severity="error"
+                    size="small"
+                    variant="simple"
+                    >{{ $form.name.error?.message }}</Message
+                  >
                 </div>
                 <!-- Email -->
                 <div class="flex flex-col gap-[6px]">
                   <label class="font-medium">Email</label>
                   <div class="relative">
-                    <InputIcon class="absolute top-5 left-4">
+                    <InputIcon class="absolute !top-[13px] left-4 !mt-0">
                       <IconEmail />
                     </InputIcon>
-                    <InputText name="email" type="email" placeholder="Enter your email" class="w-full pl-12" />
+                    <InputText
+                      name="email"
+                      type="email"
+                      placeholder="Enter your email"
+                      class="w-full !pl-12"
+                    />
                   </div>
-                  <Message v-if="$form.email?.invalid" severity="error" size="small" variant="simple">{{
-                    $form.email.error?.message }}</Message>
+                  <Message
+                    v-if="$form.email?.invalid"
+                    severity="error"
+                    size="small"
+                    variant="simple"
+                    >{{ $form.email.error?.message }}</Message
+                  >
                 </div>
                 <!-- Password -->
                 <div class="flex flex-col gap-[6px]">
                   <label class="font-medium">Password</label>
                   <div class="relative">
-                    <InputIcon class="absolute top-5 left-4 cursor-pointer" @click="toggleShowPasswordSignUp">
+                    <InputIcon
+                      class="absolute !top-[13px] left-4 !mt-0 cursor-pointer"
+                      @click="toggleShowPasswordSignUp"
+                    >
                       <IconEyeClosed v-if="showPasswordSignUp" />
                       <IconEyeOpen v-else />
                     </InputIcon>
-                    <InputText name="password" :type="showPasswordSignUp ? 'text' : 'password'"
-                      placeholder="Enter your password" class="w-full pl-12" />
+                    <InputText
+                      name="password"
+                      :type="showPasswordSignUp ? 'text' : 'password'"
+                      placeholder="Enter your password"
+                      class="w-full !pl-12"
+                    />
                   </div>
-                  <Message v-if="$form.password?.invalid" severity="error" size="small" variant="simple">{{
-                    $form.password.error?.message }}</Message>
+                  <Message
+                    v-if="$form.password?.invalid"
+                    severity="error"
+                    size="small"
+                    variant="simple"
+                    >{{ $form.password.error?.message }}</Message
+                  >
                 </div>
                 <!-- Password Confirm -->
                 <div class="flex flex-col gap-[6px]">
                   <label class="font-medium">Confirm Password</label>
                   <div class="relative">
-                    <InputIcon class="absolute top-5 left-4 cursor-pointer" @click="toggleShowPasswordSignUp">
+                    <InputIcon
+                      class="absolute !top-[13px] left-4 !mt-0 cursor-pointer"
+                      @click="toggleShowPasswordSignUp"
+                    >
                       <IconEyeClosed v-if="showPasswordSignUp" />
                       <IconEyeOpen v-else />
                     </InputIcon>
-                    <InputText name="password_confirmation" :type="showPasswordSignUp ? 'text' : 'password'"
-                      placeholder="Enter your comfirm password" class="w-full pl-12" />
+                    <InputText
+                      name="password_confirmation"
+                      :type="showPasswordSignUp ? 'text' : 'password'"
+                      placeholder="Enter your comfirm password"
+                      class="w-full !pl-12"
+                    />
                   </div>
-                  <Message v-if="$form.password_confirmation?.invalid" severity="error" size="small" variant="simple">{{
-                    $form.password_confirmation.error?.message }}</Message>
+                  <Message
+                    v-if="$form.password_confirmation?.invalid"
+                    severity="error"
+                    size="small"
+                    variant="simple"
+                    >{{ $form.password_confirmation.error?.message }}</Message
+                  >
                 </div>
               </div>
 
               <!-- Buttons -->
               <div class="flex flex-col gap-4">
                 <!-- Submit Button -->
-                <PrimaryButton type="submit" :loading="signUpLoading" :disabled="$form.invalid && $form.touched"
-                  class="w-full">
+                <PrimaryButton
+                  type="submit"
+                  :loading="signUpLoading"
+                  :disabled="$form.invalid && $form.touched"
+                  class="w-full"
+                >
                   Sign Up
                 </PrimaryButton>
                 <!-- Divider -->
@@ -349,8 +459,17 @@ const toggleShowPasswordSignUp = () => {
                 </div> -->
 
                 <!-- Google Sign Up -->
-                <DefaultButton type="button" class="w-full" @click="handleSignUpWithGoogle" :disabled="signUpLoading">
-                  <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="h-4 w-4" />
+                <DefaultButton
+                  type="button"
+                  class="w-full"
+                  @click="handleSignUpWithGoogle"
+                  :disabled="signUpLoading"
+                >
+                  <img
+                    src="https://www.svgrepo.com/show/475656/google-color.svg"
+                    alt="Google"
+                    class="h-4 w-4"
+                  />
                   Sign Up with Google
                 </DefaultButton>
               </div>

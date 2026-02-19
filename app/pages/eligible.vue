@@ -18,16 +18,22 @@ const rateId = computed(() => {
   return Array.isArray(id) ? id[0] : id
 })
 
-// string | string[] | undefined
-const originCountryCode = computed(() => {
+// string | undefined
+const originCountryCode = computed((): string | undefined => {
   const origin = route.query.origin
-  return Array.isArray(origin) ? origin[0] : origin
+  if (!origin || origin === 'null') return undefined
+  if (Array.isArray(origin)) {
+    const first = origin[0]
+    return first && first !== 'null' ? first : undefined
+  }
+  return origin && origin !== 'null' ? origin : undefined
 })
 
 const packingListCode = ref('');
 const eligibleStep = ref('question'); // question | selection
 const isSKPAvailable = ref(false);
 const continueLoading = ref(false);
+const selectionLoading = ref(false);
 
 /**
  * On Click Continue Button
@@ -71,10 +77,11 @@ const handleOnContinue = async (formData: any) => {
 }
 
 /**
- * On Select the Puspose
- * @param purposeOfShipment 
+ * On Select the Purpose
+ * @param purposeOfShipment
  */
 const handleOnSelect = async (purposeOfShipment: string) => {
+  selectionLoading.value = true;
 
   const payload = {
     rate_id: rateId.value,
@@ -96,13 +103,18 @@ const handleOnSelect = async (purposeOfShipment: string) => {
     })
   } catch (err) {
     console.error('booking error:', err);
-    continueLoading.value = false;
+    selectionLoading.value = false;
   }
 }
 
 </script>
 
 <template>
-  <EligibleQuestionSection @continue="handleOnContinue" v-if="eligibleStep === 'question'" :loading="continueLoading" />
-  <EligibleSelectionSection @select="handleOnSelect" :isSKPAvailable="isSKPAvailable" v-else />
+  <EligibleQuestionSection
+    @continue="handleOnContinue"
+    v-if="eligibleStep === 'question'"
+    :loading="continueLoading"
+    :originCountryCode="originCountryCode"
+  />
+  <EligibleSelectionSection @select="handleOnSelect" :isSKPAvailable="isSKPAvailable" :loading="selectionLoading" v-else />
 </template>
