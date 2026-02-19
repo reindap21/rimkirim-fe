@@ -1,215 +1,330 @@
 <script setup lang="ts">
-// import { zodResolver } from "@primevue/forms/resolvers/zod";
-// import { z } from "zod";
-import { ref } from "vue";
-import { MENU } from "~/config";
-import type { Package } from "~/types/order-hub";
-import { nanoid } from "nanoid";
+  // import { zodResolver } from "@primevue/forms/resolvers/zod";
+  // import { z } from "zod";
+  import { nanoid } from "nanoid";
+  import { ref } from "vue";
+  import type { OrderHubStep, Package } from "~/types/order-hub";
+  import { useOrderHub } from "~/composables/useOrderHub";
+  import { wordCapital } from "~/utils/string";
+  import { nextTick } from "vue";
 
-// External
+  // External
 
-const createPackage = (): Package => ({
-  id: nanoid(),
-  packagingType: "box",
-  weightInKgs: 0,
-  dimensionInCcLength: 0,
-  dimensionInCcWidth: 0,
-  dimensionInCcHeight: 0,
-  totalItem: 0,
-  totalValue: 0,
-  chargeableWeight: 0,
-  items: [],
-  uploadedFiles: [],
-});
+  const createPackage = (): Package => ({
+    id: nanoid(),
+    packagingType: "box",
+    weightInKgs: 0,
+    dimensionInCcLength: 0,
+    dimensionInCcWidth: 0,
+    dimensionInCcHeight: 0,
+    totalItem: 0,
+    totalValue: 0,
+    chargeableWeight: 0,
+    items: [],
+    uploadedFiles: [],
+  });
 
-// * ------- Types -------------------------------------------------------------------------------------------------------------------------------------------------
+  // * ------- Types -------------------------------------------------------------------------------------------------------------------------------------------------
 
-// * ------- Dedines -----------------------------------------------------------------------------------------------------------------------------------------------
+  // * ------- Dedines -----------------------------------------------------------------------------------------------------------------------------------------------
 
-definePageMeta({
-  layout: "order-hub",
-  // middleware: 'auth'
-});
+  definePageMeta({
+    layout: "order-hub",
+    // middleware: 'auth'
+  });
 
-// * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
+  // * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
 
-const route = useRoute();
-const router = useRouter();
-// const { user, loading } = useAuth();
+  // Use order hub composable
+  const { bookingCode, fetchProgress, navigateToOrderHub: handleBack } = useOrderHub();
 
-const bookingCode = route.params.id as string;
+  const bookingProgressLoading = ref(true);
 
-const bookingProgressLoading = ref(true);
-const progressData = ref<any>(); // eslint-disable-line
+  const purposeOfShipment = ref<"" | "moving_goods" | "passenger_goods">("");
+  const packingListCode = ref("-");
 
-const purposeOfShipment = ref<"" | "moving_goods" | "passenger_goods">("");
-const packingListCode = ref("-");
+  const viewMode = ref<"form" | "success">("form");
 
-const viewMode = ref<"form" | "success">("form");
+  const currentStep: OrderHubStep = "item_and_package";
 
-// * ------- Form Handling
+  const submittedResponse = ref<any>(); // eslint-disable-line
 
-// const formRef = ref<any>(null);
-const currencies = ref<{ name: string; code: string }[]>([]);
-const currenciesLoading = ref(true);
-const submitLoading = ref(false);
-const errorSubmit = ref("");
+  // * ------- Form Handling
 
-const selectedCurrency = ref<{ name: string, code: string }>({});
+  // const formRef = ref<any>(null);
+  const currencies = ref<{ name: string; code: string }[]>([]);
+  const currenciesLoading = ref(true);
+  const submitLoading = ref(false);
+  const errorSubmit = ref("");
+  const packageErrorIndex = ref<number | null>(null);
 
-const initialValues = {};
+  const selectedCurrency = ref<{ name: string; code: string } | undefined>(undefined);
 
-// const resolver = ref(
-//   zodResolver(
-//     z.object({
-//       // Sender
-//       // senderContactName: z.string().min(1, { message: 'Full name is required.' }),
-//     }),
-//   ),
-// );
+  const initialValues = {};
 
-const packages = ref<Package[]>([]);
+  // const resolver = ref(
+  //   zodResolver(
+  //     z.object({
+  //       // Sender
+  //       // senderContactName: z.string().min(1, { message: 'Full name is required.' }),
+  //     }),
+  //   ),
+  // );
 
-// * ------- Methods -----------------------------------------------------------------------------------------------------------------------------------------------
+  const packages = ref<Package[]>([]);
 
-const fetchCurrencies = async () => {
-  try {
-    const res = await $fetch(`/api/order-hub/currencies`, {
-      method: "GET",
-      credentials: "include", // Required
-    });
-    currencies.value = res.map((c: string) => ({
-      name: wordCapital(c, "_").replaceAll("_", " ") as string,
-      code: c as string,
-    })); // Array of country
-    currenciesLoading.value = false;
-  } catch (err) {
-    console.error("fetch currencies error:", err);
-    currenciesLoading.value = false;
-  }
-};
+  // * ------- Methods -----------------------------------------------------------------------------------------------------------------------------------------------
 
-// eslint-disable-next-line
-const getBookingProgress = async (bookingCode: any) => {
-  bookingProgressLoading.value = true;
+  const fetchCurrencies = async () => {
+    try {
+      const res = await $fetch("/api/order-hub/currencies", {
+        method: "GET",
+        credentials: "include", // Required
+      });
+      currencies.value = (res as string[]).map((c) => ({
+        name: wordCapital(c, "_"),
+        code: c,
+      }));
 
-  try {
-    const res = await $fetch(`/api/order-hub/progress`, {
-      method: "GET",
-      credentials: "include", // Required
-      params: {
-        bookingCode,
-      },
-    });
-    // Map the initial data
-    // Head
-    packingListCode.value = res?.packing_list_code;
-    purposeOfShipment.value = res?.purpose_of_shipment;
-    // Content
-    const { item_and_package } = res;
-    // Fill the packages
-    packages.value =
-      item_and_package.data?.length > 0
-        ? item_and_package.data.map((v) => ({ ...v, id: nanoid() }))
-        : [createPackage()];
+      // Set default currency to USD if available, otherwise first currency
+      const defaultCurrency = currencies.value.find((c) => c.code === "usd") || currencies.value[0];
+      if (defaultCurrency && !selectedCurrency.value) {
+        selectedCurrency.value = defaultCurrency;
+      }
 
-  } catch (err) {
-    if ((err as any)?.statusCode === 401) router.push("/"); // eslint-disable-line
-    bookingProgressLoading.value = false;
-  }
-};
-
-const handleSubmit = async ({
-  values,
-  valid,
-}: {
-  values: any;
-  valid: boolean;
-}) => {
-  if (!valid || submitLoading.value) return;
-
-  errorSubmit.value = "";
-  submitLoading.value = true;
-
-  const payload = {
-    ...values,
-    bookingCode: bookingCode,
-    packages: [...packages.value],
+      currenciesLoading.value = false;
+    } catch (err) {
+      console.error("fetch currencies error:", err);
+      currenciesLoading.value = false;
+    }
   };
 
-  try {
-    const res = await $fetch("/api/order-hub/item-and-package", {
-      method: "PUT",
-      body: payload,
-      credentials: "include", // Required
+  // Load booking progress data
+  const loadBookingProgress = async () => {
+    bookingProgressLoading.value = true;
+
+    try {
+      const res = await fetchProgress();
+
+      if (!res) return;
+
+      // Map the initial data
+      packingListCode.value = res?.packing_list_code || "-";
+      purposeOfShipment.value = res?.purpose_of_shipment;
+
+      // Content
+      const { item_and_package } = res;
+
+      // Extract currencyCode and packages from data
+      if (item_and_package?.data && typeof item_and_package.data === "object") {
+        const data = item_and_package.data as {
+          currencyCode?: string;
+          packages?: Package[];
+        };
+
+        // Set currency if exists
+        if (data.currencyCode) {
+          const currency = currencies.value.find(
+            (c) => c.code.toLowerCase() === (data.currencyCode ?? "").toLowerCase(),
+          );
+          if (currency) {
+            selectedCurrency.value = currency;
+          }
+        }
+
+        // Fill the packages
+        packages.value =
+          data.packages && data.packages.length > 0
+            ? data.packages.map((v: Package) => ({ ...v, id: nanoid() }))
+            : [createPackage()];
+      } else {
+        packages.value = [createPackage()];
+      }
+    } catch (err) {
+      // Error is already handled by the composable
+      bookingProgressLoading.value = false;
+    }
+  };
+
+  // * Package
+
+  const addPackage = (): void => {
+    packages.value.push(createPackage());
+  };
+
+  const removePackage = (index: number): void => {
+    if (packages.value.length <= 1) return;
+    packages.value.splice(index, 1);
+  };
+
+  const validatePackages = (): { valid: boolean; message?: string; index?: number } => {
+    if (!packages.value.length) {
+      return { valid: false, message: "At least one package is required." };
+    }
+
+    for (let i = 0; i < packages.value.length; i++) {
+      const pkg = packages.value[i];
+      if (!pkg) continue;
+
+      if (!pkg.packagingType) {
+        return { valid: false, message: `Package ${i + 1}: Packaging type is required.`, index: i };
+      }
+
+      if (!pkg.weightInKgs || pkg.weightInKgs <= 0) {
+        return {
+          valid: false,
+          message: `Package ${i + 1}: Weight must be greater than 0.`,
+          index: i,
+        };
+      }
+
+      if (!pkg.dimensionInCcLength || !pkg.dimensionInCcWidth || !pkg.dimensionInCcHeight) {
+        return {
+          valid: false,
+          message: `Package ${i + 1}: All dimensions are required.`,
+          index: i,
+        };
+      }
+
+      if (!pkg.items.length) {
+        return {
+          valid: false,
+          message: `Package ${i + 1}: At least one item is required.`,
+          index: i,
+        };
+      }
+
+      for (let j = 0; j < pkg.items.length; j++) {
+        const item = pkg.items[j];
+        if (!item) continue;
+
+        if (!item.description?.trim()) {
+          return {
+            valid: false,
+            message: `Package ${i + 1}, Item ${j + 1}: Description is required.`,
+            index: i,
+          };
+        }
+
+        if (!item.quantity || item.quantity <= 0) {
+          return {
+            valid: false,
+            message: `Package ${i + 1}, Item ${j + 1}: Quantity must be greater than 0.`,
+            index: i,
+          };
+        }
+
+        if (!item.valuePerItem || item.valuePerItem < 0) {
+          return {
+            valid: false,
+            message: `Package ${i + 1}, Item ${j + 1}: Value per item is required.`,
+            index: i,
+          };
+        }
+      }
+    }
+
+    return { valid: true };
+  };
+
+  const scrollToPackage = async (index: number) => {
+    await nextTick();
+    await new Promise((r) => setTimeout(r, 50));
+
+    const el = document.getElementById(`package-${index}`);
+
+    if (!el) return;
+
+    el.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
     });
+  };
 
-    // Store state
-    // userState.value = res.user
+  // Global Summary
 
-    if (res) viewMode.value = "success";
-  } catch (err: any) {
-    errorSubmit.value = err?.data?.message || "Error submit item and packages";
-  } finally {
-    submitLoading.value = false;
-  }
-};
+  const totalPackage = computed<number>(() => packages.value.length);
 
-// * Package
+  const totalValue = computed<number>(() =>
+    packages.value.reduce((sum: number, p: Package) => sum + p.totalValue, 0),
+  );
 
-const addPackage = (): void => {
-  packages.value.push(createPackage());
-};
+  const totalChargeableWeight = computed<number>(() =>
+    packages.value.reduce((sum: number, p: Package) => sum + p.chargeableWeight, 0),
+  );
 
-const removePackage = (index: number): void => {
-  if (packages.value.length <= 1) return;
-  packages.value.splice(index, 1);
-};
+  // Action Buttons
 
-// Global Summary
+  const handleSubmit = async ({ values, valid }: { values: any; valid: boolean }) => {
+    if (!valid || submitLoading.value) return;
 
-const totalPackage = computed<number>(() => packages.value.length);
+    errorSubmit.value = "";
 
-const totalValue = computed(() =>
-  packages.value.reduce((sum, p) => sum + p.totalValue, 0)
-)
+    const pkgValidation = validatePackages();
 
-const totalChargeableWeight = computed<number>(() =>
-  packages.value.reduce((sum, p) => sum + p.chargeableWeight, 0),
-);
+    if (!pkgValidation.valid) {
+      errorSubmit.value = pkgValidation.message || "Invalid package data.";
 
-// Action Buttons
+      if (typeof pkgValidation.index === "number") {
+        packageErrorIndex.value = pkgValidation.index;
+        await scrollToPackage(pkgValidation.index);
+      }
 
-const handleFinishLater = () => {
-  // actionForm.value = ""
-};
+      return;
+    }
 
-const handleBack = () => {
-  router.push({
-    path: `${MENU.ORDER_HUB}/${bookingCode}`,
+    if (!valid) return;
+
+    submitLoading.value = true;
+
+    const payload = {
+      ...values,
+      bookingCode: bookingCode.value,
+      currencyCode: selectedCurrency.value?.code,
+      packages: [...packages.value],
+    };
+
+    try {
+      const res = await $fetch("/api/order-hub/item-and-package", {
+        method: "PUT",
+        body: payload,
+        credentials: "include", // Required
+      });
+
+      // Store state
+      // userState.value = res.user
+
+      if (res) {
+        submittedResponse.value = res;
+        viewMode.value = "success";
+      }
+    } catch (err: any) {
+      errorSubmit.value = err?.data?.message || "Error submit item and packages";
+    } finally {
+      submitLoading.value = false;
+    }
+  };
+
+  const handleFinishLater = () => {
+    // actionForm.value = ""
+  };
+
+  const handleGoToOrderHubPage = () => {
+    handleBack(); // Use composable's navigateToOrderHub
+  };
+
+  // * ------- watch -------------------------------------------------------------------------------------------------------------------------------------------------
+
+  // * ------- onMounted ---------------------------------------------------------------------------------------------------------------------------------------------
+
+  onMounted(() => {
+    fetchCurrencies();
+    loadBookingProgress();
   });
-};
-
-const handleGoToOrderHubPage = () => {
-  router.push({
-    path: `${MENU.ORDER_HUB}/${bookingCode}`,
-  });
-};
-
-// * ------- watch -------------------------------------------------------------------------------------------------------------------------------------------------
-
-// * ------- onMounted ---------------------------------------------------------------------------------------------------------------------------------------------
-
-onMounted(() => {
-  fetchCurrencies();
-  getBookingProgress(bookingCode);
-});
 </script>
 
 <template>
-  <section
-    class="flex flex-col relative gap-6 max-w-7xl mx-auto px-6 pt-28 pb-24 overscroll-none"
-  >
+  <section class="flex flex-col relative gap-6 max-w-7xl mx-auto px-6 pt-28 pb-24 overscroll-none">
     <!-- <div
       class="fixed top-[14px] left-1/2  transform -translate-x-1/2 flex items-center gap-2 px-4 py-2 bg-white shadow-lg rounded-full w-fit z-[100]">
       <div class="text-[12px] leading-[22px] px-8 py-3 font-medium cursor-pointer rounded-full"
@@ -231,21 +346,14 @@ onMounted(() => {
           :packing-listcode="packingListCode"
         />
 
-        <div
-          class="flex flex-col p-6 gap-1 bg-neutral-20 border border-neutral-40 rounded-[12px]"
-        >
+        <div class="flex flex-col p-6 gap-1 bg-neutral-20 border border-neutral-40 rounded-[12px]">
           <div class="flex items-center justify-between">
             <div class="flex flex-col gap-1">
-              <h2
-                class="text-[20px] leading-[130%] font-medium text-neutral-90"
-              >
+              <h2 class="text-[20px] leading-[130%] font-medium text-neutral-90">
                 Choose Your Currency
               </h2>
-              <p
-                class="text-[14px] leading-[22px] spacing-[0%] font-[400] text-neutral-60"
-              >
-                You may pick any convenient currency from origin country to
-                value your
+              <p class="text-[14px] leading-[22px] spacing-[0%] font-[400] text-neutral-60">
+                You may pick any convenient currency from origin country to value your
               </p>
             </div>
             <div class="">
@@ -270,6 +378,7 @@ onMounted(() => {
           :currency="selectedCurrency?.code"
           :booking-code="bookingCode"
           :total-packages="packages.length"
+          :has-error="packageErrorIndex === index"
           @update:model-value="(val) => (packages[index] = val)"
           @remove="removePackage(index)"
         />
@@ -297,9 +406,7 @@ onMounted(() => {
                 <IconTotalPackage />
               </div>
               <div class="flex flex-col gap-1">
-                <div
-                  class="text-[12px] font-[400] leading-[20px] text-[#C2C2C2]"
-                >
+                <div class="text-[12px] font-[400] leading-[20px] text-[#C2C2C2]">
                   Total Package
                 </div>
                 <div class="text-[18px] leading-[26px] font-bold text-white">
@@ -324,9 +431,7 @@ onMounted(() => {
                 <div
                   class="flex items-center gap-1 text-[18px] leading-[26px] font-bold text-white"
                 >
-                  <span v-if="selectedCurrency">{{
-                    selectedCurrency?.code
-                  }}</span>
+                  <span v-if="selectedCurrency">{{ selectedCurrency?.code }}</span>
                   {{ totalValue }}
                 </div>
               </div>
@@ -345,9 +450,13 @@ onMounted(() => {
                   Total Chargeable Weight
                   <PopoverTotalChargeableWeightBase />
                 </div>
-                <div class="flex items-center gap-3 text-[18px] leading-[26px] font-bold text-white">
+                <div
+                  class="flex items-center gap-3 text-[18px] leading-[26px] font-bold text-white"
+                >
                   {{ Math.ceil(totalChargeableWeight) }}
-                  <PillErrorMin21KgRequired v-if="Math.ceil(totalChargeableWeight) < 21 && !bookingProgressLoading" />
+                  <PillErrorMin21KgRequired
+                    v-if="Math.ceil(totalChargeableWeight) < 21 && !bookingProgressLoading"
+                  />
                 </div>
               </div>
             </div>
@@ -357,18 +466,11 @@ onMounted(() => {
             <BlackButton class="w-[97px]" @click="handleBack">Back</BlackButton>
             <div class="flex items-center gap-3">
               <!-- @click="actionForm = ''" -->
-              <TextButton 
-                :disabled="submitLoading"
-                @click="handleFinishLater" 
-              >
+              <TextButton :disabled="submitLoading" @click="handleFinishLater">
                 Finish Later
               </TextButton>
               <!--  :disabled="$form.invalid && $form.touched" -->
-              <PrimaryButton
-                type="submit"
-                class="w-[100px]"
-                :loading="submitLoading"
-              >
+              <PrimaryButton type="submit" class="w-[100px]" :loading="submitLoading">
                 Done
               </PrimaryButton>
             </div>
@@ -383,50 +485,11 @@ onMounted(() => {
     </template>
 
     <template v-else>
-      <!-- Success Notification -->
-      <div
-        class="w-[500px] mx-auto flex flex-col gap-6 bg-neutral-20 rounded-[16px] mt-16 px-6 py-8"
-      >
-        <div class="flex flex-col items-center gap-4">
-          <!-- Icon -->
-          <!-- <component v-if="props.icon" :is="props.icon" class="mx-auto text-[#C1FF00]" /> -->
-          <svg
-            width="42"
-            height="42"
-            viewBox="0 0 42 42"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M30.0288 7.03829C32.6859 4.83503 36.5738 5.41643 38.5977 8.13204C40.5039 10.69 40.1408 14.3181 37.6868 16.3984C31.2286 21.8725 26.2433 25.615 21.0396 31.1828C19.5905 32.7333 18.4204 33.9863 17.4046 34.8366C16.3842 35.6908 15.3069 36.3248 14.0259 36.3132C12.7644 36.3016 11.7282 35.6945 10.7532 34.8606C9.79494 34.0408 8.71569 32.8397 7.38992 31.3691L3.77713 27.3632C1.88851 25.268 1.65882 22.1515 3.21658 19.7993C5.4471 16.432 10.246 16.0946 12.9202 19.1225L15.1778 21.6792C19.5258 16.6538 24.124 11.936 30.0288 7.03829ZM36.4939 9.70089C35.3267 8.13453 33.1509 7.85959 31.7036 9.06002C25.9131 13.863 21.4074 18.4869 17.1226 23.4428C16.9639 23.6263 16.6966 23.9584 16.3689 24.164C15.7382 24.5595 14.9639 24.6119 14.2942 24.3213L14.0139 24.176C13.6845 23.9741 13.4162 23.6472 13.2569 23.4668L10.9532 20.8589C9.42405 19.1281 6.6846 19.3182 5.40579 21.2485C4.50823 22.6035 4.64154 24.3999 5.72708 25.6047L9.33987 29.6123C10.7148 31.1374 11.6612 32.1839 12.4588 32.8662C13.2394 33.5338 13.6902 33.6849 14.0498 33.6882C14.3904 33.6913 14.8615 33.5433 15.7195 32.8252C16.5824 32.1028 17.6246 30.9924 19.1221 29.3901C24.4641 23.6744 29.6594 19.7613 35.9898 14.3955C37.3629 13.2312 37.5899 11.1721 36.4939 9.70089Z"
-              fill="#27C827"
-            />
-          </svg>
-
-          <!-- Title -->
-          <h3
-            class="text-[24px] leading-[32px] font-semibold text-neutral-100 text-center"
-          >
-            <!-- {{ props.title }} -->
-            Item and Packages <br />
-            Saved!
-          </h3>
-
-          <!-- Description -->
-          <p class="text-neutral-60 text-center px-2">
-            <!-- {{ props.description }} -->
-            Your Item and Packages has been successfully saved. Please proceed
-            to finish the remaining form for your booking.
-          </p>
-        </div>
-
-        <!-- Actions -->
-        <div class="flex items-center justify-center">
-          <PrimaryButton class="w-[244px]" @click="handleGoToOrderHubPage"
-            >Go To Booking Order Hub</PrimaryButton
-          >
-        </div>
-      </div>
+      <UISuccessSubmitFormStepOrderHub
+        :step="currentStep"
+        :response="submittedResponse"
+        @go-to-order-hub="handleGoToOrderHubPage"
+      />
     </template>
   </section>
 </template>

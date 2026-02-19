@@ -1,3 +1,5 @@
+import type { OrderHubProgressResponse } from "~/types/order-hub";
+
 export default defineEventHandler(async (event) => {
   // 0️⃣ REQUIRED; Token Check
   const token = getCookie(event, "access_token");
@@ -32,7 +34,7 @@ export default defineEventHandler(async (event) => {
 
   // 2️⃣ Fetch API
   try {
-    const res: any = await $fetch(`${baseApiUrl}/api/order-hub/${body.bookingCode}/compliance-document`, {
+    const res = await $fetch<OrderHubProgressResponse>(`${baseApiUrl}/api/order-hub/${body.bookingCode}/compliance-document`, {
       method: "PUT",
       body: data,
       headers: {
@@ -41,7 +43,7 @@ export default defineEventHandler(async (event) => {
     });
 
     /**
-     * 2️⃣.1️⃣ Expected response: eligible_schemes
+     * 2️⃣.1️⃣ Expected response: OrderHubProgress
      */
     if (!res?.data) {
       throw createError({
@@ -50,10 +52,8 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    //* 3️⃣ Return response
-    return {
-      rates: res.data,
-    };
+    //* 3️⃣ Return full backend response (OrderHubProgress)
+    return res.data;
   } catch (error: any) {
     console.error("[PUT Progress Error]", error);
 

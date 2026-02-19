@@ -6,6 +6,7 @@ const props = defineProps<{
   name?: string
   size?: number
   uploadedAt?: string | Date
+  mimeType?: string
   class?: string
 }>()
 
@@ -66,7 +67,7 @@ const uploadedLabel = computed(() => {
     :class="props.class"
   >
     <div class="flex items-start gap-3">
-      <IconDocImg />
+      <IconDocumentType :mimeType="props.mimeType" />
 
       <div class="flex flex-col gap-1">
         <div class="text-neutral-100">

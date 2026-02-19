@@ -1,44 +1,38 @@
 <script setup lang="ts">
-definePageMeta({
-  layout: 'clean',
-})
+  import type { User } from "~/types/user";
 
-const route = useRoute()
+  definePageMeta({
+    layout: "clean",
+  });
 
-const userState = useState('user', () => null)
+  const route = useRoute();
+  const userState = useState<User | null>("user", () => null);
 
-onMounted(async () => {
-  const query = route.query
+  onMounted(async () => {
+    const query = route.query;
 
-  if (!query.token) {
-    return navigateTo('/login?error=no_token')
-  }
-
-  try {
-    const token = query.token.toString();
-    if (token) {
-      localStorage.setItem('token', token)
+    if (!query.token) {
+      return navigateTo("/login?error=no_token");
     }
 
-    const res = await $fetch('https://dev.core.rimkirim.com/api/auth/me', {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Accept': 'application/json'
+    try {
+      const token = query.token.toString();
+      if (token) {
+        const res = await $fetch("/api/auth/store", {
+          method: "POST",
+          body: {
+            access_token: token,
+          },
+        });
+
+        userState.value = (res as any)?.user;
+        await navigateTo("/");
       }
-    })
-
-    if (res?.data) {
-      userState.value = res.data
+    } catch (err) {
+      console.error("Google login failed:", err);
+      navigateTo("/login?error=google_failed");
     }
-
-    await navigateTo('/')
-
-  } catch (err) {
-    console.error('Google login failed:', err)
-    navigateTo('/login?error=google_failed')
-  }
-})
+  });
 </script>
 
 <template>

@@ -1,26 +1,33 @@
 <script setup lang="ts">
-interface Props {
-  width?: number | string;
-  height?: number | string;
-  fill?: string;
-}
+  interface Props {
+    width?: number | string;
+    height?: number | string;
+    fill?: string;
+  }
 
-const props = withDefaults(defineProps<Props>(), {
-  width: 32,
-  height: 32,
-  fill: "#1E1E1E",
-});
-
+  const props = withDefaults(defineProps<Props>(), {
+    width: 32,
+    height: 32,
+    fill: "#1E1E1E",
+  });
 </script>
 
 <template>
-  <svg :width="props.width" :height="props.height" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="16" cy="16" r="16" fill="currentColor" />
+  <svg
+    :width="props.width"
+    :height="props.height"
+    viewBox="0 0 32 32"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle cx="16" cy="16" r="16" :fill="props.fill" />
     <path
       d="M19.3261 13C19.3261 11.1631 17.8369 9.67391 16 9.67391C14.1631 9.67391 12.6739 11.1631 12.6739 13C12.6739 14.8369 14.1631 16.3261 16 16.3261C17.8369 16.3261 19.3261 14.8369 19.3261 13ZM20.5 13C20.5 15.4853 18.4853 17.5 16 17.5C13.5147 17.5 11.5 15.4853 11.5 13C11.5 10.5147 13.5147 8.5 16 8.5C18.4853 8.5 20.5 10.5147 20.5 13Z"
-      fill="white" />
+      fill="white"
+    />
     <path
       d="M21.4435 22.9044C21.4435 20.1633 19.0064 17.9412 16 17.9412C12.9936 17.9412 10.5565 20.1633 10.5565 22.9044C10.5565 23.2333 10.264 23.5 9.90323 23.5C9.54246 23.5 9.25 23.2333 9.25 22.9044C9.25 19.5054 12.2721 16.75 16 16.75C19.7279 16.75 22.75 19.5054 22.75 22.9044C22.75 23.2333 22.4575 23.5 22.0968 23.5C21.736 23.5 21.4435 23.2333 21.4435 22.9044Z"
-      fill="white" />
+      fill="white"
+    />
   </svg>
 </template>

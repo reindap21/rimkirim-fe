@@ -1,3 +1,5 @@
+import type { OrderHubProgressResponse } from "~/types/order-hub";
+
 export default defineEventHandler(async (event) => {
   // 0️⃣ REQUIRED; Token Check
   const token = getCookie(event, "access_token");
@@ -27,18 +29,25 @@ export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig();
   const baseApiUrl = config.apiBaseUrl;
 
+  // 2️⃣ Prepare payload
+  const data = { ...body };
+  delete data.bookingCode;
+
+  // Add receiverSameAsSender flag
+  data.receiverSameAsSender = body.receiverSameAsSender || false;
+
   // 2️⃣ Fetch API
   try {
-    const res: any = await $fetch(`${baseApiUrl}/api/order-hub/${body.bookingCode}/customer-information`, {
+    const res = await $fetch<OrderHubProgressResponse>(`${baseApiUrl}/api/order-hub/${body.bookingCode}/customer-information`, {
       method: "PUT",
-      body: DUMMY,
+      body: data, // ✅ Use real form data instead of DUMMY
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
     /**
-     * 2️⃣.1️⃣ Expected response: eligible_schemes
+     * 2️⃣.1️⃣ Expected response: OrderHubProgress
      */
     if (!res?.data) {
       throw createError({
@@ -47,10 +56,8 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-    //* 3️⃣ Return response
-    return {
-      rates: res.data,
-    };
+    //* 3️⃣ Return full response
+    return res.data;
   } catch (error: any) {
     console.error("[PUT CUSTOMMER INFORMATION API Error]", error);
 
@@ -67,7 +74,9 @@ export default defineEventHandler(async (event) => {
 const DUMMY = {
     "shipperFullName": "John Doe",
     "shipperEmail": "john.doe@example.com",
-    "senderSameAsShipper": true,
+    "shipperOriginPhoneNumber": "+628123456789",
+    "shipperDestinationPhoneNumber": "+628123456789",
+    "shipmentOwnerSameAs": "sender",
     "senderContactName": "John Doe",
     "senderPhoneNumber": "+628123456789",
     "senderEmail": "sender@example.com",

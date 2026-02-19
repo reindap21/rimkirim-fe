@@ -1,88 +1,120 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import IconOrderHubCustomer from "~/components/icons/IconOrderHubCustomer.vue";
-import IconPackage from "~/components/icons/IconPackage.vue";
-import IconPickupDisabled from "~/components/icons/IconPickupDisabled.vue";
-import IconPickup from "~/components/icons/IconPickup.vue";
-import { MENU } from "~/config";
+  import { ref } from "vue";
+  import IconOrderHubCustomer from "~/components/icons/IconOrderHubCustomer.vue";
+  import IconPackage from "~/components/icons/IconPackage.vue";
+  import IconPickupDisabled from "~/components/icons/IconPickupDisabled.vue";
+  import IconPickup from "~/components/icons/IconPickup.vue";
+  import type { OrderHubProgress } from "~/types/order-hub";
+  import { useOrderHub } from "~/composables/useOrderHub";
 
-// * ------- Types -------------------------------------------------------------------------------------------------------------------------------------------------
+  // * ------- Types -------------------------------------------------------------------------------------------------------------------------------------------------
 
-// * ------- Dedines -----------------------------------------------------------------------------------------------------------------------------------------------
+  // * ------- Dedines -----------------------------------------------------------------------------------------------------------------------------------------------
 
-definePageMeta({
-  layout: "order-hub",
-  // middleware: 'auth'
-});
+  definePageMeta({
+    layout: "order-hub",
+    // middleware: 'auth'
+  });
 
-// * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
+  // * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
 
-const route = useRoute();
-const router = useRouter();
+  const { user, loading } = useAuth();
 
-const { user, loading } = useAuth();
+  // Use order hub composable
+  const {
+    loading: bookingProgressLoading,
+    bookingCode,
+    fetchProgress: getBookingProgress,
+    navigateToPage,
+  } = useOrderHub();
 
-const bookingCode = route.params.id as string;
-const bookingProgressLoading = ref(true);
-const bookingData = ref({});
+  const bookingData = ref<OrderHubProgress | null>(null);
 
-const purposeOfShipment = ref<"" | "moving_goods" | "passenger_goods">("");
-const packingListCode = ref("-");
+  const purposeOfShipment = ref<"" | "moving_goods" | "passenger_goods">("");
+  const packingListCode = ref("-");
 
-const isPickupDisabled = ref(false);
+  const isPickupDisabled = ref(false);
+  const isDownloadingPackingList = ref(false);
 
-// * ------- Methods -----------------------------------------------------------------------------------------------------------------------------------------------
+  // Computed property for download permission
+  const canDownloadPackingList = computed(
+    () => bookingData.value?.can_download_packing_list ?? false,
+  );
 
-// eslint-disable-next-line
-const getBookingProgress = async (bookingCode: any) => {
-  bookingProgressLoading.value = true;
+  // * ------- Methods -----------------------------------------------------------------------------------------------------------------------------------------------
 
-  try {
-    const res = await $fetch(`/api/order-hub/progress`, {
-      method: "GET",
-      credentials: "include", // Required
-      params: {
-        bookingCode,
-      },
-    });
+  // Load booking progress
+  const loadBookingProgress = async () => {
+    const res = await getBookingProgress();
+
+    if (!res) return;
+
     bookingData.value = res;
     purposeOfShipment.value = res?.purpose_of_shipment;
     packingListCode.value = res?.packing_list_code || "-";
-    bookingProgressLoading.value = false;
-    isPickupDisabled.value = res?.progress?.pickup_detail_schedule?.toLowerCase() === 'locked'
-  } catch (err) {
-    if ((err as any)?.statusCode === 401) router.push("/"); // eslint-disable-line
-    bookingProgressLoading.value = false;
-  }
-};
+    isPickupDisabled.value = res?.progress?.pickup_detail_schedule?.toLowerCase() === "locked";
+  };
 
-const navigateTo = (page: string) => {
-  router.push({
-    path: `${MENU.ORDER_HUB}/${bookingCode}/${page}`,
-    // query: {}
+  const navigateTo = (page: string) => {
+    navigateToPage(page);
+  };
+
+  const downloadPackingList = async () => {
+    // Check if download is allowed
+    if (!canDownloadPackingList.value) {
+      // console.warn('Packing list download not available');
+      return;
+    }
+
+    // Prevent multiple simultaneous downloads
+    if (isDownloadingPackingList.value) return;
+
+    isDownloadingPackingList.value = true;
+
+    try {
+      // Call API to get the file
+      const blob = await $fetch(`/api/order-hub/${bookingCode.value}/packing-list/download`, {
+        method: "GET",
+        credentials: "include",
+        responseType: "blob", // Important for file download
+      });
+
+      // Create download link
+      const url = window.URL.createObjectURL(blob as Blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `packing-list-${bookingCode.value}.pdf`; // Adjust extension based on actual file type
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Download failed:", error);
+      // You could add toast notification here
+    } finally {
+      // Re-enable button after download completes (or fails)
+      isDownloadingPackingList.value = false;
+    }
+  };
+
+  // * ------- onMounted ---------------------------------------------------------------------------------------------------------------------------------------------
+
+  onMounted(() => {
+    if (!loading.value && user && bookingCode.value) loadBookingProgress();
   });
-};
-
-// * ------- onMounted ---------------------------------------------------------------------------------------------------------------------------------------------
-
-onMounted(() => {
-  if (!loading.value && user && bookingCode) getBookingProgress(bookingCode);
-});
 </script>
 
 <template>
-  <section
-    class="flex flex-col relative gap-6 max-w-7xl mx-auto px-6 pt-32 pb-24"
-  >
+  <section class="flex flex-col relative gap-6 max-w-7xl mx-auto px-6 pt-32 pb-24">
     <div
       class="fixed top-[14px] left-1/2 transform -translate-x-1/2 flex items-center gap-2 px-4 py-2 bg-white shadow-lg rounded-full w-fit z-[100]"
     >
       <div
         class="text-[12px] leading-[22px] px-8 py-3 font-medium cursor-pointer rounded-full"
         :class="
-          purposeOfShipment === 'moving_goods'
-            ? 'bg-[#0093FF] text-white'
-            : 'text-neutral-60'
+          purposeOfShipment === 'moving_goods' ? 'bg-[#0093FF] text-white' : 'text-neutral-60'
         "
       >
         Personal Belongings
@@ -90,9 +122,7 @@ onMounted(() => {
       <div
         class="text-[12px] leading-[22px] px-8 py-3 font-medium cursor-pointer rounded-full"
         :class="
-          purposeOfShipment === 'passenger_goods'
-            ? 'bg-[#FF7C00] text-white'
-            : 'text-neutral-60'
+          purposeOfShipment === 'passenger_goods' ? 'bg-[#FF7C00] text-white' : 'text-neutral-60'
         "
       >
         Passenger Goods
@@ -104,14 +134,10 @@ onMounted(() => {
         <span class="text-[400]"> Booking Number </span>
         <span class="font-bold text-neutral-100">{{ bookingCode }}</span>
       </BasePill>
-      <h1
-        class="text-[32px] leading-[130%] font-semibold text-neutral-100 text-center"
-      >
+      <h1 class="text-[32px] leading-[130%] font-semibold text-neutral-100 text-center">
         INTERNATIONAL MOVING ORDER
       </h1>
-      <p
-        class="text-[14px] leading-[22px] font-[400] text-neutral-70 uppercase"
-      >
+      <p class="text-[14px] leading-[22px] font-[400] !text-neutral-70 uppercase">
         YOU MAY CHOOSE ANY FORM YOU WANT TO FILL FIRST
       </p>
     </div>
@@ -126,16 +152,10 @@ onMounted(() => {
           <UICardInformation
             :status="(bookingData as any)?.customer_information?.status as any"
             :total-progress="
-              Number(
-                (bookingData as any)?.customer_information?.progress_count
-                  ?.total || 0,
-              )
+              Number((bookingData as any)?.customer_information?.progress_count?.total || 0)
             "
             :current-progress="
-              Number(
-                (bookingData as any)?.customer_information?.progress_count
-                  ?.completed || 0,
-              )
+              Number((bookingData as any)?.customer_information?.progress_count?.completed || 0)
             "
             :title="['CUSTOMER', 'INFORMATION']"
             :icon="IconOrderHubCustomer"
@@ -147,16 +167,10 @@ onMounted(() => {
           <UICardInformation
             :status="(bookingData as any)?.item_and_package?.status as any"
             :total-progress="
-              Number(
-                (bookingData as any)?.item_and_package?.progress_count?.total ||
-                  0,
-              )
+              Number((bookingData as any)?.item_and_package?.progress_count?.total || 0)
             "
             :current-progress="
-              Number(
-                (bookingData as any)?.item_and_package?.progress_count
-                  ?.completed || 0,
-              )
+              Number((bookingData as any)?.item_and_package?.progress_count?.completed || 0)
             "
             :title="['ITEM &', 'PACKAGES']"
             :icon="IconPackage"
@@ -168,16 +182,10 @@ onMounted(() => {
           <UICardInformation
             :status="(bookingData as any)?.compliance_document?.status as any"
             :total-progress="
-              Number(
-                (bookingData as any)?.compliance_document?.progress_count
-                  ?.total || 0,
-              )
+              Number((bookingData as any)?.compliance_document?.progress_count?.total || 0)
             "
             :current-progress="
-              Number(
-                (bookingData as any)?.compliance_document?.progress_count
-                  ?.completed || 0,
-              )
+              Number((bookingData as any)?.compliance_document?.progress_count?.completed || 0)
             "
             :title="['COMPLIANCE', 'DOCUMENT']"
             :icon="IconOrderHubCustomer"
@@ -187,20 +195,12 @@ onMounted(() => {
 
           <!-- PICKUP DETAIL & SCHEDULE: LOCKED -->
           <UICardInformation
-            :status="
-              (bookingData as any)?.pickup_detail_schedule?.status as any
-            "
+            :status="(bookingData as any)?.pickup_detail_schedule?.status as any"
             :total-progress="
-              Number(
-                (bookingData as any)?.pickup_detail_schedule?.progress_count
-                  ?.total || 0,
-              )
+              Number((bookingData as any)?.pickup_detail_schedule?.progress_count?.total || 0)
             "
             :current-progress="
-              Number(
-                (bookingData as any)?.pickup_detail_schedule?.progress_count
-                  ?.completed || 0,
-              )
+              Number((bookingData as any)?.pickup_detail_schedule?.progress_count?.completed || 0)
             "
             :title="['PICKUP DETAIL &', 'SCHEDULE']"
             :icon="isPickupDisabled ? IconPickupDisabled : IconPickup"
@@ -221,9 +221,42 @@ onMounted(() => {
       <div class="flex items-center justify-center md:flex-row gap-4 w-full">
         <div class="flex gap-4">
           <button
-            class="h-[46px] w-[244px] flex justify-center items-center gap-2 rounded-lg border border-[#1E1E1E] text-[14px] leading-[22px] font-medium hover:bg-gray-50"
+            class="h-[46px] w-[244px] flex justify-center items-center gap-2 rounded-lg border border-[#1E1E1E] text-[14px] leading-[22px] font-medium transition-colors"
+            :class="{
+              'opacity-50 cursor-not-allowed text-neutral-70 bg-gray-100':
+                isDownloadingPackingList || !canDownloadPackingList,
+              'hover:bg-gray-50 text-neutral-100':
+                !isDownloadingPackingList && canDownloadPackingList,
+            }"
+            :disabled="isDownloadingPackingList || !canDownloadPackingList"
+            @click="downloadPackingList"
           >
+            <!-- Loading spinner -->
             <svg
+              v-if="isDownloadingPackingList"
+              class="animate-spin h-[18px] w-[18px]"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+
+            <!-- Download icon -->
+            <svg
+              v-else
               width="18"
               height="18"
               viewBox="0 0 18 18"
@@ -240,7 +273,7 @@ onMounted(() => {
               />
             </svg>
 
-            Download Packing List
+            {{ isDownloadingPackingList ? "Downloading..." : "Download Packing List" }}
           </button>
           <PrimaryButton class="w-[165px]"> Book My Order </PrimaryButton>
         </div>

@@ -1,5 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import RimkirimPreset from './primevue/preset'
+import RimkirimPreset from "./primevue/preset";
 
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
@@ -10,7 +10,8 @@ export default defineNuxtConfig({
     googleClientId: process.env.GOOGLE_CLIENT_ID,
     public: {
       baseUrl: process.env.NUXT_PUBLIC_BASE_URL,
-    }
+      apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL,
+    },
   },
 
   devtools: { enabled: true },
@@ -26,11 +27,10 @@ export default defineNuxtConfig({
   primevue: {
     options: {
       theme: {
-        preset: RimkirimPreset
-      }
-    }
+        preset: RimkirimPreset,
+      },
+    },
   },
-
 
   app: {
     head: {
@@ -43,9 +43,9 @@ export default defineNuxtConfig({
         {
           src: `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAPS_API_KEY}&libraries=places`,
           async: true,
-          defer: true
-        }
-      ]
+          defer: true,
+        },
+      ],
     },
   },
 
@@ -59,12 +59,12 @@ export default defineNuxtConfig({
   css: [
     "/assets/css/global.css",
     "/assets/css/rimkirim-tokens.css",
-    "/assets/css/primevue-overrides.css"
+    "/assets/css/primevue-overrides.css",
   ],
 
   vite: {
     server: {
-      allowedHosts: ['rimkirimdev.com']
-    }
-  }
-})
+      allowedHosts: ["rimkirimdev.com"],
+    },
+  },
+});
