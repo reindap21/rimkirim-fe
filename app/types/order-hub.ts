@@ -45,8 +45,7 @@ export interface OrderHubSection<T = unknown> {
   errors?: Record<string, boolean>;
 }
 
-export interface PickupDetailSchedule<T = unknown>
-  extends OrderHubSection<T> {
+export interface PickupDetailSchedule<T = unknown> extends OrderHubSection<T> {
   prerequisites: ProgressCount;
 }
 
@@ -75,8 +74,8 @@ export interface ComplianceDocument {
   name: string;
   size: number;
   mimeType?: string;
-  googleDrivePath: string | null;
-  googleDriveUrl: string | null;
+  googleDrivePath?: string | null;
+  googleDriveUrl?: string | null;
   uploadedAt?: string;
 }
 

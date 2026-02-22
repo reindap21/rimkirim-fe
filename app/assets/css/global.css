@@ -388,3 +388,7 @@ div[role="alert"] {
 .rimkirim-basic-upload:hover {
   @apply !bg-neutral-90;
 }
+
+.rimkirim-basic-upload .p-button-label {
+  @apply !text-white;
+}

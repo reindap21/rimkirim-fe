@@ -11,11 +11,13 @@
 
   interface CustomerInformationFormValues {
     senderContactName: string;
-    senderCountry: string | { name: string; code: string };
+    senderCountry: { name: string; code: string } | null;
+    senderFullAddress: string;
     senderEmail: string;
     senderPhoneNumber: string;
     receiverContactName: string;
-    receiverCountry: string | { name: string; code: string };
+    receiverCountry: { name: string; code: string } | null;
+    receiverFullAddress: string;
     receiverEmail: string;
     receiverPhoneNumber: string;
     shipperFullName: string;
@@ -33,17 +35,13 @@
 
   // * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
 
-  const route = useRoute();
-  const router = useRouter();
+  const { bookingCode, packingListCode, navigateToOrderHub, fetchProgress } = useOrderHub(); // other vars: purposeOfShipment
+
   const { user, loading } = useAuth();
-
-  const bookingCode = route.params.id as string;
-
-  const purposeOfShipment = ref<"" | "moving_goods" | "passenger_goods">("");
-  const packingListCode = ref("-");
 
   const viewMode = ref<"form" | "success">("form");
   const dataLoading = ref(true); // Add loading state
+  const formReady = ref(false);
 
   const currentStep: OrderHubStep = "customer_information";
 
@@ -63,54 +61,78 @@
 
   const visibleConfirmChangeShipmentOwner = ref(false);
 
-  const initialValues: CustomerInformationFormValues = {
-    // Sender
-    senderContactName: "",
-    senderCountry: "",
-    senderEmail: "",
-    senderPhoneNumber: "",
-    // Receiver
-    receiverContactName: "",
-    receiverCountry: "",
-    receiverEmail: "",
-    receiverPhoneNumber: "",
-    // Package Owner
+  const initialValues = ref<CustomerInformationFormValues>({
     shipperFullName: "",
+    shipperEmail: "",
     shipperOriginPhoneNumber: "",
     shipperDestinationPhoneNumber: "",
-    shipperEmail: "",
-  };
 
-  const resolver = ref(
-    zodResolver(
-      z.object({
-        // Sender
-        senderContactName: z.string().min(1, { message: "Full name is required." }),
-        senderCountry: z.any().optional(),
-        // originAddress: z.string().min(1, { message: 'Full address is required.' }),
-        senderEmail: z
-          .string()
-          .min(1, { message: "Email is required." })
-          .email({ message: "Invalid email address." }),
-        senderPhoneNumber: z.string().min(1, { message: "Phone number is required." }),
-        // Receiver
-        receiverContactName: z.string().min(1, { message: "Full name is required." }),
-        receiverCountry: z.any().optional(),
-        receiverEmail: z
-          .string()
-          .min(1, { message: "Email is required." })
-          .email({ message: "Invalid email address." }),
-        receiverPhoneNumber: z.string().min(1, { message: "Phone number is required." }),
-        // Package Owner
-        shipperFullName: z.string().min(1, { message: "Owner name is required." }),
-        shipperOriginPhoneNumber: z.string().min(1, { message: "Phone number is required." }),
-        shipperDestinationPhoneNumber: z.string().min(1, { message: "Phone number is required." }),
-        shipperEmail: z
-          .string()
-          .min(1, { message: "Email is required." })
-          .email({ message: "Invalid email address." }),
+    senderContactName: "",
+    senderEmail: "",
+    senderPhoneNumber: "",
+    senderCountry: null,
+    senderFullAddress: "",
+
+    receiverContactName: "",
+    receiverEmail: "",
+    receiverPhoneNumber: "",
+    receiverCountry: null,
+    receiverFullAddress: "",
+  });
+
+  type CustomerInformationHydration = Partial<typeof initialValues>;
+
+  const resolver = zodResolver(
+    z.object({
+      // Sender
+      senderContactName: z.string().min(1, { message: "Full name is required." }),
+      senderCountry: z
+        .object({
+          name: z.string(),
+          code: z.string(),
+          iso: z.string().optional(),
+        })
+        .nullable()
+        .refine((v) => !!v?.code, {
+          message: "Country is required.",
+        }),
+      senderFullAddress: z.string().min(1, {
+        message: "Full address is required.",
       }),
-    ),
+      senderEmail: z
+        .string()
+        .min(1, { message: "Email is required." })
+        .email({ message: "Invalid email address." }),
+      senderPhoneNumber: z.string().min(1, { message: "Phone number is required." }),
+      // Receiver
+      receiverContactName: z.string().min(1, { message: "Full name is required." }),
+      receiverCountry: z
+        .object({
+          name: z.string(),
+          code: z.string(),
+          iso: z.string().optional(),
+        })
+        .nullable()
+        .refine((v) => !!v?.code, {
+          message: "Country is required.",
+        }),
+      receiverFullAddress: z.string().min(1, {
+        message: "Full address is required.",
+      }),
+      receiverEmail: z
+        .string()
+        .min(1, { message: "Email is required." })
+        .email({ message: "Invalid email address." }),
+      receiverPhoneNumber: z.string().min(1, { message: "Phone number is required." }),
+      // Package Owner
+      shipperFullName: z.string().min(1, { message: "Owner name is required." }),
+      shipperOriginPhoneNumber: z.string().min(1, { message: "Phone number is required." }),
+      shipperDestinationPhoneNumber: z.string().min(1, { message: "Phone number is required." }),
+      shipperEmail: z
+        .string()
+        .min(1, { message: "Email is required." })
+        .email({ message: "Invalid email address." }),
+    }),
   );
 
   // Customer Information
@@ -141,158 +163,6 @@
     } catch (err) {
       console.error("fetch countries error:", err);
       countriesLoading.value = false;
-    }
-  };
-
-  const getBookingProgress = async (bookingCode: string) => {
-    try {
-      const res = await $fetch(`/api/order-hub/progress`, {
-        method: "GET",
-        credentials: "include",
-        params: {
-          bookingCode,
-        },
-      });
-
-      if (!res) return;
-
-      // Map the initial data
-      packingListCode.value = res?.packing_list_code || "-";
-      purposeOfShipment.value = res?.purpose_of_shipment;
-
-      const { customer_information } = res;
-
-      if (customer_information.data) {
-        const data = customer_information.data;
-
-        // Map to initialValues
-        initialValues.shipperFullName = data.shipperFullName || "";
-        initialValues.shipperEmail = data.shipperEmail || "";
-        initialValues.shipperOriginPhoneNumber = data.shipperOriginPhoneNumber || "";
-        initialValues.shipperDestinationPhoneNumber = data.shipperDestinationPhoneNumber || "";
-
-        initialValues.senderContactName = data.senderContactName || "";
-        initialValues.senderEmail = data.senderEmail || "";
-        initialValues.senderPhoneNumber = data.senderPhoneNumber || "";
-
-        initialValues.receiverContactName = data.receiverContactName || "";
-        initialValues.receiverEmail = data.receiverEmail || "";
-        initialValues.receiverPhoneNumber = data.receiverPhoneNumber || "";
-
-        // Map countries
-        if (data.senderCountry) {
-          const senderCountry = countries.value.find(
-            (c) => c.code.toLowerCase() === data.senderCountry.toLowerCase(),
-          );
-          if (senderCountry) {
-            initialValues.senderCountry = senderCountry;
-          }
-        }
-
-        if (data.receiverCountry) {
-          const receiverCountry = countries.value.find(
-            (c) => c.code.toLowerCase() === data.receiverCountry.toLowerCase(),
-          );
-          if (receiverCountry) {
-            initialValues.receiverCountry = receiverCountry;
-          }
-        }
-
-        // Map addresses - use geocode data if available, otherwise construct from individual fields
-        if (hasValidGeocode(data.senderAddressGeocode)) {
-          // Use full geocode data from backend
-          origin.value = data.senderAddressGeocode;
-          originAddress.value = data.senderAddressGeocode.address || data.senderFullAddress || "";
-        } else if (data.senderFullAddress) {
-          // Fallback: construct from individual fields
-          originAddress.value = data.senderFullAddress;
-          origin.value = createAddressGeocode({
-            fullAddress: data.senderFullAddress,
-            city: data.senderCity,
-            province: data.senderProvince,
-            country: data.senderCountry,
-            postalCode: data.senderPostalCode,
-          });
-        }
-
-        if (hasValidGeocode(data.receiverAddressGeocode)) {
-          // Use full geocode data from backend
-          destination.value = data.receiverAddressGeocode;
-          destinationAddress.value =
-            data.receiverAddressGeocode.address || data.receiverFullAddress || "";
-        } else if (data.receiverFullAddress) {
-          // Fallback: construct from individual fields
-          destinationAddress.value = data.receiverFullAddress;
-          destination.value = createAddressGeocode({
-            fullAddress: data.receiverFullAddress,
-            city: data.receiverCity,
-            province: data.receiverProvince,
-            country: data.receiverCountry,
-            postalCode: data.receiverPostalCode,
-          });
-        }
-
-        // Set toggles
-        if (data.shipmentOwnerSameAs) {
-          shipmentOwnerInformationSameAs.value = data.shipmentOwnerSameAs;
-        }
-
-        if (data.receiverSameAsSender !== undefined) {
-          isReceiverSameAsSender.value = data.receiverSameAsSender;
-        }
-      }
-    } catch (err) {
-      console.error("fetch booking progress error:", err);
-      if ((err as any)?.statusCode === 401) router.push("/");
-    } finally {
-      dataLoading.value = false; // Set loading to false after data is loaded
-    }
-  };
-
-  const handleSubmit = async ({ values, valid }: { values: any; valid: boolean }) => {
-    if (!valid || submitLoading.value) return;
-
-    errorSubmit.value = "";
-    submitLoading.value = true;
-
-    const payload: CustomerInformationPayload = {
-      ...values,
-      bookingCode: bookingCode,
-      receiverSameAsSender: isReceiverSameAsSender.value,
-      shipmentOwnerSameAs: shipmentOwnerInformationSameAs.value || null,
-      // Extract country codes from objects
-      senderCountry: values.senderCountry?.code || values.senderCountry || "",
-      receiverCountry: values.receiverCountry?.code || values.receiverCountry || "",
-      // Sender address fields
-      senderProvince: origin.value?.province || "",
-      senderCity: origin.value?.city || "",
-      senderFullAddress: originAddress.value || "",
-      senderPostalCode: origin.value?.postal_code || "",
-      senderAddressGeocode: (origin.value as AddressGeocode) || {},
-      // Receiver address fields
-      receiverProvince: destination.value?.province || "",
-      receiverCity: destination.value?.city || "",
-      receiverFullAddress: destinationAddress.value || "",
-      receiverPostalCode: destination.value?.postal_code || "",
-      receiverAddressGeocode: (destination.value as AddressGeocode) || {},
-    };
-
-    try {
-      const res = await $fetch("/api/order-hub/customer-information", {
-        method: "PUT",
-        body: payload,
-        credentials: "include", // Required
-      });
-
-      // Store response for success view
-      if (res) {
-        submittedResponse.value = res;
-        viewMode.value = "success";
-      }
-    } catch (err: any) {
-      errorSubmit.value = err?.data?.message || "Error submit customer information";
-    } finally {
-      submitLoading.value = false;
     }
   };
 
@@ -390,23 +260,117 @@
     // actionForm.value = ""
   };
 
-  const handleBack = () => {
-    router.push({
-      path: `${MENU.ORDER_HUB}/${bookingCode}`,
-    });
-  };
+  const handleSubmit = async ({ values, valid }: { values: any; valid: boolean }) => {
+    if (!valid || submitLoading.value) return;
 
-  const handleGoToOrderHubPage = () => {
-    router.push({
-      path: `${MENU.ORDER_HUB}/${bookingCode}`,
-    });
+    if (!hasValidGeocode(origin.value)) {
+      errorSubmit.value = "Sender address must be selected from suggestions.";
+      submitLoading.value = false;
+      return;
+    }
+
+    if (!hasValidGeocode(destination.value)) {
+      errorSubmit.value = "Receiver address must be selected from suggestions.";
+      submitLoading.value = false;
+      return;
+    }
+
+    errorSubmit.value = "";
+    submitLoading.value = true;
+
+    const payload: CustomerInformationPayload = {
+      bookingCode: bookingCode.value,
+
+      // ---- Sender
+      senderContactName: values.senderContactName,
+      senderEmail: values.senderEmail,
+      senderPhoneNumber: values.senderPhoneNumber,
+      senderCountry: values.senderCountry.code,
+      senderFullAddress: originAddress.value,
+      senderProvince: origin.value?.province || "",
+      senderCity: origin.value?.city || "",
+      senderPostalCode: origin.value?.postal_code || "",
+      senderAddressGeocode: toRaw(origin.value),
+
+      // ---- Receiver
+      receiverContactName: values.receiverContactName,
+      receiverEmail: values.receiverEmail,
+      receiverPhoneNumber: values.receiverPhoneNumber,
+      receiverCountry: values.receiverCountry.code,
+      receiverFullAddress: destinationAddress.value,
+      receiverProvince: destination.value?.province || "",
+      receiverCity: destination.value?.city || "",
+      receiverPostalCode: destination.value?.postal_code || "",
+      receiverAddressGeocode: toRaw(destination.value),
+
+      // ---- Shipper
+      shipperFullName: values.shipperFullName,
+      shipperEmail: values.shipperEmail,
+      shipperOriginPhoneNumber: values.shipperOriginPhoneNumber,
+      shipperDestinationPhoneNumber: values.shipperDestinationPhoneNumber,
+
+      receiverSameAsSender: isReceiverSameAsSender.value,
+      shipmentOwnerSameAs: shipmentOwnerInformationSameAs.value || null,
+    };
+
+    try {
+      const res = await $fetch("/api/order-hub/customer-information", {
+        method: "PUT",
+        body: payload,
+        credentials: "include", // Required
+      });
+
+      // Store response for success view
+      if (res) {
+        submittedResponse.value = res;
+        viewMode.value = "success";
+      }
+    } catch (err: any) {
+      errorSubmit.value = err?.data?.message || "Error submit customer information";
+    } finally {
+      submitLoading.value = false;
+    }
   };
 
   // * ------- onMounted ---------------------------------------------------------------------------------------------------------------------------------------------
 
   onMounted(async () => {
+    dataLoading.value = true;
+
     await fetchCountries();
-    await getBookingProgress(bookingCode); // Await data loading
+    const progress = await fetchProgress();
+
+    if (progress?.customer_information?.data) {
+      const data = progress.customer_information.data;
+
+      initialValues.value = {
+        shipperFullName: data.shipperFullName || "",
+        shipperEmail: data.shipperEmail || "",
+        shipperOriginPhoneNumber: data.shipperOriginPhoneNumber || "",
+        shipperDestinationPhoneNumber: data.shipperDestinationPhoneNumber || "",
+
+        senderContactName: data.senderContactName || "",
+        senderEmail: data.senderEmail || "",
+        senderPhoneNumber: data.senderPhoneNumber || "",
+        senderCountry: countries.value.find((c) => c.code === data.senderCountry) ?? null,
+        senderFullAddress: data.senderFullAddress || "",
+
+        receiverContactName: data.receiverContactName || "",
+        receiverEmail: data.receiverEmail || "",
+        receiverPhoneNumber: data.receiverPhoneNumber || "",
+        receiverCountry: countries.value.find((c) => c.code === data.receiverCountry) ?? null,
+        receiverFullAddress: data.receiverFullAddress || "",
+      };
+
+      // geocode
+      origin.value = data.senderAddressGeocode || {};
+      destination.value = data.receiverAddressGeocode || {};
+      originAddress.value = data.senderFullAddress || "";
+      destinationAddress.value = data.receiverFullAddress || "";
+    }
+
+    dataLoading.value = false;
+    formReady.value = true; // ⬅️ KUNCI
   });
 </script>
 
@@ -434,8 +398,9 @@
         />
 
         <!-- Form (only render after data is loaded) -->
+        <!-- :key="JSON.stringify(initialValues)" -->
         <Form
-          v-if="!dataLoading"
+          v-if="formReady"
           class="flex flex-col gap-6"
           v-slot="$form"
           :resolver="resolver"
@@ -502,7 +467,7 @@
                       nostyle
                       name="senderContactName"
                       type="text"
-                      placeholder="e.g. Dzulfan Fadli"
+                      placeholder="e.g. Dzulfan"
                       class="w-full pr-12"
                     />
                     <InputIcon
@@ -529,6 +494,7 @@
                       name="senderCountry"
                       :options="countries"
                       optionLabel="name"
+                      dataKey="code"
                       placeholder="Select sender country"
                       fluid
                     />
@@ -553,7 +519,12 @@
                       v-model="originAddress"
                       :country="$form.senderCountry?.value?.iso"
                       placeholder="Sender full address"
-                      @select="handleOriginSelect"
+                      @select="
+                        (geo) => {
+                          handleOriginSelect(geo);
+                          if ($form?.senderFullAddress) $form.senderFullAddress.value = geo.address;
+                        }
+                      "
                     />
                   </ClientOnly>
                   <Message
@@ -623,7 +594,7 @@
                     <InputText
                       name="receiverContactName"
                       type="text"
-                      placeholder="e.g. Dzulfan Fadli"
+                      placeholder="e.g. Dzulfan"
                       class="w-full pr-12"
                     />
                     <InputIcon
@@ -652,6 +623,7 @@
                     <Select
                       name="receiverCountry"
                       :options="countries"
+                      dataKey="code"
                       optionLabel="name"
                       placeholder="Select receiver country"
                       fluid
@@ -674,7 +646,13 @@
                       v-model="destinationAddress"
                       :country="$form.receiverCountry?.value?.iso"
                       placeholder="Receiver full address"
-                      @select="handleDestinationSelect"
+                      @select="
+                        (geo) => {
+                          handleDestinationSelect(geo);
+                          if ($form?.receiverFullAddress)
+                            $form.receiverFullAddress.value = geo.address;
+                        }
+                      "
                     />
                   </ClientOnly>
                   <Message
@@ -796,7 +774,7 @@
                     <InputText
                       name="shipperFullName"
                       type="text"
-                      placeholder="e.g. Dzulfan Fadli"
+                      placeholder="e.g. Dzulfan"
                       class="w-full pr-12"
                     />
                     <InputIcon
@@ -899,7 +877,7 @@
           </div>
 
           <div class="w-full flex items-center justify-between h-[70px] gap-3">
-            <BlackButton class="w-[97px]" @click="handleBack">Back</BlackButton>
+            <BlackButton class="w-[97px]" @click="navigateToOrderHub">Back</BlackButton>
             <div class="flex items-center gap-3">
               <!-- @click="actionForm = ''" -->
               <TextButton @click="handleFinishLater" :disabled="submitLoading">
@@ -928,7 +906,7 @@
       <UISuccessSubmitFormStepOrderHub
         :step="currentStep"
         :response="submittedResponse"
-        @go-to-order-hub="handleGoToOrderHubPage"
+        @go-to-order-hub="navigateToOrderHub"
       />
     </template>
   </section>
