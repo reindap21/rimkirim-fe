@@ -1,340 +1,279 @@
 <script setup lang="ts">
-import { zodResolver } from "@primevue/forms/resolvers/zod";
-import { ref } from "vue";
-import { z } from "zod";
-import type {
-  ComplianceDocument,
-  OrderHubProgress,
-  OrderHubStep,
-  PurposeOfShipment,
-  UploadDocumentResponse,
-} from "~/types/order-hub";
-import { camelToTitleCase, toCamelCase } from "~/utils/string";
-import { useOrderHub } from "~/composables/useOrderHub";
+  import { zodResolver } from "@primevue/forms/resolvers/zod";
+  import { ref, computed, onMounted } from "vue";
+  import { z } from "zod";
+  import type {
+    ComplianceDocument,
+    OrderHubProgress,
+    OrderHubStep,
+    PurposeOfShipment,
+    UploadDocumentResponse,
+  } from "~/types/order-hub";
+  import { camelToTitleCase, toCamelCase } from "~/utils/string";
+  import { useOrderHub } from "~/composables/useOrderHub";
+  import type { FormInstance } from "@primevue/forms";
 
-// * ------- Types -------------------------------------------------------------------------------------------------------------------------------------------------
+  const formRef = ref<FormInstance | null>(null);
 
-// Extended file object with frontend-specific fields
-// Omit uploadedAt from ComplianceDocument (which is string) and use Date instead
-type FileObjType = Omit<ComplianceDocument, "uploadedAt"> & {
-  upload?: boolean; // Added by frontend after upload
-  uploadedAt?: Date; // Frontend uses Date object instead of string
-};
+  type ComplianceDocumentType =
+    | "ktpDocument"
+    | "npwpDocument"
+    | "passportDocument"
+    | "skpKbriDocument"
+    | "otherDocument";
 
-type AdditionalDocument = {
-  id: string;
-  name: string;
-  file?: FileObjType;
-};
+  const REQUIRED_DOCUMENT_TYPES: ComplianceDocumentType[] = [
+    "ktpDocument",
+    "npwpDocument",
+    "passportDocument",
+    "skpKbriDocument",
+  ];
 
-type FileUploadSelectEvent = {
-  files: File[];
-};
+  type FileObjType = Omit<ComplianceDocument, "uploadedAt"> & {
+    upload?: boolean;
+    uploadedAt?: Date;
+  };
 
-// Upload API response data type (snake_case from /api/upload/compliance-document)
-type UploadApiData = UploadDocumentResponse["data"];
+  type AdditionalDocument = {
+    id: string;
+    name: string;
+    file?: FileObjType;
+  };
 
-// Document payload for submission
-type DocumentPayload = {
-  path: string;
-  mimeType?: string;
-  uploadedAt?: string;
-};
+  type FileUploadSelectEvent = {
+    files: File[];
+  };
 
-// * ------- Dedines -----------------------------------------------------------------------------------------------------------------------------------------------
+  type UploadApiData = UploadDocumentResponse["data"];
 
-definePageMeta({
-  layout: "order-hub",
-  // middleware: 'auth'
-});
+  type DocumentPayload = {
+    path: string;
+    mimeType?: string;
+    uploadedAt?: string;
+  };
 
-// * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
+  definePageMeta({ layout: "order-hub" });
 
-// Use order hub composable for shared state and methods
-const {
-  bookingCode,
-  navigateToOrderHub: handleBack,
-  fetchProgress: getBookingProgress,
-} = useOrderHub();
+  const {
+    bookingCode,
+    navigateToOrderHub: handleBack,
+    navigateToOrderHub,
+    fetchProgress,
+  } = useOrderHub();
 
-const purposeOfShipment = ref<"" | PurposeOfShipment>("");
-const packingListCode = ref<string | null>("-");
+  const purposeOfShipment = ref<"" | PurposeOfShipment>("");
+  const isPassengerGoods = purposeOfShipment.value === "passenger_goods";
+  const viewMode = ref<"form" | "success">("form");
+  const currentStep: OrderHubStep = "compliance_document";
+  const submittedResponse = ref<any>();
 
-const viewMode = ref<"form" | "success">("form");
+  const submitLoading = ref(false);
+  const errorSubmit = ref("");
 
-const currentStep: OrderHubStep = "compliance_document";
+  const documents = ref<Record<string, FileObjType | null>>({
+    ktpDocument: null,
+    npwpDocument: null,
+    passportDocument: null,
+    skpKbriDocument: null,
+  });
 
-const submittedResponse = ref<any>(); // eslint-disable-line
+  const ktpDocument = computed(() => documents.value.ktpDocument);
+  const npwpDocument = computed(() => documents.value.npwpDocument);
+  const passportDocument = computed(() => documents.value.passportDocument);
+  const skpKbriDocument = computed(() => documents.value.skpKbriDocument);
 
-// * ------- Form Handling
+  const additionalDocumentName = ref("");
+  const additionalDocuments = ref<AdditionalDocument[]>([]);
 
-const submitLoading = ref(false);
-const errorSubmit = ref("");
+  const initialValues = {
+    ktpDocument: "",
+    npwpDocument: "",
+    passportDocument: "",
+    skpKbriDocument: "",
+  };
 
-const documentMap = {
-  ktp: "ktpDocument",
-  npwp: "npwpDocument",
-  passport: "passportDocument",
-  skpKbri: "skpKbriDocument",
-} as const;
-
-const documents = ref<Record<string, FileObjType | null>>({
-  ktp: null,
-  npwp: null,
-  passport: null,
-  skpKbri: null,
-});
-
-const ktp = computed(() => documents.value.ktp);
-const npwp = computed(() => documents.value.npwp);
-const passport = computed(() => documents.value.passport);
-const skpKbri = computed(() => documents.value.skpKbri);
-
-const additionalDocumentName = ref("");
-const additionalDocuments = ref<AdditionalDocument[]>([]);
-
-// * ------- Upload
-
-const $primevue = usePrimeVue();
-
-const initialValues = {};
-
-const resolver = ref(
-  zodResolver(
+  const resolver = zodResolver(
     z.object({
-      // Sender
-      // senderContactName: z.string().min(1, { message: 'Full name is required.' }),
+      ktpDocument: z.string().min(1, "KTP is required"),
+      npwpDocument: z.string().optional().nullable(),
+      passportDocument: z.string().optional().nullable(),
+      skpKbriDocument: z.string().min(1, "Surat Keterangan Pindah is required"),
     }),
-  ),
-);
+  );
 
-// * ------- Methods -----------------------------------------------------------------------------------------------------------------------------------------------
+  const handleSubmit = async ({ values, valid }: { values: any; valid: boolean }) => {
+    if (!valid || submitLoading.value) return;
 
-// Load booking progress and map compliance documents
-// eslint-disable-next-line
-const loadBookingProgress = async () => {
-  const res = await getBookingProgress();
+    submitLoading.value = true;
 
-  if (!res) return;
-
-  // Map the initial data
-  packingListCode.value = res?.packing_list_code || "-";
-  purposeOfShipment.value = res?.purpose_of_shipment;
-
-  const { compliance_document } = res;
-
-  if (compliance_document.data && Array.isArray(compliance_document.data) && compliance_document.data.length > 0) {
-    // Compliance document data from progress API is already in camelCase
-    (compliance_document.data as ComplianceDocument[]).forEach((fileData: ComplianceDocument) => {
-      const file: FileObjType = {
-        ...fileData,
-        googleDrivePath: fileData.googleDrivePath || null,
-        googleDriveUrl: fileData.googleDriveUrl || null,
-        upload: fileData.uploadedAt !== undefined, // Mark as uploaded if uploadedAt exists
-        uploadedAt: fileData.uploadedAt ? new Date(fileData.uploadedAt) : undefined,
+    try {
+      const payload: Record<string, DocumentPayload | string> = {
+        ...values,
+        bookingCode: bookingCode.value,
       };
 
-      if (file.documentType === "ktpDocument") documents.value.ktp = file;
-      else if (file.documentType === "npwpDocument") documents.value.npwp = file;
-      else if (file.documentType === "passportDocument")
-        documents.value.passport = file;
-      else if (file.documentType === "skpKbriDocument")
-        documents.value.skpKbri = file;
-      else {
-        // Additional documents use camelCase (e.g., "letterOfAcceptance")
-        // Convert to title case for display (e.g., "Letter Of Acceptance")
-        additionalDocuments.value.push({
-          id: crypto.randomUUID(),
-          name: camelToTitleCase(file.documentType),
-          file
-        })
-      }
-    });
-  }
+      Object.entries(documents.value).forEach(([key, doc]) => {
+        if (!doc?.localPath) return;
 
-  submittedResponse.value = res;
-};
-
-const handleSubmit = async ({
-  values,
-  valid,
-}: {
-  values: Record<string, unknown>;
-  valid: boolean;
-}) => {
-
-  if (!valid || submitLoading.value) return;
-
-  errorSubmit.value = "";
-  submitLoading.value = true;
-
-  const payload: Record<string, DocumentPayload | string> = {
-    ...values,
-    bookingCode: bookingCode.value,
-    ...Object.fromEntries(
-      Object.entries(documentMap)
-        .filter(
-          ([key]) =>
-            documents.value[key as keyof typeof documentMap]?.localPath,
-        )
-        .map(([key, apiKey]) => {
-          const doc = documents.value[key as keyof typeof documentMap]!;
-          return [
-            apiKey,
-            {
-              path: doc.localPath,
-              mimeType: doc.mimeType,
-              uploadedAt: doc.uploadedAt?.toISOString(),
-            }
-          ];
-        }),
-    ),
-  };
-
-  if (additionalDocuments.value.length > 0) {
-    additionalDocuments.value
-      .filter((d) => d.file?.localPath)
-      .forEach((d) => {
-        // Convert display name back to camelCase (e.g., "Letter Of Acceptance" -> "letterOfAcceptance")
-        const camelCaseKey = toCamelCase(d.name || "");
-
-        payload[camelCaseKey] = {
-          path: d.file!.localPath,
-          mimeType: d.file!.mimeType,
-          uploadedAt: d.file!.uploadedAt?.toISOString(),
+        payload[key] = {
+          path: doc.localPath,
+          mimeType: doc.mimeType,
+          uploadedAt: doc.uploadedAt?.toISOString(),
         };
       });
-  }
 
-  try {
-    const res = await $fetch<OrderHubProgress>("/api/order-hub/compliance-document", {
-      method: "PUT",
-      body: payload,
-      credentials: "include", // Required
-    });
+      additionalDocuments.value.forEach((d) => {
+        if (!d.file?.localPath) return;
+        payload[toCamelCase(d.name)] = {
+          path: d.file.localPath,
+          mimeType: d.file.mimeType,
+          uploadedAt: d.file.uploadedAt?.toISOString(),
+        };
+      });
 
-    // Store state
-    // userState.value = res.user
+      const res = await $fetch<OrderHubProgress>("/api/order-hub/compliance-document", {
+        method: "PUT",
+        body: payload,
+        credentials: "include",
+      });
 
-    if (res) {
-      submittedResponse.value = res
+      submittedResponse.value = res;
       viewMode.value = "success";
+    } finally {
+      submitLoading.value = false;
     }
-  } catch (err: any) { // eslint-disable-line
-    errorSubmit.value = err?.data?.message || "Error submit item and packages";
-  } finally {
-    submitLoading.value = false;
-  }
-};
-
-// * ------- Upload
-
-const uploadDocument = async (
-  files: File[],
-  documentType: string,
-  target?: AdditionalDocument,
-) => {
-  const formData = new FormData();
-
-  formData.append("booking_code", bookingCode.value);
-  formData.append("document_type", documentType);
-
-  files.forEach((file) => {
-    formData.append("files", file);
-  });
-
-  const res = await $fetch<UploadApiData>("/api/upload/compliance-document", {
-    method: "POST",
-    body: formData,
-  });
-
-  // Transform snake_case API response to camelCase
-  const uploaded: FileObjType = {
-    localPath: res.local_path,
-    documentType: res.document_type,
-    name: res.name,
-    size: res.size,
-    mimeType: res.mime_type,
-    googleDrivePath: null, // Upload API doesn't return Google Drive fields
-    googleDriveUrl: null, // Upload API doesn't return Google Drive fields
-    upload: true,
-    uploadedAt: new Date(),
   };
 
-  if (target) {
-    target.file = uploaded;
-  } else {
-    documents.value[documentType] = uploaded;
-  }
-};
+  const uploadDocument = async (
+    files: File[],
+    documentType: ComplianceDocumentType,
+    target?: AdditionalDocument,
+  ) => {
+    const formData = new FormData();
+    formData.append("booking_code", bookingCode.value);
+    formData.append("document_type", documentType);
+    files.forEach((f) => formData.append("files", f));
 
-const onSelectedFiles = (event: FileUploadSelectEvent, documentType: string) => {
-  uploadDocument(event.files, documentType);
-};
+    const res = await $fetch<UploadApiData>("/api/upload/compliance-document", {
+      method: "POST",
+      body: formData,
+    });
 
-const onUploadAdditionalFile = (event: FileUploadSelectEvent, doc: AdditionalDocument) => {
-  // Convert document name to camelCase (e.g., "Letter of Acceptance" -> "letterOfAcceptance")
-  const documentType = toCamelCase(doc.name);
-  uploadDocument(event.files, documentType, doc);
-};
+    const uploaded: FileObjType = {
+      localPath: res.local_path,
+      documentType: res.document_type,
+      name: res.name,
+      size: res.size,
+      mimeType: res.mime_type,
+      upload: true,
+      uploadedAt: new Date(),
+    };
 
-// UX Upload progress
-// const uploadEvent = (callback) => {
-//   totalSizePercent.value = totalSize.value / 10;
-//   callback();
-// };
+    if (target)
+      target.file = uploaded; // For Additional File
+    else documents.value[documentType] = uploaded;
 
-// const formatSize = (bytes) => {
-//   const k = 1024;
-//   const dm = 3;
-//   const sizes = $primevue.config.locale.fileSizeTypes;
+    return uploaded;
+  };
 
-//   if (bytes === 0) {
-//     return `0 ${sizes[0]}`;
-//   }
+  const onSelectedFiles = (e: FileUploadSelectEvent, type: ComplianceDocumentType) =>
+    uploadDocument(e.files, type);
 
-//   const i = Math.floor(Math.log(bytes) / Math.log(k));
-//   const formattedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
+  const onFileSelect = async (
+    e: FileUploadSelectEvent,
+    documentType: ComplianceDocumentType,
+    props: any,
+    target?: AdditionalDocument,
+  ) => {
+    const uploaded = await uploadDocument(e.files, documentType, target);
 
-//   return `${formattedSize} ${sizes[i]}`;
-// };
+    // ⬅️ INI WAJIB
+    props.onInput({
+      target: {
+        value: uploaded.localPath,
+      },
+    });
+  };
 
-const removeUploadedFile = (key: string) => {
-  if (key in documents.value) {
-    documents.value[key as keyof typeof documents.value] = null;
-  }
-};
+  const onFileRemove = (documentType: string, props: any, target?: AdditionalDocument) => {
+    if (target) target.file = undefined;
+    else documents.value[documentType] = null;
 
-const addAdditionalDocument = () => {
-  if (!additionalDocumentName.value.trim()) return;
+    props.onInput({
+      target: {
+        value: "",
+      },
+    });
+  };
 
-  additionalDocuments.value.push({
-    id: crypto.randomUUID(),
-    name: additionalDocumentName.value.trim(),
+  const addAdditionalDocument = () => {
+    if (!additionalDocumentName.value.trim()) return;
+
+    additionalDocuments.value.push({
+      id: crypto.randomUUID(),
+      name: additionalDocumentName.value.trim(),
+      file: undefined,
+    });
+
+    additionalDocumentName.value = "";
+  };
+
+  const onUploadAdditionalFile = async (e: FileUploadSelectEvent, doc: AdditionalDocument) => {
+    await uploadDocument(e.files, toCamelCase(doc.name) as ComplianceDocumentType, doc);
+  };
+
+  const removeAdditionalDocument = (id: string) => {
+    additionalDocuments.value = additionalDocuments.value.filter((d) => d.id !== id);
+  };
+
+  const hydrateFromApi = (
+    compliance: {
+      data?: ComplianceDocument[];
+    },
+    form: FormInstance,
+  ) => {
+    if (!compliance?.data?.length) return;
+
+    compliance.data.forEach((doc) => {
+      const uploadedFile: FileObjType = {
+        localPath: doc.localPath,
+        documentType: doc.documentType,
+        name: doc.name,
+        size: doc.size,
+        mimeType: doc.mimeType,
+        uploadedAt: new Date(doc.uploadedAt as ComplianceDocumentType),
+        upload: true,
+      };
+
+      // 1️⃣ REQUIRED DOCUMENT
+      if (REQUIRED_DOCUMENT_TYPES.includes(doc.documentType as any)) {
+        const type = doc.documentType as ComplianceDocumentType;
+
+        documents.value[type] = uploadedFile;
+
+        // sync ke form (biar validasi hilang)
+        form.setFieldValue(type, doc.localPath);
+        return;
+      }
+
+      // 2️⃣ ADDITIONAL DOCUMENT
+      additionalDocuments.value.push({
+        id: crypto.randomUUID(),
+        name: camelToTitleCase(doc.documentType), // insurance → Insurance
+        file: uploadedFile,
+      });
+    });
+  };
+
+  // * ------- mounted ---------------------------------------------------------------------------------------------------------------------------------------------
+
+  onMounted(async () => {
+    const progress = await fetchProgress();
+    // pastikan data ada
+    if (progress?.compliance_document && formRef.value) {
+      hydrateFromApi(progress.compliance_document as any, formRef.value); // type: any -> OrderHubProgress['compliance_document']
+    }
   });
-
-  additionalDocumentName.value = "";
-};
-
-const removeAdditionalDocument = (id: string) => {
-  additionalDocuments.value = additionalDocuments.value.filter(
-    (d) => d.id !== id,
-  );
-};
-
-const handleFinishLater = () => {
-  // actionForm.value = ""
-};
-
-const handleGoToOrderHubPage = () => {
-  handleBack(); // Use the composable's navigateToOrderHub
-};
-
-// * ------- onMounted ---------------------------------------------------------------------------------------------------------------------------------------------
-
-onMounted(() => {
-  loadBookingProgress();
-});
 </script>
 
 <template>
@@ -354,156 +293,277 @@ onMounted(() => {
     <template v-if="viewMode === 'form'">
       <!-- Section Form -->
       <section class="w-[1024px] mx-auto flex flex-col gap-6 mt-4">
-        <FormHeader title="COMPLIANCE DOCUMENT"
-          description="Please Upload the necessary document to proceed. Accepted formats: PDF, JPG, PNG (Max 5MB)." />
+        <FormHeader
+          title="COMPLIANCE DOCUMENT"
+          description="Please Upload the necessary document to proceed. Accepted formats: PDF, JPG, PNG (Max 5MB)."
+        />
 
-        <div class="flex flex-col gap-6 pb-6 bg-neutral-10 rounded-[12px] border border-[#EDEDED]">
-          <!-- Required Documents -->
-          <div class="flex items-center p-6 gap-6 bg-neutral-20 rounded-tl-[12px] rounded-tr-[12px]">
-            <div class="flex-1 flex items-center gap-2">
-              <div class="h-[42px] w-[42px] bg-white rounded-full flex items-center justify-center">
-                <IconRequiredDocument />
-              </div>
-              <div class="text-[20px] leading-[130%] font-medium text-neutral-90">
-                Required Documents
-              </div>
-            </div>
-          </div>
-
-          <!-- KTP -->
-          <div class="px-6">
-            <div class="flex flex-col gap-[6px]">
-              <div class="flex flex-wrap gap-6 items-center justify-between">
-                <div class="flex items-center gap-1 font-medium text-neutral-90">
-                  <label>
-                    KTP (Identity Card)
-                    <span class="text-red-500">*</span>
-                  </label>
+        <Form
+          ref="formRef"
+          v-slot="$form"
+          class="flex flex-col gap-6"
+          :resolver="resolver"
+          :initial-values="initialValues"
+          validate-on-blur
+          @submit="handleSubmit"
+        >
+          <div
+            class="flex flex-col gap-6 pb-6 bg-neutral-10 rounded-[12px] border border-[#EDEDED]"
+          >
+            <!-- Required Documents -->
+            <div
+              class="flex items-center p-6 gap-6 bg-neutral-20 rounded-tl-[12px] rounded-tr-[12px]"
+            >
+              <div class="flex-1 flex items-center gap-2">
+                <div
+                  class="h-[42px] w-[42px] bg-white rounded-full flex items-center justify-center"
+                >
+                  <IconRequiredDocument />
                 </div>
-                <PillSuccessUpload v-if="ktp && ktp?.upload" />
-              </div>
-              <div class="card flex flex-wrap gap-6 items-center justify-between min-h-[46px]">
-                <FileUpload v-if="!ktp" ref="fileUploadRef" class="rimkirim-basic-upload h-full" mode="basic" name="ktp"
-                  url="/api/upload/compliance-document" accept="image/*" :max-file-size="1000000"
-                  @select="(e) => onSelectedFiles(e, 'ktp')" />
-                <UIUploadedFileItem v-else key="ktp" class="w-full" :size="ktp?.size" :name="ktp?.name"
-                  :uploaded-at="ktp?.uploadedAt" :mime-type="ktp?.mimeType" @remove="removeUploadedFile('ktp')" />
-              </div>
-            </div>
-          </div>
-
-          <!-- e-NPWP -->
-          <div class="px-6">
-            <div class="flex flex-col gap-[6px]">
-              <div class="flex flex-wrap gap-6 items-center justify-between">
-                <label class="flex items-center gap-1 font-medium text-neutral-90">
-                  e-NPWP (Tax ID)
-                  <PopoverENPWP />
-                </label>
-                <PillSuccessUpload v-if="npwp && npwp?.upload" />
-              </div>
-              <div class="card flex flex-wrap gap-6 items-center justify-between min-h-[46px]">
-                <FileUpload v-if="!npwp" ref="fileUploadRef" class="rimkirim-basic-upload h-full" mode="basic"
-                  name="npwp" url="/api/upload/compliance-document" accept="image/*" :max-file-size="1000000"
-                  @select="(e) => onSelectedFiles(e, 'npwp')" />
-                <UIUploadedFileItem v-else key="npwp" class="w-full" :size="npwp?.size" :name="npwp?.name"
-                  :uploaded-at="npwp?.uploadedAt" :mime-type="npwp?.mimeType" @remove="removeUploadedFile('npwp')" />
-              </div>
-            </div>
-          </div>
-
-          <!-- Passport -->
-          <div class="px-6">
-            <div class="flex flex-col gap-[6px]">
-              <div class="flex flex-wrap gap-6 items-center justify-between">
-                <label class="font-medium text-neutral-90">Passport</label>
-                <PillSuccessUpload v-if="passport && passport?.upload" />
-              </div>
-              <div class="card flex flex-wrap gap-6 items-center justify-between min-h-[46px]">
-                <FileUpload v-if="!passport" ref="fileUploadRef" class="rimkirim-basic-upload h-full" mode="basic"
-                  name="passport" url="/api/upload/compliance-document" accept="image/*" :max-file-size="1000000"
-                  @select="(e) => onSelectedFiles(e, 'passport')" />
-                <UIUploadedFileItem v-else key="passport" class="w-full" :size="passport?.size" :name="passport?.name"
-                  :uploaded-at="passport?.uploadedAt" :mime-type="passport?.mimeType" @remove="removeUploadedFile('passport')" />
-              </div>
-            </div>
-          </div>
-
-          <!-- Surat Keterangan Pindah -->
-          <div v-if="isPassengerGoods" class="px-6">
-            <div class="flex flex-col gap-[6px]">
-              <div class="flex flex-wrap gap-6 items-center justify-between">
-                <div class="flex items-center gap-1 font-medium text-neutral-90">
-                  <label>
-                    Surat Keterangan Pindah
-                    <span class="text-red-500">*</span>
-                  </label>
-                  <PopoverSuratKeteranganPindah />
+                <div class="text-[20px] leading-[130%] font-medium text-neutral-90">
+                  Required Documents
                 </div>
-                <PillSuccessUpload v-if="skpKbri && skpKbri?.upload" />
               </div>
-              <div class="card flex flex-wrap gap-6 items-center justify-between min-h-[46px]">
-                <FileUpload v-if="!skpKbri" ref="fileUploadRef" class="rimkirim-basic-upload h-full" mode="basic"
-                  name="skpKbri" url="/api/upload/compliance-document" accept="image/*" :max-file-size="1000000"
-                  @select="(e) => onSelectedFiles(e, 'skpKbri')" />
-                <UIUploadedFileItem v-else key="skpKbri" class="w-full" :size="skpKbri?.size" :name="skpKbri?.name"
-                  :uploaded-at="skpKbri?.uploadedAt" :mime-type="skpKbri?.mimeType" @remove="removeUploadedFile('skpKbri')" />
+            </div>
+
+            <!-- KTP -->
+            <div class="px-6">
+              <div class="flex flex-col gap-[6px]">
+                <div class="flex flex-wrap gap-6 items-center justify-between">
+                  <div class="flex items-center gap-1 font-medium text-neutral-90">
+                    <label>
+                      KTP (Identity Card)
+                      <span class="text-red-500">*</span>
+                    </label>
+                  </div>
+                  <PillSuccessUpload v-if="ktpDocument" />
+                </div>
+                <FormField name="ktpDocument" v-slot="{ props, invalid, error }">
+                  <div class="card" :class="invalid ? 'border border-red-600 rounded-[8px]' : ''">
+                    <FileUpload
+                      v-if="!ktpDocument"
+                      ref="fileUploadRef"
+                      class="rimkirim-basic-upload h-full"
+                      mode="basic"
+                      name="npwp"
+                      url="/api/upload/compliance-document"
+                      accept="image/*"
+                      :max-file-size="1000000"
+                      @select="(e) => onFileSelect(e, 'ktpDocument', props)"
+                    />
+
+                    <UIUploadedFileItem
+                      v-else
+                      :name="ktpDocument.name"
+                      :size="ktpDocument.size"
+                      :uploaded-at="ktpDocument.uploadedAt"
+                      :mime-type="ktpDocument.mimeType"
+                      @remove="() => onFileRemove('ktpDocument', props)"
+                    />
+                  </div>
+
+                  <p v-if="invalid" class="text-[12px] text-red-500 mt-2">
+                    {{ error?.message }}
+                  </p>
+                </FormField>
+              </div>
+            </div>
+
+            <!-- e-NPWP -->
+            <div class="px-6">
+              <div class="flex flex-col gap-[6px]">
+                <div class="flex flex-wrap gap-6 items-center justify-between">
+                  <label class="flex items-center gap-1 font-medium text-neutral-90">
+                    e-NPWP (Tax ID)
+                    <PopoverENPWP />
+                  </label>
+                  <PillSuccessUpload v-if="npwpDocument" />
+                </div>
+                <div class="card flex flex-wrap gap-6 items-center justify-between min-h-[46px]">
+                  <FileUpload
+                    v-if="!npwpDocument"
+                    ref="fileUploadRef"
+                    class="rimkirim-basic-upload h-full"
+                    mode="basic"
+                    name="npwpDocument"
+                    url="/api/upload/compliance-document"
+                    accept="image/*"
+                    :max-file-size="1000000"
+                    @select="(e) => onSelectedFiles(e, 'npwpDocument')"
+                  />
+                  <UIUploadedFileItem
+                    v-else
+                    key="npwpDocument"
+                    class="w-full"
+                    :size="npwpDocument?.size"
+                    :name="npwpDocument?.name"
+                    :uploaded-at="npwpDocument?.uploadedAt"
+                    :mime-type="npwpDocument?.mimeType"
+                    @remove="
+                      documents.npwpDocument = null
+                      // field.onChange(uploaded.localPath);
+                    "
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Passport -->
+            <div class="px-6">
+              <div class="flex flex-col gap-[6px]">
+                <div class="flex flex-wrap gap-6 items-center justify-between">
+                  <label class="font-medium text-neutral-90">Passport</label>
+                  <PillSuccessUpload v-if="passportDocument" />
+                </div>
+                <div class="card flex flex-wrap gap-6 items-center justify-between min-h-[46px]">
+                  <FileUpload
+                    v-if="!passportDocument"
+                    ref="fileUploadRef"
+                    class="rimkirim-basic-upload h-full"
+                    mode="basic"
+                    name="passportDocument"
+                    url="/api/upload/compliance-document"
+                    accept="image/*"
+                    :max-file-size="1000000"
+                    @select="(e) => onSelectedFiles(e, 'passportDocument')"
+                  />
+                  <UIUploadedFileItem
+                    v-else
+                    key="passportDocument"
+                    class="w-full"
+                    :size="passportDocument?.size"
+                    :name="passportDocument?.name"
+                    :uploaded-at="passportDocument?.uploadedAt"
+                    :mime-type="passportDocument?.mimeType"
+                    @remove="
+                      documents.passportDocument = null
+                      // field.onChange(uploaded.localPath);
+                    "
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Surat Keterangan Pindah -->
+            <div v-if="isPassengerGoods" class="px-6">
+              <div class="flex flex-col gap-[6px]">
+                <div class="flex flex-wrap gap-6 items-center justify-between">
+                  <div class="flex items-center gap-1 font-medium text-neutral-90">
+                    <label>
+                      Surat Keterangan Pindah
+                      <span class="text-red-500">*</span>
+                    </label>
+                    <PopoverSuratKeteranganPindah />
+                  </div>
+                  <PillSuccessUpload v-if="skpKbriDocument" />
+                </div>
+
+                <FormField name="skpKbriDocument" v-slot="{ props, invalid, error }">
+                  <div class="card" :class="invalid ? 'border border-red-600 rounded-[8px]' : ''">
+                    <FileUpload
+                      v-if="!skpKbriDocument"
+                      ref="fileUploadRef"
+                      class="rimkirim-basic-upload h-full"
+                      mode="basic"
+                      name="npwp"
+                      url="/api/upload/compliance-document"
+                      accept="image/*"
+                      :max-file-size="1000000"
+                      @select="(e) => onFileSelect(e, 'skpKbriDocument', props)"
+                    />
+
+                    <UIUploadedFileItem
+                      v-else
+                      :name="skpKbriDocument.name"
+                      :size="skpKbriDocument.size"
+                      :uploaded-at="skpKbriDocument.uploadedAt"
+                      :mime-type="skpKbriDocument.mimeType"
+                      @remove="() => onFileRemove('skpKbriDocument', props)"
+                    />
+                  </div>
+
+                  <p v-if="invalid" class="text-[12px] text-red-500 mt-2">
+                    {{ error?.message }}
+                  </p>
+                </FormField>
+              </div>
+            </div>
+
+            <div class="px-6">
+              <div class="h-[1px] border-y border-[#EDEDED]" />
+            </div>
+
+            <div class="px-6 flex flex-col gap-6">
+              <div class="flex flex-col gap-[6px]">
+                <div class="font-medium text-neutral-80">Additional Documents (Optional)</div>
+                <div class="font-medium text-neutral-60">
+                  If you have another supporting documents, specify the name and upload them here.
+                </div>
+              </div>
+
+              <!-- Add Document -->
+              <div class="flex gap-4">
+                <InputText
+                  v-model="additionalDocumentName"
+                  placeholder="Input Document Name (e.g., Letter of Acceptance, Insurance Policy)"
+                  class="flex-1"
+                />
+                <BlackButton class="w-[119px]" @click="addAdditionalDocument">
+                  <IconPlusWhite /> Add File
+                </BlackButton>
+              </div>
+
+              <!-- List Additional Docs -->
+              <div v-for="doc in additionalDocuments" :key="doc.id" class="flex flex-col gap-[6px]">
+                <div class="flex flex-wrap gap-6 items-center justify-between">
+                  <label class="font-medium text-neutral-90">{{ doc.name }}</label>
+                  <PillSuccessUpload v-if="doc?.file?.upload" />
+                </div>
+
+                <FileUpload
+                  v-if="!doc.file"
+                  mode="basic"
+                  class="rimkirim-basic-upload h-full"
+                  accept="image/*,application/pdf"
+                  :max-file-size="1000000"
+                  @select="(e) => onUploadAdditionalFile(e, doc)"
+                />
+
+                <UIUploadedFileItem
+                  v-else
+                  class="w-full"
+                  :name="doc.file.name"
+                  :size="doc.file.size"
+                  :uploaded-at="doc.file.uploadedAt"
+                  :mime-type="doc.file.mimeType"
+                  @remove="removeAdditionalDocument(doc.id)"
+                />
+                <!-- 
+                <FormField :name="toCamelCase(doc.name)" v-slot="{ props }">
+                  <FileUpload
+                    v-if="!doc.file"
+                    mode="basic"
+                    @select="(e) => onFileSelect(e, toCamelCase(doc.name), props, doc)"
+                  />
+
+                  <UIUploadedFileItem
+                    v-else
+                    :name="doc.file.name"
+                    :size="doc.file.size"
+                    :uploaded-at="doc.file.uploadedAt"
+                    :mime-type="doc.file.mimeType"
+                    @remove="() => onFileRemove(toCamelCase(doc.name), props, doc)"
+                  />
+                </FormField> -->
               </div>
             </div>
           </div>
 
-          <div class="px-6">
-            <div class="h-[1px] border-y border-[#EDEDED]" />
-          </div>
-
-          <div class="px-6 flex flex-col gap-6">
-            <div class="flex flex-col gap-[6px]">
-              <div class="font-medium text-neutral-80">
-                Additional Documents (Optional)
-              </div>
-              <div class="font-medium text-neutral-60">
-                If you have another supporting documents, specify the name and
-                upload them here.
-              </div>
-            </div>
-
-            <!-- Add Document -->
-            <div class="flex gap-4">
-              <InputText v-model="additionalDocumentName"
-                placeholder="Input Document Name (e.g., Letter of Acceptance, Insurance Policy)" class="flex-1" />
-              <BlackButton class="w-[119px]" @click="addAdditionalDocument">
-                <IconPlusWhite /> Add File
-              </BlackButton>
-            </div>
-
-            <!-- List Additional Docs -->
-            <div v-for="doc in additionalDocuments" :key="doc.id" class="flex flex-col gap-[6px]">
-              <div class="flex flex-wrap gap-6 items-center justify-between">
-                <label class="font-medium text-neutral-90">{{
-                  doc.name
-                  }}</label>
-                <PillSuccessUpload v-if="doc?.file?.upload" />
-              </div>
-
-              <FileUpload v-if="!doc.file" mode="basic" class="rimkirim-basic-upload h-full"
-                accept="image/*,application/pdf" :max-file-size="1000000"
-                @select="(e) => onUploadAdditionalFile(e, doc)" />
-
-              <UIUploadedFileItem v-else class="w-full" :name="doc.file.name" :size="doc.file.size"
-                :uploaded-at="doc.file.uploadedAt" :mime-type="doc.file.mimeType" @remove="removeAdditionalDocument(doc.id)" />
-            </div>
-          </div>
-        </div>
-
-        <Form v-slot="$form" class="flex flex-col gap-6" :resolver="resolver" :initial-values="initialValues"
-          validate-on-blur @submit="handleSubmit">
           <div class="w-full flex items-center justify-between h-[70px] gap-3">
             <BlackButton class="w-[97px]" @click="handleBack">Back</BlackButton>
             <div class="flex items-center gap-3">
-              <!-- @click="actionForm = ''" -->
-              <TextButton :disabled="submitLoading" @click="handleFinishLater">
-                Finish Later
-              </TextButton>
+              <!--  @click="handleFinishLater" -->
+              <TextButton :disabled="submitLoading"> Finish Later </TextButton>
               <!--  :disabled="$form.invalid && $form.touched" -->
               <PrimaryButton type="submit" class="w-[100px]" :loading="submitLoading">
                 Done
@@ -520,8 +580,11 @@ onMounted(() => {
     </template>
 
     <template v-else>
-      <UISuccessSubmitFormStepOrderHub :step="currentStep" :response="submittedResponse"
-        @go-to-order-hub="handleGoToOrderHubPage" />
+      <UISuccessSubmitFormStepOrderHub
+        :step="currentStep"
+        :response="submittedResponse"
+        @go-to-order-hub="navigateToOrderHub"
+      />
     </template>
   </section>
 </template>

@@ -193,7 +193,7 @@
                     <InputText
                       name="shipperFullName"
                       type="text"
-                      placeholder="e.g. Dzulfan Fadli"
+                      placeholder="e.g. Dzulfan"
                       class="w-full pr-12"
                     />
                     <InputIcon

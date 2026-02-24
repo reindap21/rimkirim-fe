@@ -20,6 +20,16 @@ export function useOrderHub() {
   const bookingCode = computed(() => route.params.id as string);
 
   /**
+   * Purpose of Shipment from Response
+   */
+  const purposeOfShipment = ref<"" | "moving_goods" | "passenger_goods">("");
+
+  /**
+   * Packing List Code from Response
+   */
+  const packingListCode = ref("-");
+
+  /**
    * Navigate back to order hub main page.
    */
   function navigateToOrderHub(): void {
@@ -51,6 +61,9 @@ export function useOrderHub() {
           bookingCode: bookingCode.value,
         },
       });
+
+      purposeOfShipment.value = res?.purpose_of_shipment;
+      packingListCode.value = res?.packing_list_code || "-";
 
       return res || null;
     } catch (err) {
@@ -106,6 +119,7 @@ export function useOrderHub() {
     loading,
     error,
     bookingCode,
+    packingListCode,
 
     // Navigation
     navigateToOrderHub,
