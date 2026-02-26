@@ -11,6 +11,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@lottiefiles/lottie-player": "^2.0.12",
     "@nuxt/eslint": "^1.12.1",
     "@nuxt/image": "^2.0.0",
     "@nuxt/test-utils": "^3.23.0",
@@ -20,6 +21,7 @@
     "@primevue/forms": "^4.5.4",
     "@primevue/themes": "^4.5.4",
     "eslint": "^9.39.2",
+    "lottie-web": "^5.13.0",
     "nuxt": "^4.2.2",
     "primevue": "^4.5.4",
     "typescript": "^5.9.3",
