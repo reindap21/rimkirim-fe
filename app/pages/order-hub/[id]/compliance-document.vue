@@ -12,6 +12,7 @@
   import { camelToTitleCase, toCamelCase } from "~/utils/string";
   import { useOrderHub } from "~/composables/useOrderHub";
   import type { FormInstance } from "@primevue/forms";
+  import IconSaveProgress from "~/components/icons/IconSaveProgress.vue";
 
   const formRef = ref<FormInstance | null>(null);
 
@@ -68,7 +69,10 @@
   const submittedResponse = ref<any>();
 
   const submitLoading = ref(false);
+  const finishLaterLoading = ref(false);
   const errorSubmit = ref("");
+
+  const visibleConfirmSaveLater = ref(false);
 
   const documents = ref<Record<string, FileObjType | null>>({
     ktpDocument: null,
@@ -101,6 +105,75 @@
     }),
   );
 
+  const buildPayload = () => {
+    const payload: Record<string, DocumentPayload | string> = {
+      bookingCode: bookingCode.value,
+    };
+
+    Object.entries(documents.value).forEach(([key, doc]) => {
+      if (!doc?.localPath) return;
+
+      payload[key] = {
+        path: doc.localPath,
+        mimeType: doc.mimeType,
+        uploadedAt: doc.uploadedAt?.toISOString(),
+      };
+    });
+
+    additionalDocuments.value.forEach((d) => {
+      if (!d.file?.localPath) return;
+      payload[toCamelCase(d.name)] = {
+        path: d.file.localPath,
+        mimeType: d.file.mimeType,
+        uploadedAt: d.file.uploadedAt?.toISOString(),
+      };
+    });
+
+    return payload;
+  };
+
+  /**
+   * Popup FinishLater : Show popup
+   */
+  const showPopupFinishLater = () => {
+    visibleConfirmSaveLater.value = true;
+  };
+
+  /**
+   * Popup FinishLater : Close popup
+   */
+  const closePopupFinishLater = () => {
+    visibleConfirmSaveLater.value = false;
+  };
+
+  /**
+   * Finish Later
+   * @param $form
+   */
+  const handleFinishLater = async ($form: any) => {
+    if (finishLaterLoading.value) return;
+
+    finishLaterLoading.value = true;
+
+    try {
+      const res = await $fetch<OrderHubProgress>("/api/order-hub/compliance-document", {
+        method: "PUT",
+        body: buildPayload(),
+        credentials: "include",
+      });
+
+      if (res) {
+        navigateToOrderHub();
+      }
+    } finally {
+      finishLaterLoading.value = false;
+    }
+  };
+
+  /**
+   * Submit
+   * @param param0
+   */
   const handleSubmit = async ({ values, valid }: { values: any; valid: boolean }) => {
     if (!valid || submitLoading.value) return;
 
@@ -109,27 +182,8 @@
     try {
       const payload: Record<string, DocumentPayload | string> = {
         ...values,
-        bookingCode: bookingCode.value,
+        ...buildPayload(),
       };
-
-      Object.entries(documents.value).forEach(([key, doc]) => {
-        if (!doc?.localPath) return;
-
-        payload[key] = {
-          path: doc.localPath,
-          mimeType: doc.mimeType,
-          uploadedAt: doc.uploadedAt?.toISOString(),
-        };
-      });
-
-      additionalDocuments.value.forEach((d) => {
-        if (!d.file?.localPath) return;
-        payload[toCamelCase(d.name)] = {
-          path: d.file.localPath,
-          mimeType: d.file.mimeType,
-          uploadedAt: d.file.uploadedAt?.toISOString(),
-        };
-      });
 
       const res = await $fetch<OrderHubProgress>("/api/order-hub/compliance-document", {
         method: "PUT",
@@ -137,8 +191,10 @@
         credentials: "include",
       });
 
-      submittedResponse.value = res;
-      viewMode.value = "success";
+      if (res) {
+        submittedResponse.value = res;
+        viewMode.value = "success";
+      }
     } finally {
       submitLoading.value = false;
     }
@@ -538,23 +594,6 @@
                   :mime-type="doc.file.mimeType"
                   @remove="removeAdditionalDocument(doc.id)"
                 />
-                <!-- 
-                <FormField :name="toCamelCase(doc.name)" v-slot="{ props }">
-                  <FileUpload
-                    v-if="!doc.file"
-                    mode="basic"
-                    @select="(e) => onFileSelect(e, toCamelCase(doc.name), props, doc)"
-                  />
-
-                  <UIUploadedFileItem
-                    v-else
-                    :name="doc.file.name"
-                    :size="doc.file.size"
-                    :uploaded-at="doc.file.uploadedAt"
-                    :mime-type="doc.file.mimeType"
-                    @remove="() => onFileRemove(toCamelCase(doc.name), props, doc)"
-                  />
-                </FormField> -->
               </div>
             </div>
           </div>
@@ -563,19 +602,27 @@
             <BlackButton class="w-[97px]" @click="handleBack">Back</BlackButton>
             <div class="flex items-center gap-3">
               <!--  @click="handleFinishLater" -->
-              <TextButton :disabled="submitLoading"> Finish Later </TextButton>
+              <TextButton :disabled="submitLoading" @click="showPopupFinishLater">
+                Finish Later
+              </TextButton>
               <!--  :disabled="$form.invalid && $form.touched" -->
               <PrimaryButton type="submit" class="w-[100px]" :loading="submitLoading">
                 Done
               </PrimaryButton>
             </div>
           </div>
-        </Form>
 
-        <!-- <BasePopup v-model:visible="visibleConfirmChangeShipmentOwner" :icon="IconAlertCircle"
-          title="Change Information"
-          :description="`Are you sure you want to replace all information with ${firstCapital(pendingShipmentOwnerSameAs as string)} Information?`"
-          @cancel="handleOnCancelChangeShipmentOwner" @ok="handleOnOkChangeShipmentOwner" /> -->
+          <!-- Confirm Save Later -->
+          <BasePopup
+            v-model:visible="visibleConfirmSaveLater"
+            :icon="IconSaveProgress"
+            title="Your progress will be saved"
+            :description="`Finish later will automatically save your progress in \ncompliance document.\nYou can comeback later to complete the form.`"
+            @cancel="closePopupFinishLater"
+            @ok="handleFinishLater($form)"
+            :okLoading="finishLaterLoading"
+          />
+        </Form>
       </section>
     </template>
 
