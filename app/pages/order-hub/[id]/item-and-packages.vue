@@ -7,6 +7,7 @@
   import { useOrderHub } from "~/composables/useOrderHub";
   import { wordCapital } from "~/utils/string";
   import { nextTick } from "vue";
+  import IconSaveProgress from "~/components/icons/IconSaveProgress.vue";
 
   // External
 
@@ -36,7 +37,7 @@
   // * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
 
   // Use order hub composable
-  const { bookingCode, fetchProgress, navigateToOrderHub: handleBack } = useOrderHub();
+  const { bookingCode, fetchProgress, navigateToOrderHub } = useOrderHub();
 
   const bookingProgressLoading = ref(true);
 
@@ -47,6 +48,8 @@
 
   const currentStep: OrderHubStep = "item_and_package";
 
+  const visibleConfirmSaveLater = ref(false);
+
   const submittedResponse = ref<any>(); // eslint-disable-line
 
   // * ------- Form Handling
@@ -55,6 +58,7 @@
   const currencies = ref<{ name: string; code: string }[]>([]);
   const currenciesLoading = ref(true);
   const submitLoading = ref(false);
+  const finishLaterLoading = ref(false);
   const errorSubmit = ref("");
   const packageErrorIndex = ref<number | null>(null);
 
@@ -75,6 +79,7 @@
 
   // * ------- Methods -----------------------------------------------------------------------------------------------------------------------------------------------
 
+  // TODO: Move to useOrderHub
   const fetchCurrencies = async () => {
     try {
       const res = await $fetch("/api/order-hub/currencies", {
@@ -253,6 +258,53 @@
     packages.value.reduce((sum: number, p: Package) => sum + p.chargeableWeight, 0),
   );
 
+  /**
+   * Popup FinishLater : Show popup
+   */
+  const showPopupFinishLater = () => {
+    visibleConfirmSaveLater.value = true;
+  };
+
+  /**
+   * Popup FinishLater : Close popup
+   */
+  const closePopupFinishLater = () => {
+    visibleConfirmSaveLater.value = false;
+  };
+
+  /**
+   * Finish Later
+   * @param $form
+   */
+  const handleFinishLater = async ($form: any) => {
+    if (finishLaterLoading.value) return;
+
+    finishLaterLoading.value = true;
+    errorSubmit.value = "";
+
+    const payload = {
+      bookingCode: bookingCode.value,
+      currencyCode: selectedCurrency.value?.code,
+      packages: [...packages.value],
+    };
+
+    try {
+      const res = await $fetch("/api/order-hub/item-and-package", {
+        method: "PUT",
+        body: payload,
+        credentials: "include", // Required
+      });
+
+      if (res) {
+        navigateToOrderHub();
+      }
+    } catch (err: any) {
+      errorSubmit.value = err?.data?.message || "Error submit item and packages";
+    } finally {
+      submitLoading.value = false;
+    }
+  };
+
   // Action Buttons
 
   const handleSubmit = async ({ values, valid }: { values: any; valid: boolean }) => {
@@ -303,14 +355,6 @@
     } finally {
       submitLoading.value = false;
     }
-  };
-
-  const handleFinishLater = () => {
-    // actionForm.value = ""
-  };
-
-  const handleGoToOrderHubPage = () => {
-    handleBack(); // Use composable's navigateToOrderHub
   };
 
   // * ------- watch -------------------------------------------------------------------------------------------------------------------------------------------------
@@ -463,10 +507,10 @@
           </div>
 
           <div class="w-full flex items-center justify-between h-[70px] gap-3">
-            <BlackButton class="w-[97px]" @click="handleBack">Back</BlackButton>
+            <BlackButton class="w-[97px]" @click="navigateToOrderHub">Back</BlackButton>
             <div class="flex items-center gap-3">
               <!-- @click="actionForm = ''" -->
-              <TextButton :disabled="submitLoading" @click="handleFinishLater">
+              <TextButton :disabled="submitLoading" @click="showPopupFinishLater">
                 Finish Later
               </TextButton>
               <!--  :disabled="$form.invalid && $form.touched" -->
@@ -475,12 +519,18 @@
               </PrimaryButton>
             </div>
           </div>
-        </Form>
 
-        <!-- <BasePopup v-model:visible="visibleConfirmChangeShipmentOwner" :icon="IconAlertCircle"
-          title="Change Information"
-          :description="`Are you sure you want to replace all information with ${firstCapital(pendingShipmentOwnerSameAs as string)} Information?`"
-          @cancel="handleOnCancelChangeShipmentOwner" @ok="handleOnOkChangeShipmentOwner" /> -->
+          <!-- Confirm Save Later -->
+          <BasePopup
+            v-model:visible="visibleConfirmSaveLater"
+            :icon="IconSaveProgress"
+            title="Your progress will be saved"
+            :description="`Finish later will automatically save your progress in \nitem and packages.\nYou can comeback later to complete the form.`"
+            @cancel="closePopupFinishLater"
+            @ok="handleFinishLater($form)"
+            :okLoading="finishLaterLoading"
+          />
+        </Form>
       </section>
     </template>
 
@@ -488,7 +538,7 @@
       <UISuccessSubmitFormStepOrderHub
         :step="currentStep"
         :response="submittedResponse"
-        @go-to-order-hub="handleGoToOrderHubPage"
+        @go-to-order-hub="navigateToOrderHub"
       />
     </template>
   </section>
