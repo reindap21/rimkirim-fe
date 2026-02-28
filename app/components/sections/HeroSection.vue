@@ -1,24 +1,34 @@
 <script setup lang="ts">
   import { MENU } from "~/config";
+
+  import { onMounted } from "vue";
+
+  const container = ref<HTMLDivElement | null>(null);
+
+  onMounted(async () => {
+    await import("@lottiefiles/lottie-player");
+    const lottie = await import("lottie-web");
+
+    lottie.default.loadAnimation({
+      container: container.value!,
+      renderer: "svg",
+      loop: true,
+      autoplay: true,
+      path: "/lottie/hero-anim.json",
+      rendererSettings: {
+        preserveAspectRatio: "xMidYMid slice",
+      },
+    });
+  });
 </script>
 
 <template>
   <!-- HERO WRAPPER -->
   <section class="relative overflow-visible h-[695px] mt-[134px] pt-[145px]">
-    <!-- IMAGE LEFT -->
-    <img
-      src="https://i.ibb.co.com/F4DKtTNy/hero-left.png"
-      alt=""
-      class="pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 w-[260px] md:w-[320px] xl:w-[477px]"
+    <div
+      ref="container"
+      class="absolute left-0 -top-8 inset-0 w-full h-full pointer-events-none z-0"
     />
-
-    <!-- IMAGE RIGHT -->
-    <img
-      src="https://i.ibb.co.com/v4w0Xst2/image-15.png"
-      alt=""
-      class="pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 w-[260px] md:w-[320px] xl:w-[477px]"
-    />
-
     <!-- HERO CONTENT -->
     <div
       class="relative z-10 max-w-5xl mx-auto px-6 flex flex-col items-center justify-center gap-4"
