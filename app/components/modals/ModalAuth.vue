@@ -78,8 +78,8 @@
             .string()
             .min(1, { message: "Email is required." })
             .email({ message: "Invalid email address." }),
-          password: z.string().min(3, { message: "Minimum 3 characters." }),
-          password_confirmation: z.string().min(3, { message: "Minimum 3 characters." }),
+          password: z.string().min(8, { message: "Minimum 8 characters." }),
+          password_confirmation: z.string().min(8, { message: "Minimum 8 characters." }),
         })
         .refine((data) => data.password === data.password_confirmation, {
           message: "Passwords do not match",

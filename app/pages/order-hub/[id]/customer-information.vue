@@ -3,6 +3,7 @@
   import { ref } from "vue";
   import { z } from "zod";
   import IconAlertCircle from "~/components/icons/IconAlertCircle.vue";
+  import IconSaveProgress from "~/components/icons/IconSaveProgress.vue";
   import { MENU } from "~/config";
   import type { OrderHubStep, CustomerInformationPayload, AddressGeocode } from "~/types/order-hub";
   import { createAddressGeocode, hasValidGeocode } from "~/utils/address";
@@ -51,6 +52,7 @@
 
   const formRef = ref<any>(null);
   const submitLoading = ref(false);
+  const finishLaterLoading = ref(false);
   const errorSubmit = ref("");
   const isReceiverSameAsSender = ref(false);
   const shipmentOwnerInformationSameAs = ref<"" | "sender" | "receiver">("");
@@ -60,6 +62,7 @@
   const countriesLoading = ref(true);
 
   const visibleConfirmChangeShipmentOwner = ref(false);
+  const visibleConfirmSaveLater = ref(false);
 
   const initialValues = ref<CustomerInformationFormValues>({
     shipperFullName: "",
@@ -256,10 +259,82 @@
     shipmentOwnerInformationSameAs.value = "receiver";
   };
 
-  const handleFinishLater = () => {
-    // actionForm.value = ""
+  /**
+   * Popup FinishLater : Show popup
+   */
+  const showPopupFinishLater = () => {
+    visibleConfirmSaveLater.value = true;
   };
 
+  /**
+   * Popup FinishLater : Close popup
+   */
+  const closePopupFinishLater = () => {
+    visibleConfirmSaveLater.value = false;
+  };
+
+  /**
+   * Finish Later
+   * @param $form
+   */
+  const handleFinishLater = async ($form: any) => {
+    if (finishLaterLoading.value) return;
+
+    finishLaterLoading.value = true;
+    errorSubmit.value = "";
+
+    const payload: Partial<CustomerInformationPayload> = {
+      bookingCode: bookingCode.value,
+
+      // sender
+      senderContactName: $form?.senderContactName.value,
+      senderEmail: $form?.senderEmail.value,
+      senderPhoneNumber: $form?.senderPhoneNumber.value,
+      senderCountry: $form?.senderCountry?.code,
+      senderFullAddress: originAddress.value ?? null,
+      senderAddressGeocode: hasValidGeocode(origin.value) ? toRaw(origin.value) : null,
+
+      // receiver
+      receiverContactName: $form?.receiverContactName.value,
+      receiverEmail: $form?.receiverEmail.value,
+      receiverPhoneNumber: $form?.receiverPhoneNumber.value,
+      receiverCountry: $form?.receiverCountry?.code,
+      receiverFullAddress: destinationAddress.value ?? null,
+      receiverAddressGeocode: hasValidGeocode(destination.value) ? toRaw(destination.value) : null,
+
+      // shipper
+      shipperFullName: $form?.shipperFullName.value,
+      shipperEmail: $form?.shipperEmail.value,
+      shipperOriginPhoneNumber: $form?.shipperOriginPhoneNumber.value,
+      shipperDestinationPhoneNumber: $form?.shipperDestinationPhoneNumber.value,
+
+      receiverSameAsSender: isReceiverSameAsSender.value,
+      shipmentOwnerSameAs: shipmentOwnerInformationSameAs.value ?? null,
+
+      status: "draft",
+    };
+
+    try {
+      const res = await $fetch("/api/order-hub/customer-information", {
+        method: "PUT",
+        body: payload,
+        credentials: "include",
+      });
+
+      if (res) {
+        navigateToOrderHub();
+      }
+    } catch (err: any) {
+      errorSubmit.value = err?.data?.message || "Error saving draft customer information";
+    } finally {
+      finishLaterLoading.value = false;
+    }
+  };
+
+  /**
+   * Submit
+   * @param param0
+   */
   const handleSubmit = async ({ values, valid }: { values: any; valid: boolean }) => {
     if (!valid || submitLoading.value) return;
 
@@ -880,29 +955,46 @@
             <BlackButton class="w-[97px]" @click="navigateToOrderHub">Back</BlackButton>
             <div class="flex items-center gap-3">
               <!-- @click="actionForm = ''" -->
-              <TextButton @click="handleFinishLater" :disabled="submitLoading">
+              <TextButton @click="showPopupFinishLater" :disabled="submitLoading">
                 Finish Later
               </TextButton>
               <!--  :disabled="$form.invalid && $form.touched" -->
-              <PrimaryButton type="submit" class="w-[100px]" :loading="submitLoading">
+              <PrimaryButton
+                type="submit"
+                class="w-[100px]"
+                :loading="submitLoading"
+                :disabled="finishLaterLoading"
+              >
                 Done
               </PrimaryButton>
             </div>
           </div>
-        </Form>
 
-        <BasePopup
-          v-model:visible="visibleConfirmChangeShipmentOwner"
-          :icon="IconAlertCircle"
-          title="Change Information"
-          :description="`Are you sure you want to replace all information with ${firstCapital(pendingShipmentOwnerSameAs as string)} Information?`"
-          @cancel="handleOnCancelChangeShipmentOwner"
-          @ok="handleOnOkChangeShipmentOwner"
-        />
+          <!-- Confirm Change Shipment Owner -->
+          <BasePopup
+            v-model:visible="visibleConfirmChangeShipmentOwner"
+            :icon="IconAlertCircle"
+            title="Change Information"
+            :description="`Are you sure you want to replace all information with ${firstCapital(pendingShipmentOwnerSameAs as string)} Information?`"
+            @cancel="handleOnCancelChangeShipmentOwner"
+            @ok="handleOnOkChangeShipmentOwner"
+          />
+
+          <!-- Confirm Save Later -->
+          <BasePopup
+            v-model:visible="visibleConfirmSaveLater"
+            :icon="IconSaveProgress"
+            title="Your progress will be saved"
+            :description="`Finish later will automatically save your progress in \ncustomer information.\nYou can comeback later to complete the form.`"
+            @cancel="closePopupFinishLater"
+            @ok="handleFinishLater($form)"
+            :okLoading="finishLaterLoading"
+          />
+        </Form>
       </section>
     </template>
 
-    <template v-else>
+    <template v-if="viewMode === 'success'">
       <UISuccessSubmitFormStepOrderHub
         :step="currentStep"
         :response="submittedResponse"
