@@ -78,4 +78,19 @@
 
   /* Upload */
   --p-fileupload-content-padding: 0;
+
+  /* Datepicker */
+  --p-datepicker-panel-border-color: var(--rimkirim-neutral-30);
+  --p-datepicker-panel-border-radius: 8px;
+  --p-datepicker-header-padding: 0;
+  --p-datepicker-title-gap: 0;
+  --p-datepicker-dropdown-active-background: var(--rimkirim-neutral-100);
+  --p-datepicker-dropdown-active-color: #ffffff;
+  --p-datepicker-buttonbar-border-color: var(--rimkirim-neutral-100);
+  --p-datepicker-day-view-margin: 0;
+  --p-datepicker-week-day-padding: 16px;
+  --p-datepicker-week-day-color: var(--rimkirim-neutral-60);
+  --p-datepicker-date-padding: 12px;
+  --p-datepicker-date-selected-background: var(--rimkirim-neutral-100);
+  --p-datepicker-date-border-radius: 8px;
 }

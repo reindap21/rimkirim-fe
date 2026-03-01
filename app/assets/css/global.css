@@ -149,6 +149,11 @@ div[role="alert"] {
   @apply !w-[52px];
 }
 
+/* Text Area */
+.p-textarea {
+  @apply !text-[14px] !leading-[22px] !font-[400];
+}
+
 /* Popover */
 
 .p-popover {
@@ -391,4 +396,54 @@ div[role="alert"] {
 
 .rimkirim-basic-upload .p-button-label {
   @apply !text-white;
+}
+
+/* DatePicker */
+.p-datepicker-panel {
+  @apply p-0;
+}
+
+.p-datepicker-header {
+  @apply py-4 px-2 h-[52px];
+}
+
+.p-datepicker-prev-button,
+.p-datepicker-next-button {
+  @apply !text-neutral-100 !p-0;
+}
+
+.tableheader {
+  @apply !text-neutral-60;
+}
+
+.p-datepicker-day-view {
+  @apply px-4 py-3;
+}
+
+.p-datepicker-day.p-disabled {
+  @apply !text-neutral-60 opacity-100;
+}
+
+/* Item */
+.p-togglebutton-content {
+  @apply p-0;
+}
+
+.pickup-time.p-selectbutton {
+  @apply p-0;
+}
+
+.pickup-time.p-togglebutton.p-component {
+  @apply !p-0;
+}
+
+.p-togglebutton {
+  @apply !p-0 bg-transparent border-none;
+}
+
+.p-togglebutton-checked::before,
+.p-togglebutton-checked::after,
+.p-togglebutton::before,
+.p-togglebutton::after {
+  border-color: transparent;
 }
