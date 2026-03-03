@@ -4,9 +4,8 @@
   import { z } from "zod";
   import IconAlertCircle from "~/components/icons/IconAlertCircle.vue";
   import IconSaveProgress from "~/components/icons/IconSaveProgress.vue";
-  import { MENU } from "~/config";
-  import type { OrderHubStep, CustomerInformationPayload, AddressGeocode } from "~/types/order-hub";
-  import { createAddressGeocode, hasValidGeocode } from "~/utils/address";
+  import type { AddressGeocode, CustomerInformationPayload, OrderHubStep } from "~/types/order-hub";
+  import { hasValidGeocode } from "~/utils/address";
 
   // * ------- Types -------------------------------------------------------------------------------------------------------------------------------------------------
 
