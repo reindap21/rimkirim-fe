@@ -447,3 +447,13 @@ div[role="alert"] {
 .p-togglebutton::after {
   border-color: transparent;
 }
+
+.p-message {
+  position: absolute;
+  bottom: -15px;
+  height: 18px !important;
+}
+
+.p-message-text {
+  font-size: 11px !important;
+}

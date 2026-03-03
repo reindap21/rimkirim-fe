@@ -536,7 +536,7 @@
               <!-- Sender -->
               <div class="flex flex-col gap-6">
                 <!-- Sender Full Name -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium text-neutral-90">Sender Full Name</label>
                   <div class="relative">
                     <InputText
@@ -561,7 +561,7 @@
                   >
                 </div>
                 <!-- Sender Country -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium text-neutral-90">Sender Country</label>
                   <div class="relative">
                     <!-- <InputText unsstyled name="senderCountry" type="text" placeholder="Enter Sender Origin Country"
@@ -587,7 +587,7 @@
                   >
                 </div>
                 <!-- Sender Full Address -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium text-neutral-90">Sender Full Address</label>
                   <ClientOnly>
                     <GoogleAddressInput
@@ -612,7 +612,7 @@
                   >
                 </div>
                 <!-- Sender Email Address -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium text-neutral-90">Sender Email Address</label>
                   <div class="relative">
                     <InputText
@@ -636,7 +636,7 @@
                   >
                 </div>
                 <!-- Sender Phone Number -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium text-neutral-90">Sender Phone Number</label>
                   <div class="relative">
                     <InputIcon
@@ -664,7 +664,7 @@
               <!-- Receiver -->
               <div class="flex flex-col gap-6">
                 <!-- Receiver Full Name -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium text-neutral-90">Receiver Full Name</label>
                   <div class="relative">
                     <InputText
@@ -688,7 +688,7 @@
                   >
                 </div>
                 <!-- Receiver Country -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium text-neutral-90">Receiver Country</label>
                   <div class="relative">
                     <!-- <InputText name="receiverCountry" type="text" placeholder="Enter Receiver Origin Country"
@@ -714,7 +714,7 @@
                   >
                 </div>
                 <!-- Receiver Full Address -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium text-neutral-90">Receiver Full Address</label>
                   <ClientOnly>
                     <GoogleAddressInput
@@ -740,7 +740,7 @@
                   >
                 </div>
                 <!-- Receiver Email Address -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium text-neutral-90">Receiver Email Address</label>
                   <div class="relative">
                     <InputText
@@ -764,7 +764,7 @@
                   >
                 </div>
                 <!-- Receiver Phone Number -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium text-neutral-90">Receiver Phone Number</label>
                   <div class="relative">
                     <InputIcon
@@ -844,7 +844,7 @@
               <!-- Shipment Owner Information Body -->
               <div class="flex flex-col gap-6">
                 <!-- Package Owner Name -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium text-neutral-90">Package Owner Name</label>
                   <div class="relative">
                     <InputText
@@ -870,7 +870,7 @@
                 <!-- Package Phone Number -->
                 <div class="flex gap-6">
                   <!-- Origin -->
-                  <div class="flex-1 flex flex-col gap-[6px]">
+                  <div class="flex-1 relative flex flex-col gap-[6px]">
                     <label class="font-medium text-neutral-90"
                       >Active International Phone Number [Origin]</label
                     >
@@ -897,7 +897,7 @@
                     >
                   </div>
                   <!-- Destination -->
-                  <div class="flex-1 flex flex-col gap-[6px]">
+                  <div class="flex-1 relative flex flex-col gap-[6px]">
                     <label class="font-medium text-neutral-90"
                       >Active International Phone Number [Destination]</label
                     >
@@ -925,7 +925,7 @@
                 </div>
 
                 <!-- Package Owner Email Address -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium text-neutral-90">Package Owner Email Address</label>
                   <div class="relative">
                     <InputText
