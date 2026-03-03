@@ -400,11 +400,11 @@ div[role="alert"] {
 
 /* DatePicker */
 .p-datepicker-panel {
-  @apply p-0;
+  @apply !p-0;
 }
 
 .p-datepicker-header {
-  @apply py-4 px-2 h-[52px];
+  @apply !py-4 !px-2 !h-[52px];
 }
 
 .p-datepicker-prev-button,
@@ -417,7 +417,7 @@ div[role="alert"] {
 }
 
 .p-datepicker-day-view {
-  @apply px-4 py-3;
+  @apply !px-4 !py-3;
 }
 
 .p-datepicker-day.p-disabled {
@@ -426,7 +426,7 @@ div[role="alert"] {
 
 /* Item */
 .p-togglebutton-content {
-  @apply p-0;
+  @apply !p-0;
 }
 
 .pickup-time.p-selectbutton {
@@ -438,7 +438,7 @@ div[role="alert"] {
 }
 
 .p-togglebutton {
-  @apply !p-0 bg-transparent border-none;
+  @apply !p-0 !bg-transparent !border-none;
 }
 
 .p-togglebutton-checked::before,

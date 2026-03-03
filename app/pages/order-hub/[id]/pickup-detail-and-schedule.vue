@@ -191,10 +191,6 @@
   onMounted(() => {});
 
   // * ------- watchEffect
-
-  watchEffect(() => {
-    console.log("buildingType =", formRef.value?.fields?.buildingType?.value);
-  });
 </script>
 
 <template>
