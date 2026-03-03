@@ -55,6 +55,16 @@
     isPickupDisabled.value = res?.progress?.pickup_detail_schedule?.toLowerCase() === "locked";
   };
 
+  const getWaitingNumber = (bookingData: OrderHubProgress) => {
+    if (!bookingData?.progress) return 3;
+    let counter = 0;
+    Object.entries(bookingData.progress).forEach((v) => {
+      if (v[0] === "pickup_detail_schedule") return;
+      if (v[1] !== "completed") counter++;
+    });
+    return counter;
+  };
+
   const navigateTo = (page: string) => {
     navigateToPage(page);
   };
@@ -195,17 +205,18 @@
 
           <!-- PICKUP DETAIL & SCHEDULE: LOCKED -->
           <UICardInformation
-            :status="(bookingData as any)?.pickup_detail_schedule?.status as any"
+            :status="((bookingData as any)?.pickup_detail_schedule?.status as any) || 'locked'"
             :total-progress="
               Number((bookingData as any)?.pickup_detail_schedule?.progress_count?.total || 0)
             "
             :current-progress="
               Number((bookingData as any)?.pickup_detail_schedule?.progress_count?.completed || 0)
             "
+            :waiting-number="getWaitingNumber(bookingData as OrderHubProgress)"
             :title="['PICKUP DETAIL &', 'SCHEDULE']"
-            :icon="isPickupDisabled ? IconPickupDisabled : IconPickup"
+            :icon="!isPickupDisabled ? IconPickup : IconPickupDisabled"
             description="Select your preferred date & time for pickup."
-            @action="navigateTo('pickup-detail-and-schedule')"
+            @action="!isPickupDisabled && navigateTo('pickup-detail-and-schedule')"
           />
         </div>
 

@@ -18,6 +18,7 @@
     description: string;
     action?: Component;
     error?: string;
+    waitingNumber?: number;
   }
 
   // * ------- Defines -----------------------------------------------------------------------------------------------------------------------------------------------
@@ -138,10 +139,10 @@
           {{ status === "awaiting_input" ? "Start" : "Edit" }} →
         </button>
         <button
-          class="text-[14px] leading-[22px] font-medium !text-neutral-70 flex items-center gap-1 hover:opacity-80"
+          class="text-[14px] leading-[22px] font-medium !text-neutral-70 flex items-center gap-1 hover:opacity-80 cursor-default"
           v-else
         >
-          Wait for another form 1/3
+          Wait for another form {{ props?.waitingNumber }}/3
         </button>
       </div>
     </div>

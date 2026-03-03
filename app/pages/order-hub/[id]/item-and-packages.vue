@@ -534,7 +534,7 @@
       </section>
     </template>
 
-    <template v-else>
+    <template v-if="viewMode === 'success'">
       <UISuccessSubmitFormStepOrderHub
         :step="currentStep"
         :response="submittedResponse"

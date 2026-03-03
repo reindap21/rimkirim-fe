@@ -174,15 +174,6 @@
       $form.receiverEmail.value = $form.senderEmail.value;
       $form.receiverPhoneNumber.value = $form.senderPhoneNumber.value;
     }
-    // else {
-    //   // Clear all receiver fields
-    //   $form.receiverContactName.value = ""
-    //   $form.receiverCountry.value = ""
-    //   destinationAddress.value = ""
-    //   destination.value = {}
-    //   $form.receiverEmail.value = ""
-    //   $form.receiverPhoneNumber.value = ""
-    // }
   };
 
   const handleOnClickSameAs = (sameAs: "sender" | "receiver", $form: FormInstance) => {
@@ -337,6 +328,9 @@
     values: CustomerInformationFormValues;
     valid: boolean;
   }) => {
+    console.log("valid", valid);
+    console.log("submitLoading", submitLoading.value);
+
     if (!valid || submitLoading.value) return;
 
     if (!hasValidGeocode(origin.value)) {
