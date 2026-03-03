@@ -87,7 +87,13 @@
 
   // * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
 
-  const { bookingCode, packingListCode, navigateToOrderHub, fetchProgress } = useOrderHub(); // other vars: purposeOfShipment
+  const {
+    loading: bookingProgressLoading,
+    bookingCode,
+    packingListCode,
+    navigateToOrderHub,
+    fetchProgress,
+  } = useOrderHub(); // other vars: purposeOfShipment
 
   const { user, loading } = useAuth();
 
@@ -950,7 +956,10 @@
             <BlackButton class="w-[97px]" @click="navigateToOrderHub">Back</BlackButton>
             <div class="flex items-center gap-3">
               <!-- @click="actionForm = ''" -->
-              <TextButton @click="showPopupFinishLater" :disabled="submitLoading">
+              <TextButton
+                @click="showPopupFinishLater"
+                :disabled="submitLoading || bookingProgressLoading"
+              >
                 Finish Later
               </TextButton>
               <!--  :disabled="$form.invalid && $form.touched" -->
@@ -958,7 +967,7 @@
                 type="submit"
                 class="w-[100px]"
                 :loading="submitLoading"
-                :disabled="finishLaterLoading"
+                :disabled="finishLaterLoading || bookingProgressLoading"
               >
                 Done
               </PrimaryButton>

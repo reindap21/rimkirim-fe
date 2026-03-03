@@ -56,6 +56,7 @@
   definePageMeta({ layout: "order-hub" });
 
   const {
+    loading: bookingProgressLoading,
     bookingCode,
     navigateToOrderHub: handleBack,
     navigateToOrderHub,
@@ -600,11 +601,19 @@
             <BlackButton class="w-[97px]" @click="handleBack">Back</BlackButton>
             <div class="flex items-center gap-3">
               <!--  @click="handleFinishLater" -->
-              <TextButton :disabled="submitLoading" @click="showPopupFinishLater">
+              <TextButton
+                :disabled="submitLoading || bookingProgressLoading"
+                @click="showPopupFinishLater"
+              >
                 Finish Later
               </TextButton>
               <!--  :disabled="$form.invalid && $form.touched" -->
-              <PrimaryButton type="submit" class="w-[100px]" :loading="submitLoading">
+              <PrimaryButton
+                type="submit"
+                class="w-[100px]"
+                :loading="submitLoading"
+                :disabled="finishLaterLoading || bookingProgressLoading"
+              >
                 Done
               </PrimaryButton>
             </div>

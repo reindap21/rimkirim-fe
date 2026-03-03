@@ -497,8 +497,12 @@
 
                 <!-- Qty -->
                 <td class="p-2">
-                  <InputNumber v-model="item.quantity" :min="1" class="w-full" />
-                  <!-- @update:modelValue="emitUpdate" -->
+                  <InputNumber
+                    v-model="item.quantity"
+                    :min="1"
+                    class="w-full"
+                    @update:modelValue="emitUpdate"
+                  />
                 </td>
 
                 <!-- Value -->
@@ -514,8 +518,8 @@
                       placeholder="0"
                       class="w-full h-full"
                       inputClass="w-full h-full !pl-[56px]"
+                      @update:modelValue="emitUpdate"
                     />
-                    <!-- @update:modelValue="emitUpdate" -->
                   </div>
                 </td>
 
