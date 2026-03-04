@@ -282,7 +282,7 @@
       senderContactName: $form?.senderContactName.value,
       senderEmail: $form?.senderEmail.value,
       senderPhoneNumber: $form?.senderPhoneNumber.value,
-      senderCountry: $form?.senderCountry?.code,
+      senderCountry: $form?.senderCountry?.value?.code,
       senderFullAddress: originAddress.value ?? null,
       senderAddressGeocode: hasValidGeocode(origin.value) ? toRaw(origin.value) : null,
 
@@ -290,7 +290,7 @@
       receiverContactName: $form?.receiverContactName.value,
       receiverEmail: $form?.receiverEmail.value,
       receiverPhoneNumber: $form?.receiverPhoneNumber.value,
-      receiverCountry: $form?.receiverCountry?.code,
+      receiverCountry: $form?.receiverCountry?.value?.code,
       receiverFullAddress: destinationAddress.value ?? null,
       receiverAddressGeocode: hasValidGeocode(destination.value) ? toRaw(destination.value) : null,
 
@@ -361,7 +361,7 @@
       senderContactName: values.senderContactName,
       senderEmail: values.senderEmail,
       senderPhoneNumber: values.senderPhoneNumber,
-      senderCountry: values.senderCountry.code,
+      senderCountry: values?.senderCountry?.code,
       senderFullAddress: originAddress.value,
       senderProvince: origin.value?.province || "",
       senderCity: origin.value?.city || "",
@@ -372,7 +372,7 @@
       receiverContactName: values.receiverContactName,
       receiverEmail: values.receiverEmail,
       receiverPhoneNumber: values.receiverPhoneNumber,
-      receiverCountry: values.receiverCountry.code,
+      receiverCountry: values?.receiverCountry?.code,
       receiverFullAddress: destinationAddress.value,
       receiverProvince: destination.value?.province || "",
       receiverCity: destination.value?.city || "",
@@ -448,6 +448,8 @@
     dataLoading.value = false;
     formReady.value = true; // ⬅️ KUNCI
   });
+
+  watchEffect(() => {});
 </script>
 
 <template>

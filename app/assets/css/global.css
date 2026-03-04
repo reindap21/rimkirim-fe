@@ -4,7 +4,13 @@ body {
   @apply !text-[14px] !leading-[22px] font-[400] bg-white;
 }
 
-:focus-visible {
+/* TODO: Update the focus-visible later; check using button or link, still use default outline  */
+/* :focus-visible {
+  @apply outline-none ring ring-[#C1FF00] ring-offset-2;
+} */
+
+a:focus-visible,
+button:focus-visible {
   @apply outline-none ring ring-[#C1FF00] ring-offset-2;
 }
 
@@ -456,4 +462,9 @@ div[role="alert"] {
 
 .p-message-text {
   font-size: 11px !important;
+}
+
+.p-inputwrapper-filled .p-select-label {
+  border-color: transparent !important;
+  outline: none;
 }
