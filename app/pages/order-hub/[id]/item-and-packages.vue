@@ -147,6 +147,7 @@
       } else {
         packages.value = [createPackage()];
       }
+      bookingProgressLoading.value = false;
     } catch (err) {
       // Error is already handled by the composable
       bookingProgressLoading.value = false;
