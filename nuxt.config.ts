@@ -21,6 +21,7 @@ export default defineNuxtConfig({
     "@nuxt/image",
     "@nuxt/test-utils",
     "@nuxtjs/tailwindcss",
+    "@nuxtjs/color-mode",
     "@primevue/nuxt-module",
   ],
 
@@ -61,6 +62,12 @@ export default defineNuxtConfig({
     "/assets/css/rimkirim-tokens.css",
     "/assets/css/primevue-overrides.css",
   ],
+
+  colorMode: {
+    preference: "light", // force light
+    fallback: "light",
+    classSuffix: "",
+  },
 
   vite: {
     server: {

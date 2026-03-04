@@ -24,7 +24,7 @@
 
 <template>
   <!-- HERO WRAPPER -->
-  <section class="relative overflow-visible h-[695px] mt-[134px] pt-[145px]">
+  <section class="relative overflow-visible h-[695px] mt-[134px] pt-[145px] pb-10">
     <div ref="container" class="absolute left-0 inset-0 w-full h-full pointer-events-none z-0" />
     <!-- HERO CONTENT -->
     <div

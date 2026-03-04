@@ -63,8 +63,9 @@
 </script>
 
 <template>
+  <!-- Top gap set on Hero -->
   <!-- SPECIAL RATES -->
-  <section class="w-full max-w-5xl mx-auto mt-10 pb-10 flex flex-col gap-3">
+  <section class="w-full max-w-5xl mx-auto pb-10 flex flex-col gap-3">
     <template v-if="loading">
       <UIRateCardSkeleton />
       <UIRateCardSkeleton />
