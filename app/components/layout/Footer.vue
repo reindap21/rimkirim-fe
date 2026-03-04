@@ -57,7 +57,7 @@
       <div class="flex flex-col md:flex-row items-start md:items-end justify-between gap-8">
         <div class="flex flex-col gap-4">
           <div class="text-[36px] font-bold text-[#C1FF00]">
-            <UIBrandLogo fill="#C1FF00" width="245" height="82" />
+            <UIBrandLogo fill="#C1FF00" width="120" height="40" />
           </div>
           <p class="mt-2 text-[14px] text-[#C2C2C2]">
             © 2025. Rimkirim – PT Dwarsa Sapta Angkasa. All rights reserved.
