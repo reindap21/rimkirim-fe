@@ -1,11 +1,12 @@
 import { setCookie } from "h3";
+import type { LoginRequestBody, AuthTokenResponse, AuthProfileResponse } from "~/types/api";
 
 export default defineEventHandler(async (event) => {
   /**
    * 1️⃣ Client req body
    * (email and password)
    */
-  const body = await readBody(event);
+  const body = await readBody<LoginRequestBody>(event);
 
   if (!body?.email || !body?.password) {
     throw createError({
@@ -20,7 +21,7 @@ export default defineEventHandler(async (event) => {
 
   // 2️⃣ Fetch API
   try {
-    const res: any = await $fetch(`${baseApiUrl}/api/auth/login`, {
+    const res = await $fetch<AuthTokenResponse>(`${baseApiUrl}/api/auth/login`, {
       method: "POST",
       body,
     });
@@ -53,7 +54,7 @@ export default defineEventHandler(async (event) => {
     });
 
     // 4️⃣ Fetch API PROFILE
-    const resProfile: any = await $fetch(`${baseApiUrl}/api/auth/me`, {
+    const resProfile = await $fetch<AuthProfileResponse>(`${baseApiUrl}/api/auth/me`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${access_token}`,
@@ -85,11 +86,12 @@ export default defineEventHandler(async (event) => {
     return {
       user: resProfile.data,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const e = error as { statusCode?: number; statusMessage?: string; data?: { message?: string } };
     throw createError({
-      statusCode: error?.statusCode || 500,
+      statusCode: e?.statusCode || 500,
       statusMessage:
-        error?.data?.message || error?.statusMessage || "Login failed",
+        e?.data?.message || e?.statusMessage || "Login failed",
     });
   }
 });

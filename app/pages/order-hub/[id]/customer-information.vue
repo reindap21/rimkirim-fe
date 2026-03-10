@@ -5,6 +5,7 @@
   import IconAlertCircle from "~/components/icons/IconAlertCircle.vue";
   import IconSaveProgress from "~/components/icons/IconSaveProgress.vue";
   import type { AddressGeocode, CustomerInformationPayload, OrderHubStep } from "~/types/order-hub";
+  import type { PrimeFormField, PrimeFormInstance } from "~/types/primevue";
   import { hasValidGeocode } from "~/utils/address";
 
   // * ------- Schema ------------------------------------------------------------------------------------------------------------------------------------------------
@@ -65,16 +66,6 @@
   // * ------- Types -------------------------------------------------------------------------------------------------------------------------------------------------
 
   type CustomerInformationFormValues = z.infer<typeof schema>;
-
-  type PrimeFormField<T> = {
-    value: T;
-    invalid: boolean;
-    error?: { message?: string };
-  };
-
-  type PrimeFormInstance<T> = {
-    [K in keyof T]: PrimeFormField<T[K]>;
-  };
 
   type FormInstance = PrimeFormInstance<CustomerInformationFormValues>;
 

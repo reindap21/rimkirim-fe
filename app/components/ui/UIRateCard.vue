@@ -1,35 +1,10 @@
 <script setup lang="ts">
   import { computed, ref } from "vue";
-
-  // * ------- Types -------------------------------------------------------------------------------------------------------------------------------------------------
-
-  type UIRateCard = {
-    price: number;
-    currency?: string;
-    unit?: string;
-    minWeight?: number;
-    badge?: string;
-    provider: {
-      url: string;
-      alt: string;
-    };
-    originCountry: string;
-    originFlag: string;
-    destinationCountry: string;
-    destinationFlag: string;
-    eta?: {
-      days_from: string;
-      days_to: string;
-    };
-    isDirect?: boolean;
-    terms?: string[];
-    collapsible?: boolean;
-    loading?: boolean;
-  };
+  import type { UIRateCardProps } from "~/types/rate";
 
   // * ------- Defines -----------------------------------------------------------------------------------------------------------------------------------------------
 
-  const props = withDefaults(defineProps<UIRateCard>(), {
+  const props = withDefaults(defineProps<UIRateCardProps>(), {
     currency: "IDR",
     unit: "Kg",
     isDirect: true,

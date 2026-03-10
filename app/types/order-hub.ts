@@ -114,6 +114,32 @@ export interface AddressGeocode {
   country: string; // ISO code
 }
 
+// Compliance Document Page Types
+
+export type ComplianceDocumentType =
+  | "ktpDocument"
+  | "npwpDocument"
+  | "passportDocument"
+  | "skpKbriDocument"
+  | "otherDocument"
+
+export type FileObjType = Omit<ComplianceDocument, "uploadedAt"> & {
+  upload?: boolean
+  uploadedAt?: Date
+}
+
+export type AdditionalDocument = {
+  id: string
+  name: string
+  file?: FileObjType
+}
+
+export type DocumentPayload = {
+  path: string
+  mimeType?: string
+  uploadedAt?: string
+}
+
 // Customer Information Payload
 export interface CustomerInformationPayload {
   bookingCode: string;

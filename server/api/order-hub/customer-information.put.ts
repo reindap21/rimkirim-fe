@@ -1,4 +1,4 @@
-import type { OrderHubProgressResponse } from "~/types/order-hub";
+import type { OrderHubProgressResponse, CustomerInformationPayload } from "~/types/order-hub";
 
 export default defineEventHandler(async (event) => {
   // 0️⃣ REQUIRED; Token Check
@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
    * 1️⃣ Client req body
    * ...
    */
-  const body = await readBody(event);
+  const body = await readBody<Partial<CustomerInformationPayload>>(event);
 
   // TODO: tambah payload lainnya
   if (
@@ -58,14 +58,14 @@ export default defineEventHandler(async (event) => {
 
     //* 3️⃣ Return full response
     return res.data;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("[PUT CUSTOMMER INFORMATION API Error]", error);
-
+    const e = error as { statusCode?: number; statusMessage?: string; data?: { message?: string } };
     throw createError({
-      statusCode: error?.statusCode || 500,
+      statusCode: e?.statusCode || 500,
       statusMessage:
-        error?.data?.message ||
-        error?.statusMessage ||
+        e?.data?.message ||
+        e?.statusMessage ||
         "Failed to update customer information",
     });
   }

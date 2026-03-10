@@ -167,15 +167,4 @@ export interface GoogleAddressInputEmits {
   (e: 'error', error: Error): void;
 }
 
-/**
- * Address geocode data (from ~/types/order-hub but re-exported for convenience)
- */
-export interface AddressGeocode {
-  address: string;
-  latitude: number;
-  longitude: number;
-  postal_code: string;
-  city: string;
-  province: string;
-  country: string; // ISO code
-}
+export type { AddressGeocode } from "./order-hub"

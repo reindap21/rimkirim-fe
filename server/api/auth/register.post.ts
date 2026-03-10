@@ -1,11 +1,12 @@
 import { setCookie } from "h3";
+import type { RegisterRequestBody, AuthTokenResponse, AuthProfileResponse } from "~/types/api";
 
 export default defineEventHandler(async (event) => {
   /**
    * 1️⃣ Client req body
    * (name, email, password, password_confirmation)
    */
-  const body = await readBody(event);
+  const body = await readBody<RegisterRequestBody>(event);
 
   if (
     !body?.name ||
@@ -25,7 +26,7 @@ export default defineEventHandler(async (event) => {
 
   // 2️⃣ Fetch API
   try {
-    const res: any = await $fetch(`${baseApiUrl}/api/auth/register`, {
+    const res = await $fetch<AuthTokenResponse>(`${baseApiUrl}/api/auth/register`, {
       method: "POST",
       body,
     });
@@ -58,7 +59,7 @@ export default defineEventHandler(async (event) => {
     });
 
     // 4️⃣ Fetch API PROFILE
-    const resProfile: any = await $fetch(`${baseApiUrl}/api/auth/me`, {
+    const resProfile = await $fetch<AuthProfileResponse>(`${baseApiUrl}/api/auth/me`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${access_token}`,
@@ -90,11 +91,12 @@ export default defineEventHandler(async (event) => {
     return {
       user: resProfile.data,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const e = error as { statusCode?: number; statusMessage?: string; data?: { message?: string } };
     throw createError({
-      statusCode: error?.statusCode || 500,
+      statusCode: e?.statusCode || 500,
       statusMessage:
-        error?.data?.message || error?.statusMessage || "Register failed",
+        e?.data?.message || e?.statusMessage || "Register failed",
     });
   }
 });

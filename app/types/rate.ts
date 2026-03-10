@@ -85,3 +85,27 @@ export interface EstimateRatesRequest {
   destination: LocationPayload
   packages?: PackagePayload[]
 }
+
+export interface UIRateCardProps {
+  price: number
+  currency?: string
+  unit?: string
+  minWeight?: number
+  badge?: string
+  provider: {
+    url: string
+    alt: string
+  }
+  originCountry: string
+  originFlag: string
+  destinationCountry: string
+  destinationFlag: string
+  eta?: {
+    days_from: string
+    days_to: string
+  }
+  isDirect?: boolean
+  terms?: string[]
+  collapsible?: boolean
+  loading?: boolean
+}

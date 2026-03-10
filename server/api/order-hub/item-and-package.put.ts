@@ -1,3 +1,6 @@
+import type { ItemAndPackageRequestBody } from "~/types/api";
+import type { OrderHubProgressResponse } from "~/types/order-hub";
+
 export default defineEventHandler(async (event) => {
   // 0️⃣ REQUIRED; Token Check
   const token = getCookie(event, "access_token");
@@ -12,7 +15,7 @@ export default defineEventHandler(async (event) => {
    * 1️⃣ Client req body
    * ...
    */
-  const body = await readBody(event);
+  const body = await readBody<ItemAndPackageRequestBody>(event);
 
   // TODO: tambah payload lainnya
   if (!body?.bookingCode) {
@@ -35,7 +38,7 @@ export default defineEventHandler(async (event) => {
 
   // 2️⃣ Fetch API
   try {
-    const res: any = await $fetch(
+    const res = await $fetch<OrderHubProgressResponse>(
       `${baseApiUrl}/api/order-hub/${body.bookingCode}/item-and-package`,
       {
         method: "PUT",
@@ -47,7 +50,7 @@ export default defineEventHandler(async (event) => {
     );
 
     /**
-     * 2️⃣.1️⃣ Expected response: eligible_schemes
+     * 2️⃣.1️⃣ Expected response: OrderHubProgress
      */
     if (!res?.data) {
       throw createError({
@@ -58,13 +61,13 @@ export default defineEventHandler(async (event) => {
 
     //* 3️⃣ Return response
     return res.data;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("[PUT Progress Error]", error);
-
+    const e = error as { statusCode?: number; statusMessage?: string; data?: { message?: string } };
     throw createError({
-      statusCode: error?.statusCode || 500,
+      statusCode: e?.statusCode || 500,
       statusMessage:
-        error?.data?.message || error?.statusMessage || "Failed to update customer information",
+        e?.data?.message || e?.statusMessage || "Failed to update customer information",
     });
   }
 });

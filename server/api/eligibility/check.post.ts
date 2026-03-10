@@ -1,3 +1,5 @@
+import type { EligibilityCheckRequestBody, EligibilityCheckApiResponse } from "~/types/api";
+
 export default defineEventHandler(async (event) => {
   // 0️⃣ REQUIRED; Token Check
   const token = getCookie(event, "access_token");
@@ -12,7 +14,7 @@ export default defineEventHandler(async (event) => {
    * 1️⃣ Client req body
    * ...
    */
-  const body = await readBody(event);
+  const body = await readBody<EligibilityCheckRequestBody>(event);
 
   // Perbaiki if ini
   // if (
@@ -35,7 +37,7 @@ export default defineEventHandler(async (event) => {
 
   // 2️⃣ Fetch API
   try {
-    const res: any = await $fetch(`${baseApiUrl}/api/eligibility/check`, {
+    const res = await $fetch<EligibilityCheckApiResponse>(`${baseApiUrl}/api/eligibility/check`, {
       method: "POST",
       body,
       headers: {
@@ -57,14 +59,14 @@ export default defineEventHandler(async (event) => {
     return {
       rates: res.data,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("[Eligibility API Error]", error);
-
+    const e = error as { statusCode?: number; statusMessage?: string; data?: { message?: string } };
     throw createError({
-      statusCode: error?.statusCode || 500,
+      statusCode: e?.statusCode || 500,
       statusMessage:
-        error?.data?.message ||
-        error?.statusMessage ||
+        e?.data?.message ||
+        e?.statusMessage ||
         "Failed to check eligibility",
     });
   }

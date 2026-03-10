@@ -13,38 +13,27 @@
   </span>
 </template>
 
-<script setup>
+<script setup lang="ts">
 
-defineProps({
-  /** Padding Tailwind (default: px-4 py-1.5) */
-  padding: {
-    type: String,
-    default: 'px-5 py-2'
-  },
-
+interface BasePillProps {
+  /** Padding Tailwind (default: px-5 py-2) */
+  padding?: string
   /** Margin Tailwind (optional) */
-  margin: {
-    type: String,
-    default: ''
-  },
-
+  margin?: string
   /** Background color Tailwind */
-  bg: {
-    type: String,
-    default: 'bg-neutral-10'
-  },
-
+  bg?: string
   /** Text color Tailwind */
-  color: {
-    type: String,
-    default: 'text-[#616161]/80'
-  },
-
+  color?: string
   /** Additional custom class */
-  additionalClass: {
-    type: String,
-    default: ''
-  }
+  additionalClass?: string
+}
+
+withDefaults(defineProps<BasePillProps>(), {
+  padding: 'px-5 py-2',
+  margin: '',
+  bg: 'bg-neutral-10',
+  color: 'text-[#616161]/80',
+  additionalClass: '',
 })
 
 </script>

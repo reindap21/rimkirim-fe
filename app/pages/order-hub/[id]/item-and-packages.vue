@@ -4,6 +4,7 @@
   import { nanoid } from "nanoid";
   import { ref } from "vue";
   import type { OrderHubStep, Package } from "~/types/order-hub";
+  import type { CurrencyOption } from "~/types/common";
   import { useOrderHub } from "~/composables/useOrderHub";
   import { wordCapital } from "~/utils/string";
   import { nextTick } from "vue";
@@ -57,14 +58,14 @@
   // * ------- Form Handling
 
   // const formRef = ref<any>(null);
-  const currencies = ref<{ name: string; code: string }[]>([]);
+  const currencies = ref<CurrencyOption[]>([]);
   const currenciesLoading = ref(true);
   const submitLoading = ref(false);
   const finishLaterLoading = ref(false);
   const errorSubmit = ref("");
   const packageErrorIndex = ref<number | null>(null);
 
-  const selectedCurrency = ref<{ name: string; code: string } | undefined>(undefined);
+  const selectedCurrency = ref<CurrencyOption | undefined>(undefined);
 
   const initialValues = {};
 

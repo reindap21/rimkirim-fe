@@ -1,4 +1,5 @@
 import { getCookie } from "h3";
+import type { OrderHubProgressResponse } from "~/types/order-hub";
 
 export default defineEventHandler(async (event) => {
   // 0️⃣ REQUIRED; Token Check
@@ -27,7 +28,7 @@ export default defineEventHandler(async (event) => {
 
   // 2️⃣ Fetch API
   try {
-    const res: any = await $fetch(`${baseApiUrl}/api/order-hub/${bookingCode}`, {
+    const res = await $fetch<OrderHubProgressResponse>(`${baseApiUrl}/api/order-hub/${bookingCode}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -35,13 +36,13 @@ export default defineEventHandler(async (event) => {
 
     //* 3️⃣ Return response
     return res.data;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("[SHOw ORDER PROGRESS API Error]", error);
-
+    const e = error as { statusCode?: number; statusMessage?: string; data?: { message?: string } };
     throw createError({
-      statusCode: error?.statusCode || 404,
+      statusCode: e?.statusCode || 404,
       statusMessage:
-        error?.data?.message || error?.statusMessage || "Booking number not found",
+        e?.data?.message || e?.statusMessage || "Booking number not found",
     });
   }
 });
