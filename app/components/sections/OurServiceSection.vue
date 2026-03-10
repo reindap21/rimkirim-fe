@@ -16,13 +16,8 @@
       >
         <!-- green box -->
         <div
-<<<<<<< HEAD
           class="absolute -top-5 -left-6 w-[60px] h-[60px] bg-primary rounded-[4px] -rotate-[30deg] animate-float-slow"
         ></div>
-=======
-          class="absolute -top-5 -left-6 w-[60px] h-[60px] bg-[#C1FF00] rounded-[4px] -rotate-[30deg] animate-float-slow">
-        </div>
->>>>>>> Refactor page structure; Page customer infor and item & packages
         <!-- purple ball -->
         <div
           class="absolute -bottom-6 -left-6 w-10 h-10 bg-purple-500 rounded-full animate-float-slower"

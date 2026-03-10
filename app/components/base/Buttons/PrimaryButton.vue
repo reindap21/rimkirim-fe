@@ -1,5 +1,4 @@
 <script setup lang="ts">
-<<<<<<< HEAD
   // * ------- Types
 
   interface Props {
@@ -19,28 +18,6 @@
     rounded: "rounded-lg", // lg -> 8px
     fontWeight: "font-medium",
   });
-=======
-
-// * ------- Types
-
-interface Props {
-  loading?: boolean
-  disabled?: boolean
-  type?: 'button' | 'submit' | 'reset'
-  rounded?: string // rounded-[8px] 
-  fontWeight?: string  // font-medium
-}
-
-// * ------- Defines
-
-const props = withDefaults(defineProps<Props>(), {
-  loading: false,
-  disabled: false,
-  type: 'button',
-  rounded: 'rounded-lg', // lg -> 8px
-  fontWeight: 'font-medium'
-})
->>>>>>> Refactor page structure; Page customer infor and item & packages
 </script>
 
 <template>

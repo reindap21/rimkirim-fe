@@ -1,5 +1,4 @@
 <script setup lang="ts">
-<<<<<<< HEAD
   import { computed, ref } from "vue";
 
   // * ------- Types -------------------------------------------------------------------------------------------------------------------------------------------------
@@ -50,59 +49,6 @@
   const formattedPrice = computed(() => props.price.toLocaleString("id-ID"));
 
   // * ------- Methods ------------------------------------------------------------------------------------------------------------------------------------------------
-=======
-
-import { computed, ref } from 'vue'
-
-// * ------- Defines -----------------------------------------------------------------------------------------------------------------------------------------------
-
-const props = withDefaults(defineProps<{
-  price: number
-  currency?: string
-  unit?: string
-  minWeight?: number
-  badge?: string
-  provider: {
-    url: string,
-    alt: string
-  }
-  originCountry: string
-  originFlag: string
-  destinationCountry: string
-  destinationFlag: string
-  eta?: {
-    days_from: string,
-    days_to: string
-  },
-  isDirect?: boolean
-  terms?: string[]
-  collapsible?: boolean
-  loading?: boolean
-}>(), {
-  currency: 'IDR',
-  unit: 'Kg',
-  isDirect: true,
-  collapsible: true,
-  terms: () => [],
-})
-
-const emit = defineEmits(['action'])
-
-// * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
-
-const expanded = ref(false)
-const etaDays = `${props?.eta?.days_from} - ${props?.eta?.days_to}D`;
-
-// * ------- Computed
-
-const formattedPrice = computed(() =>
-  props.price.toLocaleString('id-ID')
-)
-
-// * ------- Methods ------------------------------------------------------------------------------------------------------------------------------------------------
-
-
->>>>>>> Refactor page structure; Page customer infor and item & packages
 </script>
 
 <template>

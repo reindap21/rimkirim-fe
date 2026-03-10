@@ -1,9 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-<<<<<<< HEAD
 import RimkirimPreset from "./primevue/preset";
-=======
-import RimkirimPreset from './primevue/preset'
->>>>>>> Refactor page structure; Page customer infor and item & packages
 
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
@@ -32,20 +28,11 @@ export default defineNuxtConfig({
   primevue: {
     options: {
       theme: {
-<<<<<<< HEAD
         preset: RimkirimPreset,
       },
     },
   },
 
-=======
-        preset: RimkirimPreset
-      }
-    }
-  },
-
-
->>>>>>> Refactor page structure; Page customer infor and item & packages
   app: {
     head: {
       title: "Rimkirim",
@@ -57,15 +44,9 @@ export default defineNuxtConfig({
         {
           src: `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAPS_API_KEY}&libraries=places`,
           async: true,
-<<<<<<< HEAD
           defer: true,
         },
       ],
-=======
-          defer: true
-        }
-      ]
->>>>>>> Refactor page structure; Page customer infor and item & packages
     },
   },
 
@@ -77,7 +58,6 @@ export default defineNuxtConfig({
   ],
 
   css: [
-<<<<<<< HEAD
     "/assets/css/global.css",
     "/assets/css/rimkirim-tokens.css",
     "/assets/css/primevue-overrides.css",
@@ -95,14 +75,3 @@ export default defineNuxtConfig({
     },
   },
 });
-=======
-    "/assets/css/global.css"
-  ],
-
-  vite: {
-    server: {
-      allowedHosts: ['rimkirimdev.com']
-    }
-  }
-})
->>>>>>> Refactor page structure; Page customer infor and item & packages

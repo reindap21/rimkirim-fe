@@ -1,60 +1,6 @@
 <script setup lang="ts">
-<<<<<<< HEAD
   import { computed, ref } from "vue";
   import type { PackingListValidationResponse } from "~/types/order-hub";
-=======
-import { computed, ref } from 'vue';
-
-// * ------- Defines -----------------------------------------------------------------------------------------------------------------------------------------------
-
-interface Props { loading: boolean }
-
-const props = withDefaults(defineProps<Props>(), {
-  loading: false
-});
-
-const emit = defineEmits<{
-  (e: 'continue', payload: any): void
-}>()
-
-// * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
-
-/**
- * State
- */
-const shippingToIndonesia = ref<null | boolean>(null)
-const citizenship = ref<null | 'indonesian' | 'foreigner'>(null)
-const livedInUK = ref<null | boolean>(null)
-const canApplySKP = ref<null | boolean>(null)
-const hasPackingList = ref<null | boolean>(null)
-const packingListCode = ref<null | string>(null)
-const isValidPackingListCode = ref(false);
-const searchPackingListCodeLoading = ref(false);
-
-/**
- * Helper class
- */
-const buttonClass = (active: boolean) => [
-  'w-[110px] h-[46px] rounded-full text-[14px] font-medium transition',
-  active
-    ? 'bg-[#1E1E1E] text-white'
-    : 'border border-gray-300 text-[#1E1E1E] hover:bg-gray-100'
-]
-
-/**
- * Enable Continue only if all answered
- */
-const canContinue = computed(() => {
-  const allRequiredFields = shippingToIndonesia.value !== null &&
-    citizenship.value !== null &&
-    livedInUK.value !== null &&
-    canApplySKP.value !== null &&
-    hasPackingList.value !== null
-
-  if (hasPackingList.value) {
-    return allRequiredFields && packingListCode.value !== null && isValidPackingListCode.value
-  }
->>>>>>> Refactor page structure; Page customer infor and item & packages
 
   // * ------- Defines -----------------------------------------------------------------------------------------------------------------------------------------------
 

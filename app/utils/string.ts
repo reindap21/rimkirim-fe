@@ -1,37 +1,23 @@
 export const firstCapital = (text: string): string => {
-<<<<<<< HEAD
   if (!text || typeof text !== "string") return "";
 
   const trimmed = text.trim();
   if (!trimmed) return "";
-=======
-  if (!text || typeof text !== 'string') return '';
-
-  const trimmed = text.trim();
-  if (!trimmed) return '';
->>>>>>> Refactor page structure; Page customer infor and item & packages
 
   return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
 };
 
 export const wordCapital = (
   text: string,
-<<<<<<< HEAD
   separator: string | RegExp = " ",
   join?: string | RegExp,
 ): string => {
   if (!text || typeof text !== "string") return "";
-=======
-  separator: string | RegExp = ' '
-): string => {
-  if (!text || typeof text !== 'string') return '';
->>>>>>> Refactor page structure; Page customer infor and item & packages
 
   return text
     .trim()
     .split(separator)
     .filter(Boolean)
-<<<<<<< HEAD
     .map((word) => firstCapital(word))
     .join(
       typeof join === "string"
@@ -78,10 +64,3 @@ export const camelToTitleCase = (text: string): string => {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(" ");
 };
-=======
-    .map(word => firstCapital(word))
-    .join(
-      typeof separator === 'string' ? separator : ' '
-    );
-};
->>>>>>> Refactor page structure; Page customer infor and item & packages
