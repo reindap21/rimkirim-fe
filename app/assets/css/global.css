@@ -1,7 +1,6 @@
 /* General */
 
 body {
-<<<<<<< HEAD
   @apply !text-[14px] !leading-[22px] font-[400] bg-white;
 }
 
@@ -12,12 +11,10 @@ body {
 
 a:focus-visible,
 button:focus-visible {
-=======
   @apply text-[14px] leading-[22px] font-[400];
 }
 
 :focus-visible {
->>>>>>> Refactor page structure; Page customer infor and item & packages
   @apply outline-none ring ring-[#C1FF00] ring-offset-2;
 }
 
