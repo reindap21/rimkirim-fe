@@ -44,12 +44,20 @@ const onOk = () => {
         <component v-if="props.icon" :is="props.icon" class="mx-auto text-[#C1FF00]" />
 
         <!-- Title -->
+<<<<<<< HEAD
         <h3 class="text-[24px] leading-[32px] font-semibold text-neutral-100 text-center">
+=======
+        <h3 class="text-[24px] leading-[32px] font-semibold text-[#1E1E1E] text-center">
+>>>>>>> Refactor page structure; Page customer infor and item & packages
           {{ props.title }}
         </h3>
 
         <!-- Description -->
+<<<<<<< HEAD
         <p class="text-neutral-60 text-center px-2">
+=======
+        <p class="text-[#9E9E9E] text-center px-2">
+>>>>>>> Refactor page structure; Page customer infor and item & packages
           {{ props.description }}
         </p>
       </div>

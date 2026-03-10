@@ -24,14 +24,14 @@
 
 <template>
   <!-- HERO WRAPPER -->
-  <section class="relative overflow-visible h-[695px] mt-[134px] pt-[145px] pb-10">
+  <section class="relative overflow-visible h-[695px] mt-[108px] pt-[104px]">
     <div ref="container" class="absolute left-0 inset-0 w-full h-full pointer-events-none z-0" />
     <!-- HERO CONTENT -->
     <div
-      class="relative z-10 max-w-5xl mx-auto px-6 flex flex-col items-center justify-center gap-4"
+      class="relative z-10 max-w-5xl mx-auto px-6 flex flex-col items-center justify-center gap-4 py-7"
     >
       <div
-        class="flex gap-1 text-[14px] leading-[22px] font-normal px-5 py-2 rounded-full bg-neutral-10 w-fit shrink-0 mt-24"
+        class="flex gap-1 text-[14px] leading-[22px] font-normal px-5 py-2 rounded-full bg-neutral-10 w-fit shrink-0"
       >
         <div
           class="relative flex gap-0.5 max-w-[232px] text-neutral-100 whitespace-nowrap overflow-hidden"

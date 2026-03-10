@@ -1,10 +1,62 @@
 <script setup lang="ts">
+<<<<<<< HEAD
+  import { computed, ref } from "vue";
+
+  // * ------- Types -------------------------------------------------------------------------------------------------------------------------------------------------
+
+  type UIRateCard = {
+    price: number;
+    currency?: string;
+    unit?: string;
+    minWeight?: number;
+    badge?: string;
+    provider: {
+      url: string;
+      alt: string;
+    };
+    originCountry: string;
+    originFlag: string;
+    destinationCountry: string;
+    destinationFlag: string;
+    eta?: {
+      days_from: string;
+      days_to: string;
+    };
+    isDirect?: boolean;
+    terms?: string[];
+    collapsible?: boolean;
+    loading?: boolean;
+  };
+
+  // * ------- Defines -----------------------------------------------------------------------------------------------------------------------------------------------
+
+  const props = withDefaults(defineProps<UIRateCard>(), {
+    currency: "IDR",
+    unit: "Kg",
+    isDirect: true,
+    collapsible: true,
+    terms: () => [],
+  });
+
+  const emit = defineEmits(["action"]);
+
+  // * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
+
+  const expanded = ref(false);
+  const etaDays = `${props?.eta?.days_from} - ${props?.eta?.days_to}D`;
+
+  // * ------- Computed
+
+  const formattedPrice = computed(() => props.price.toLocaleString("id-ID"));
+
+  // * ------- Methods ------------------------------------------------------------------------------------------------------------------------------------------------
+=======
 
 import { computed, ref } from 'vue'
 
-// * ------- Types -------------------------------------------------------------------------------------------------------------------------------------------------
+// * ------- Defines -----------------------------------------------------------------------------------------------------------------------------------------------
 
-type UIRateCard  = {
+const props = withDefaults(defineProps<{
   price: number
   currency?: string
   unit?: string
@@ -26,11 +78,7 @@ type UIRateCard  = {
   terms?: string[]
   collapsible?: boolean
   loading?: boolean
-}
-
-// * ------- Defines -----------------------------------------------------------------------------------------------------------------------------------------------
-
-const props = withDefaults(defineProps<UIRateCard>(), {
+}>(), {
   currency: 'IDR',
   unit: 'Kg',
   isDirect: true,
@@ -54,17 +102,20 @@ const formattedPrice = computed(() =>
 // * ------- Methods ------------------------------------------------------------------------------------------------------------------------------------------------
 
 
+>>>>>>> Refactor page structure; Page customer infor and item & packages
 </script>
 
-
 <template>
-  <div class="px-6 py-4 rounded-2xl border-[2px] border-[#EDEDED]">
+  <div class="px-6 py-4 rounded-2xl border-[2px] border-[#EDEDED] z-10">
     <!-- TOP -->
     <div class="relative grid grid-cols-[1.3fr_auto_1fr] items-center gap-3">
       <!-- LEFT -->
       <div>
         <div class="flex items-center gap-3 mb-2">
-          <span v-if="badge" class="px-3 py-1 text-[12px] leading-5 rounded-full bg-[#D6EAE74D] text-[#309786]">
+          <span
+            v-if="badge"
+            class="px-3 py-1 text-[12px] leading-5 rounded-full bg-[#D6EAE74D] text-[#309786]"
+          >
             {{ badge }}
           </span>
           <img class="h-[28px] w-auto" :src="props?.provider?.url" :alt="props?.provider?.alt" />
@@ -94,12 +145,19 @@ const formattedPrice = computed(() =>
 
       <!-- CTA -->
       <div class="flex justify-end">
-        <PrimaryButton class="absolute top-0 right-0 w-[107px]" :loading="loading" @click="emit('action')">Move Now</PrimaryButton>
+        <PrimaryButton
+          class="absolute top-0 right-0 w-[107px]"
+          :loading="loading"
+          @click="emit('action')"
+          >Move Now</PrimaryButton
+        >
       </div>
     </div>
 
     <!-- BOTTOM -->
-    <div class="relative mt-6 border-t border-gray-200 pt-4 text-[14px] text-neutral-60 transition-all duration-300 ease-out">
+    <div
+      class="relative mt-6 border-t border-gray-200 pt-4 text-[14px] text-neutral-60 transition-all duration-300 ease-out"
+    >
       <template v-if="expanded">
         <ul class="flex flex-col gap-2">
           <li v-for="(term, i) in terms" :key="i" class="flex items-start gap-2">
@@ -116,9 +174,12 @@ const formattedPrice = computed(() =>
       </template>
 
       <div class="flex items-center">
-        <button v-if="collapsible" class="absolute right-0 bottom-0 flex items-center gap-1 font-medium text-neutral-100 focus-visible:rounded-md focus-visible:ring-offset-[6px]"
-          @click="expanded = !expanded">
-          {{ expanded ? 'Hide' : 'More Information' }}
+        <button
+          v-if="collapsible"
+          class="absolute right-0 bottom-0 flex items-center gap-1 font-medium text-neutral-100 focus-visible:rounded-md focus-visible:ring-offset-[6px]"
+          @click="expanded = !expanded"
+        >
+          {{ expanded ? "Hide" : "More Information" }}
           <IconChevronUp v-if="expanded" />
           <IconChevronDown v-else />
         </button>

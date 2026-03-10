@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full min-h-screen bg-neutral-10">
+  <div class="w-full min-h-screen bg-[#FAFAFC]">
     <Header use="order-hub" />
     <slot />
   </div>

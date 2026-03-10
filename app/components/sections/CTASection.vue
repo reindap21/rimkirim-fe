@@ -1,7 +1,24 @@
 <script setup lang="ts">
+  import { onMounted } from "vue";
 
-const router = useRouter()
+  const router = useRouter();
+  const container = ref<HTMLDivElement | null>(null);
 
+  onMounted(async () => {
+    await import("@lottiefiles/lottie-player");
+    const lottie = await import("lottie-web");
+
+    lottie.default.loadAnimation({
+      container: container.value!,
+      renderer: "svg",
+      loop: true,
+      autoplay: true,
+      path: "/lottie/hero-anim.json",
+      rendererSettings: {
+        preserveAspectRatio: "xMidYMid slice",
+      },
+    });
+  });
 </script>
 
 <template>
@@ -19,10 +36,9 @@ const router = useRouter()
         </div>
 
         <div class="flex items-center gap-4">
-          <!-- Primary -->
-          <PrimaryButton class="w-[138px]" @click="router.push('/rates')">
+          <BlackButton class="w-[138px]" @click="router.push('/rates')">
             Back For Good
-          </PrimaryButton>
+          </BlackButton>
 
           <!-- Secondary -->
           <BlackButton class="w-[142px]" @click="router.push('/rates')">
@@ -32,9 +48,12 @@ const router = useRouter()
       </div>
 
       <!-- RIGHT VISUAL -->
-      <div class="absolute right-0 bottom-0">
-        <img src="https://i.ibb.co.com/4Z6HtCDH/cta-van.png" alt="International moving illustration"
-          class="w-full max-w-[560px] ml-auto object-contain" />
+      <div ref="container" class="absolute right-0 bottom-0 pointer-events-none">
+        <img
+          src="https://i.ibb.co.com/4Z6HtCDH/cta-van.png"
+          alt="International moving illustration"
+          class="w-full max-w-[560px] ml-auto object-contain"
+        />
       </div>
     </div>
   </section>

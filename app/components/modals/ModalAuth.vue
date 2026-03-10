@@ -1,4 +1,5 @@
 <script setup>
+<<<<<<< HEAD
   // TODO: update jadi ts
 
   import { Form } from "@primevue/forms";
@@ -165,6 +166,154 @@
   };
 
   // * ------- Computed ----------------------------------------------------------------------------------------------------------------------------------------------
+=======
+// TODO: update jadi ts
+
+import { Form } from '@primevue/forms';
+import { zodResolver } from '@primevue/forms/resolvers/zod';
+import InputIcon from "primevue/inputicon";
+import { ref } from 'vue';
+import { z } from 'zod';
+
+// * ------- Defines -----------------------------------------------------------------------------------------------------------------------------------------------
+
+defineProps({
+  open: Boolean,
+  mode: {
+    type: String,
+    default: "login",
+    validator: (v) => ["login", "signup"].includes(v),
+  },
+  source: {
+    type: String,
+    default: "header",
+  },
+});
+
+const emit = defineEmits(["close", "update:mode", "success"]);
+
+// * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
+
+const showPasswordLogin = ref(false);
+const showPasswordSignUp = ref(false);
+
+const loginLoading = ref(false);
+const signUpLoading = ref(false);
+const errorLogin = ref('');
+const errorSignup = ref('');
+
+const initialLoginValues = {
+  email: '',
+  password: ''
+};
+
+const initialSignupValues = {
+  name: '',
+  email: '',
+  password: '',
+  password_confirmation: '',
+};
+
+// * ------- State
+
+const userState = useState('user', () => null)
+
+// * ------- Methods -----------------------------------------------------------------------------------------------------------------------------------------------
+
+const resolverLogin = ref(zodResolver(
+  z.object({
+    email: z.string().min(1, { message: 'Email is required.' }).email({ message: 'Invalid email address.' }),
+    password: z.string().min(1, { message: 'Password is required.' }),
+  })
+));
+
+const resolverSignup = ref(zodResolver(
+  z.object({
+    name: z.string().min(4, { message: 'Minimum 4 characters.' }),
+    email: z.string().min(1, { message: 'Email is required.' }).email({ message: 'Invalid email address.' }),
+    password: z.string().min(3, { message: 'Minimum 3 characters.' }),
+    password_confirmation: z.string().min(3, { message: 'Minimum 3 characters.' }),
+  })
+));
+
+const handleLogin = async ({ values, valid }) => {
+  if (!valid || loginLoading.value) return
+
+  errorLogin.value = ''
+  loginLoading.value = true
+
+  try {
+    const res = await $fetch('/api/auth/login', {
+      method: 'POST',
+      body: values,
+      credentials: 'include', // Required
+    })
+
+    // Store state
+    userState.value = res.user
+
+    emit('success', res.user)
+    emit('close')
+  } catch (err) {
+    errorLogin.value =
+      err?.data?.message || 'Login failed'
+  } finally {
+    loginLoading.value = false
+  }
+
+
+};
+
+const handleLoginWithGoogle = () => {
+  window.location.href = '/api/auth/google'
+}
+
+const handleSignup = async ({ values, valid }) => {
+  if (!valid || signUpLoading.value) return
+
+  errorSignup.value = ''
+  signUpLoading.value = true
+
+  try {
+    const res = await $fetch('/api/auth/register', {
+      method: 'POST',
+      body: values,
+      credentials: 'include', // Required
+    })
+
+    // Store state
+    userState.value = res.user
+
+    emit('success', res.user)
+    emit('close')
+  } catch (err) {
+    errorSignup.value =
+      err?.data?.message || 'Sign up failed'
+  } finally {
+    signUpLoading.value = false
+  }
+};
+
+const handleSignUpWithGoogle = () => { }
+
+const handleClose = () => {
+  emit('close');
+  errorLogin.value = ''
+  errorSignup.value = ''
+}
+
+const toggleShowPasswordLogin = () => {
+  showPasswordLogin.value = !showPasswordLogin.value
+}
+
+const toggleShowPasswordSignUp = () => {
+  showPasswordSignUp.value = !showPasswordSignUp.value
+}
+
+// * ------- Compute -----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+>>>>>>> Refactor page structure; Page customer infor and item & packages
 </script>
 
 <template>
@@ -194,10 +343,15 @@
             </p>
           </div>
 
+<<<<<<< HEAD
           <p
             v-if="errorLogin"
             class="flex gap-4 px-4 py-3 text-[14px] leading-[22px] font-[400] bg-[#FFEDED] text-[#FF4D4F] rounded-[12px]"
           >
+=======
+          <p v-if="errorLogin"
+            class="flex gap-4 px-4 py-3 text-[14px] leading-[22px] font-[400] bg-[#FFEDED] text-[#FF4D4F] rounded-[12px]">
+>>>>>>> Refactor page structure; Page customer infor and item & packages
             <IconExclamationError />
             <span>
               {{ errorLogin }}
@@ -206,6 +360,7 @@
 
           <div class="flex flex-col gap-6">
             <!-- Form -->
+<<<<<<< HEAD
             <Form
               v-slot="$form"
               class="flex justify-center flex-col gap-6"
@@ -221,6 +376,17 @@
                   <label class="font-medium">Email</label>
                   <div class="relative">
                     <InputIcon class="absolute !top-[13px] left-4 !mt-0">
+=======
+            <Form v-slot="$form" :resolver="resolverLogin" :initialValues="initialLoginValues" validateOnBlur
+              @submit="handleLogin" class="flex justify-center flex-col gap-6">
+              <!-- Forms -->
+              <div class="flex flex-col gap-4">
+                <!-- Email -->
+                <div class="flex flex-col gap-[6px]">
+                  <label class="font-medium">Email</label>
+                  <div class="relative">
+                    <InputIcon class="absolute top-5 left-4">
+>>>>>>> Refactor page structure; Page customer infor and item & packages
                       <IconEmail />
                     </InputIcon>
                     <InputText
@@ -239,6 +405,7 @@
                   >
                 </div>
                 <!-- Password -->
+<<<<<<< HEAD
                 <div class="relative flex flex-col gap-[6px]">
                   <div class="relative flex flex-col gap-[6px]">
                     <label class="font-medium">Password</label>
@@ -264,6 +431,17 @@
                       variant="simple"
                       >{{ $form.password.error?.message }}</Message
                     >
+=======
+                <div class="flex flex-col gap-[6px]">
+                  <label class="font-medium">Password</label>
+                  <div class="relative">
+                    <InputIcon class="absolute top-5 left-4 cursor-pointer" @click="toggleShowPasswordLogin">
+                      <IconEyeClosed v-if="showPasswordLogin" />
+                      <IconEyeOpen v-else />
+                    </InputIcon>
+                    <InputText name="password" :type="showPasswordLogin ? 'text' : 'password'"
+                      placeholder="Enter your password" class="w-full pl-12" />
+>>>>>>> Refactor page structure; Page customer infor and item & packages
                   </div>
                   <!-- Forgot Password -->
                   <p
@@ -322,10 +500,15 @@
             </p>
           </div>
 
+<<<<<<< HEAD
           <p
             v-if="errorSignup"
             class="flex gap-4 px-4 py-3 text-[14px] leading-[22px] font-[400] bg-[#FFEDED] text-[#FF4D4F] rounded-[12px]"
           >
+=======
+          <p v-if="errorSignup"
+            class="flex gap-4 px-4 py-3 text-[14px] leading-[22px] font-[400] bg-[#FFEDED] text-[#FF4D4F] rounded-[12px]">
+>>>>>>> Refactor page structure; Page customer infor and item & packages
             <IconExclamationError />
             <span>
               {{ errorSignup }}
@@ -334,6 +517,7 @@
 
           <div class="flex flex-col gap-6">
             <!-- Form -->
+<<<<<<< HEAD
             <Form
               v-slot="$form"
               :resolver="resolverSignup"
@@ -349,6 +533,17 @@
                   <label class="font-medium">Name</label>
                   <div class="relative">
                     <InputIcon class="absolute !top-[13px] left-4 !mt-0">
+=======
+            <Form v-slot="$form" :resolver="resolverSignup" :initialValues="initialSignupValues" @submit="handleSignup"
+              validateOnBlur class="flex justify-center flex-col gap-6">
+              <!-- Forms -->
+              <div class="flex flex-col gap-4">
+                <!-- Name -->
+                <div class="flex flex-col gap-[6px]">
+                  <label class="font-medium">Name</label>
+                  <div class="relative">
+                    <InputIcon class="absolute top-5 left-4">
+>>>>>>> Refactor page structure; Page customer infor and item & packages
                       <IconUser />
                     </InputIcon>
                     <InputText
@@ -367,10 +562,17 @@
                   >
                 </div>
                 <!-- Email -->
+<<<<<<< HEAD
                 <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium">Email</label>
                   <div class="relative">
                     <InputIcon class="absolute !top-[13px] left-4 !mt-0">
+=======
+                <div class="flex flex-col gap-[6px]">
+                  <label class="font-medium">Email</label>
+                  <div class="relative">
+                    <InputIcon class="absolute top-5 left-4">
+>>>>>>> Refactor page structure; Page customer infor and item & packages
                       <IconEmail />
                     </InputIcon>
                     <InputText
@@ -389,6 +591,7 @@
                   >
                 </div>
                 <!-- Password -->
+<<<<<<< HEAD
                 <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium">Password</label>
                   <div class="relative">
@@ -396,6 +599,12 @@
                       class="absolute !top-[13px] left-4 !mt-0 cursor-pointer"
                       @click="toggleShowPasswordSignUp"
                     >
+=======
+                <div class="flex flex-col gap-[6px]">
+                  <label class="font-medium">Password</label>
+                  <div class="relative">
+                    <InputIcon class="absolute top-5 left-4 cursor-pointer" @click="toggleShowPasswordSignUp">
+>>>>>>> Refactor page structure; Page customer infor and item & packages
                       <IconEyeClosed v-if="showPasswordSignUp" />
                       <IconEyeOpen v-else />
                     </InputIcon>
@@ -415,6 +624,7 @@
                   >
                 </div>
                 <!-- Password Confirm -->
+<<<<<<< HEAD
                 <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium">Confirm Password</label>
                   <div class="relative">
@@ -422,6 +632,12 @@
                       class="absolute !top-[13px] left-4 !mt-0 cursor-pointer"
                       @click="toggleShowPasswordSignUp"
                     >
+=======
+                <div class="flex flex-col gap-[6px]">
+                  <label class="font-medium">Confirm Password</label>
+                  <div class="relative">
+                    <InputIcon class="absolute top-5 left-4 cursor-pointer" @click="toggleShowPasswordSignUp">
+>>>>>>> Refactor page structure; Page customer infor and item & packages
                       <IconEyeClosed v-if="showPasswordSignUp" />
                       <IconEyeOpen v-else />
                     </InputIcon>

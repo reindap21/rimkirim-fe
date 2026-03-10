@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import Aura from "@primeuix/themes/aura";
 import { definePreset } from "@primeuix/themes";
 
@@ -48,3 +49,20 @@ const RimkirimPreset = definePreset(Aura, {
 });
 
 export default RimkirimPreset;
+=======
+import Nora from '@primeuix/themes/nora'
+import { definePreset } from '@primeuix/themes'
+
+const RimkirimPreset = definePreset(Nora, {
+  semantic: {
+    focusRing: {
+      color: '#00FF00'
+    },
+    formField: {
+      focusBorderColor: '#00FF00'
+    }
+  }
+})
+
+export default RimkirimPreset
+>>>>>>> Refactor page structure; Page customer infor and item & packages
