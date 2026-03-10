@@ -1,7 +1,7 @@
-import type { UserType } from "./user"
+import type { User } from "./user"
 
 export type GetSessionResponse = {
-  user: UserType;
+  user: User;
 }
 
 export interface ApiResponse<T> {

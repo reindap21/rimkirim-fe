@@ -1,24 +1,5 @@
 import type { AddressGeocode } from "~/types/order-hub";
-
-/**
- * Google Maps Address Component types
- */
-export interface GoogleAddressComponent {
-  long_name: string;
-  short_name: string;
-  types: string[];
-}
-
-export interface GooglePlaceResult {
-  geometry?: {
-    location?: {
-      lat: () => number;
-      lng: () => number;
-    };
-  };
-  address_components?: GoogleAddressComponent[];
-  formatted_address?: string;
-}
+import type { AddressComponent, PlaceResult } from "~/types/google-maps";
 
 /**
  * Extract an address component from Google Places address components.
@@ -29,7 +10,7 @@ export interface GooglePlaceResult {
  * @returns The component value or undefined if not found
  */
 export function getAddressComponent(
-  components: GoogleAddressComponent[],
+  components: AddressComponent[],
   type: string,
   useShort = false,
 ): string | undefined {
@@ -45,7 +26,7 @@ export function getAddressComponent(
  * @returns Formatted AddressGeocode object
  */
 export function formatGooglePlaceToAddressGeocode(
-  place: GooglePlaceResult,
+  place: PlaceResult,
 ): AddressGeocode {
   if (!place.geometry?.location || !place.address_components) {
     throw new Error("Invalid place result: missing geometry or address components");

@@ -1,28 +1,31 @@
-<script setup>
-  // TODO: update jadi ts
-
+<script setup lang="ts">
   import { Form } from "@primevue/forms";
   import { zodResolver } from "@primevue/forms/resolvers/zod";
   import InputIcon from "primevue/inputicon";
   import { ref } from "vue";
   import { z } from "zod";
+  import type { User } from "~/types/user";
 
   // * ------- Defines -----------------------------------------------------------------------------------------------------------------------------------------------
 
-  defineProps({
-    open: Boolean,
-    mode: {
-      type: String,
-      default: "login",
-      validator: (v) => ["login", "signup"].includes(v),
-    },
-    source: {
-      type: String,
-      default: "header",
-    },
+  interface ModalAuthProps {
+    open: boolean
+    mode?: 'login' | 'signup'
+    source?: string
+  }
+
+  withDefaults(defineProps<ModalAuthProps>(), {
+    mode: 'login',
+    source: 'header',
   });
 
-  const emit = defineEmits(["close", "update:mode", "success"]);
+  interface ModalAuthEmits {
+    (e: 'close'): void
+    (e: 'update:mode', mode: 'login' | 'signup'): void
+    (e: 'success', user: User): void
+  }
+
+  const emit = defineEmits<ModalAuthEmits>();
 
   // * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -48,7 +51,7 @@
 
   // * ------- State
 
-  const userState = useState("user", () => null);
+  const userState = useState<User | null>("user", () => null);
 
   // * ------- Config -----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -88,14 +91,14 @@
     ),
   );
 
-  const handleLogin = async ({ values, valid }) => {
+  const handleLogin = async ({ values, valid }: { values: { email: string; password: string }; valid: boolean }) => {
     if (!valid || loginLoading.value) return;
 
     errorLogin.value = "";
     loginLoading.value = true;
 
     try {
-      const res = await $fetch("/api/auth/login", {
+      const res = await $fetch<{ user: User }>("/api/auth/login", {
         method: "POST",
         body: values,
         credentials: "include", // Required
@@ -106,8 +109,9 @@
 
       emit("success", res.user);
       emit("close");
-    } catch (err) {
-      errorLogin.value = err?.data?.message || "Login failed";
+    } catch (err: unknown) {
+      const e = err as { data?: { message?: string } };
+      errorLogin.value = e?.data?.message || "Login failed";
     } finally {
       loginLoading.value = false;
     }
@@ -119,14 +123,14 @@
     });
   };
 
-  const handleSignup = async ({ values, valid }) => {
+  const handleSignup = async ({ values, valid }: { values: { name: string; email: string; password: string; password_confirmation: string }; valid: boolean }) => {
     if (!valid || signUpLoading.value) return;
 
     errorSignup.value = "";
     signUpLoading.value = true;
 
     try {
-      const res = await $fetch("/api/auth/register", {
+      const res = await $fetch<{ user: User }>("/api/auth/register", {
         method: "POST",
         body: values,
         credentials: "include", // Required
@@ -137,8 +141,9 @@
 
       emit("success", res.user);
       emit("close");
-    } catch (err) {
-      errorSignup.value = err?.data?.message || "Sign up failed";
+    } catch (err: unknown) {
+      const e = err as { data?: { message?: string } };
+      errorSignup.value = e?.data?.message || "Sign up failed";
     } finally {
       signUpLoading.value = false;
     }

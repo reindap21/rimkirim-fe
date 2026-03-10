@@ -1,4 +1,5 @@
 import { setCookie } from 'h3'
+import type { AuthTokenResponse, AuthProfileResponse } from '~/types/api'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -22,7 +23,7 @@ export default defineEventHandler(async (event) => {
      * - login / register user
      * - return access_token
      */
-    const res: any = await $fetch(
+    const res = await $fetch<AuthTokenResponse>(
       `${baseApiUrl}/api/auth/google/callback`,
       {
         method: 'POST',
@@ -63,7 +64,7 @@ export default defineEventHandler(async (event) => {
     /**
      * 3️⃣ Fetch Profile (SAMA SEPERTI LOGIN BIASA)
      */
-    const resProfile: any = await $fetch(
+    const resProfile = await $fetch<AuthProfileResponse>(
       `${baseApiUrl}/api/auth/me`,
       {
         method: 'GET',
@@ -86,12 +87,13 @@ export default defineEventHandler(async (event) => {
     return {
       user: resProfile.data,
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const e = error as { statusCode?: number; statusMessage?: string; data?: { message?: string } }
     throw createError({
-      statusCode: error?.statusCode || 500,
+      statusCode: e?.statusCode || 500,
       statusMessage:
-        error?.data?.message ||
-        error?.statusMessage ||
+        e?.data?.message ||
+        e?.statusMessage ||
         'Google login failed',
     })
   }

@@ -1,7 +1,8 @@
 import { setCookie, readBody, createError } from "h3";
+import type { StoreTokenRequestBody, AuthProfileResponse } from "~/types/api";
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
+  const body = await readBody<StoreTokenRequestBody>(event);
 
   if (!body?.access_token) {
     throw createError({
@@ -25,7 +26,7 @@ export default defineEventHandler(async (event) => {
   const baseApiUrl = config.apiBaseUrl;
 
   // Fetch API PROFILE
-  const resProfile: any = await $fetch(`${baseApiUrl}/api/auth/me`, {
+  const resProfile = await $fetch<AuthProfileResponse>(`${baseApiUrl}/api/auth/me`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${access_token}`,

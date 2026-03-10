@@ -1,13 +1,14 @@
-<script setup>
+<script setup lang="ts">
+import type { Rate } from "~/types/rate";
 
 // * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
 
-const specialRates = ref([]);
+const specialRates = ref<Rate[]>([]);
 const specialRatesLoading = ref(true);
 
 const getSpecialRates = async () => {
   try {
-    const res = await $fetch(`/api/rates`, {
+    const res = await $fetch<{ rates: Rate[] }>(`/api/rates`, {
       method: "GET",
       credentials: 'include', // Required
       params: {
@@ -16,7 +17,7 @@ const getSpecialRates = async () => {
     })
     specialRates.value = res.rates; // Array of rates
     specialRatesLoading.value = false;
-  } catch (err) {
+  } catch (err: unknown) {
     console.error('fetch rates error:', err)
     specialRatesLoading.value = false;
   }

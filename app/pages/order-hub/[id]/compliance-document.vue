@@ -4,6 +4,10 @@
   import { z } from "zod";
   import type {
     ComplianceDocument,
+    ComplianceDocumentType,
+    FileObjType,
+    AdditionalDocument,
+    DocumentPayload,
     OrderHubProgress,
     OrderHubStep,
     PurposeOfShipment,
@@ -16,13 +20,6 @@
 
   const formRef = ref<FormInstance | null>(null);
 
-  type ComplianceDocumentType =
-    | "ktpDocument"
-    | "npwpDocument"
-    | "passportDocument"
-    | "skpKbriDocument"
-    | "otherDocument";
-
   const REQUIRED_DOCUMENT_TYPES: ComplianceDocumentType[] = [
     "ktpDocument",
     "npwpDocument",
@@ -30,28 +27,11 @@
     "skpKbriDocument",
   ];
 
-  type FileObjType = Omit<ComplianceDocument, "uploadedAt"> & {
-    upload?: boolean;
-    uploadedAt?: Date;
-  };
-
-  type AdditionalDocument = {
-    id: string;
-    name: string;
-    file?: FileObjType;
-  };
-
   type FileUploadSelectEvent = {
     files: File[];
   };
 
   type UploadApiData = UploadDocumentResponse["data"];
-
-  type DocumentPayload = {
-    path: string;
-    mimeType?: string;
-    uploadedAt?: string;
-  };
 
   definePageMeta({ layout: "order-hub" });
 

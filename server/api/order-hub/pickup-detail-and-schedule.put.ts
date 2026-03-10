@@ -1,3 +1,6 @@
+import type { PickupDetailRequestBody } from "~/types/api";
+import type { OrderHubProgressResponse } from "~/types/order-hub";
+
 export default defineEventHandler(async (event) => {
   // 0️⃣ REQUIRED; Token Check
   const token = getCookie(event, "access_token");
@@ -12,7 +15,7 @@ export default defineEventHandler(async (event) => {
    * 1️⃣ Client req body
    * ...
    */
-  const body = await readBody(event);
+  const body = await readBody<PickupDetailRequestBody>(event);
 
   // TODO: tambah payload lainnya
   if (
@@ -29,7 +32,7 @@ export default defineEventHandler(async (event) => {
 
   // 2️⃣ Fetch API
   try {
-    const res: any = await $fetch(`${baseApiUrl}/api/order-hub/${body.bookingCode}/pickup-detail-schedule`, {
+    const res = await $fetch<OrderHubProgressResponse>(`${baseApiUrl}/api/order-hub/${body.bookingCode}/pickup-detail-schedule`, {
       method: "PUT",
       body: DUMMY,
       headers: {
@@ -51,14 +54,14 @@ export default defineEventHandler(async (event) => {
     return {
       rates: res.data,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("[PUT CUSTOMMER INFORMATION API Error]", error);
-
+    const e = error as { statusCode?: number; statusMessage?: string; data?: { message?: string } };
     throw createError({
-      statusCode: error?.statusCode || 500,
+      statusCode: e?.statusCode || 500,
       statusMessage:
-        error?.data?.message ||
-        error?.statusMessage ||
+        e?.data?.message ||
+        e?.statusMessage ||
         "Failed to update customer information",
     });
   }

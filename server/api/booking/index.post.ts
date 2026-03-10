@@ -1,3 +1,5 @@
+import type { BookingRequestBody, BookingApiResponse } from "~/types/api";
+
 export default defineEventHandler(async (event) => {
   // 0️⃣ REQUIRED; Token Check
   const token = getCookie(event, "access_token");
@@ -12,7 +14,7 @@ export default defineEventHandler(async (event) => {
    * 1️⃣ Client req body
    * ...
    */
-  const body = await readBody(event);
+  const body = await readBody<BookingRequestBody>(event);
 
   if (!body?.rate_id || !body?.purpose_of_shipment) {
     throw createError({
@@ -27,7 +29,7 @@ export default defineEventHandler(async (event) => {
 
   // 2️⃣ Fetch API
   try {
-    const res: any = await $fetch(`${baseApiUrl}/api/bookings`, {
+    const res = await $fetch<BookingApiResponse>(`${baseApiUrl}/api/bookings`, {
       method: "POST",
       body,
       headers: {
@@ -49,11 +51,12 @@ export default defineEventHandler(async (event) => {
     return {
       booking: res.data,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const e = error as { statusCode?: number; statusMessage?: string; data?: { message?: string } };
     throw createError({
-      statusCode: error?.statusCode || 500,
+      statusCode: e?.statusCode || 500,
       statusMessage:
-        error?.data?.message || error?.statusMessage || "Booking failed",
+        e?.data?.message || e?.statusMessage || "Booking failed",
     });
   }
 });
