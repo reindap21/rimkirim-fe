@@ -7,24 +7,76 @@
   import type { AddressGeocode, CustomerInformationPayload, OrderHubStep } from "~/types/order-hub";
   import { hasValidGeocode } from "~/utils/address";
 
+  // * ------- Schema ------------------------------------------------------------------------------------------------------------------------------------------------
+
+  const schema = z.object({
+    // Sender
+    senderContactName: z.string().min(1, { message: "Full name is required." }),
+    senderCountry: z
+      .object({
+        name: z.string(),
+        code: z.string(),
+        iso: z.string().optional(),
+      })
+      .nullable()
+      .refine((v) => !!v?.code, {
+        message: "Country is required.",
+      }),
+    senderFullAddress: z.string().min(1, {
+      message: "Full address is required.",
+    }),
+    senderEmail: z
+      .string()
+      .min(1, { message: "Email is required." })
+      .email({ message: "Invalid email address." }),
+    senderPhoneNumber: z.string().min(1, { message: "Phone number is required." }),
+
+    // Receiver
+    receiverContactName: z.string().min(1, { message: "Full name is required." }),
+    receiverCountry: z
+      .object({
+        name: z.string(),
+        code: z.string(),
+        iso: z.string().optional(),
+      })
+      .nullable()
+      .refine((v) => !!v?.code, {
+        message: "Country is required.",
+      }),
+    receiverFullAddress: z.string().min(1, {
+      message: "Full address is required.",
+    }),
+    receiverEmail: z
+      .string()
+      .min(1, { message: "Email is required." })
+      .email({ message: "Invalid email address." }),
+    receiverPhoneNumber: z.string().min(1, { message: "Phone number is required." }),
+
+    // Shipper
+    shipperFullName: z.string().min(1, { message: "Owner name is required." }),
+    shipperOriginPhoneNumber: z.string().min(1, { message: "Phone number is required." }),
+    shipperDestinationPhoneNumber: z.string().min(1, { message: "Phone number is required." }),
+    shipperEmail: z
+      .string()
+      .min(1, { message: "Email is required." })
+      .email({ message: "Invalid email address." }),
+  });
+
   // * ------- Types -------------------------------------------------------------------------------------------------------------------------------------------------
 
-  interface CustomerInformationFormValues {
-    senderContactName: string;
-    senderCountry: { name: string; code: string } | null;
-    senderFullAddress: string;
-    senderEmail: string;
-    senderPhoneNumber: string;
-    receiverContactName: string;
-    receiverCountry: { name: string; code: string } | null;
-    receiverFullAddress: string;
-    receiverEmail: string;
-    receiverPhoneNumber: string;
-    shipperFullName: string;
-    shipperOriginPhoneNumber: string;
-    shipperDestinationPhoneNumber: string;
-    shipperEmail: string;
-  }
+  type CustomerInformationFormValues = z.infer<typeof schema>;
+
+  type PrimeFormField<T> = {
+    value: T;
+    invalid: boolean;
+    error?: { message?: string };
+  };
+
+  type PrimeFormInstance<T> = {
+    [K in keyof T]: PrimeFormField<T[K]>;
+  };
+
+  type FormInstance = PrimeFormInstance<CustomerInformationFormValues>;
 
   // * ------- Dedines -----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -35,7 +87,13 @@
 
   // * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
 
-  const { bookingCode, packingListCode, navigateToOrderHub, fetchProgress } = useOrderHub(); // other vars: purposeOfShipment
+  const {
+    loading: bookingProgressLoading,
+    bookingCode,
+    packingListCode,
+    navigateToOrderHub,
+    fetchProgress,
+  } = useOrderHub(); // other vars: purposeOfShipment
 
   const { user, loading } = useAuth();
 
@@ -49,7 +107,7 @@
 
   // * ------- Form Handling
 
-  const formRef = ref<any>(null);
+  const formRef = ref<FormInstance | null>(null);
   const submitLoading = ref(false);
   const finishLaterLoading = ref(false);
   const errorSubmit = ref("");
@@ -82,60 +140,7 @@
     receiverFullAddress: "",
   });
 
-  type CustomerInformationHydration = Partial<typeof initialValues>;
-
-  const resolver = zodResolver(
-    z.object({
-      // Sender
-      senderContactName: z.string().min(1, { message: "Full name is required." }),
-      senderCountry: z
-        .object({
-          name: z.string(),
-          code: z.string(),
-          iso: z.string().optional(),
-        })
-        .nullable()
-        .refine((v) => !!v?.code, {
-          message: "Country is required.",
-        }),
-      senderFullAddress: z.string().min(1, {
-        message: "Full address is required.",
-      }),
-      senderEmail: z
-        .string()
-        .min(1, { message: "Email is required." })
-        .email({ message: "Invalid email address." }),
-      senderPhoneNumber: z.string().min(1, { message: "Phone number is required." }),
-      // Receiver
-      receiverContactName: z.string().min(1, { message: "Full name is required." }),
-      receiverCountry: z
-        .object({
-          name: z.string(),
-          code: z.string(),
-          iso: z.string().optional(),
-        })
-        .nullable()
-        .refine((v) => !!v?.code, {
-          message: "Country is required.",
-        }),
-      receiverFullAddress: z.string().min(1, {
-        message: "Full address is required.",
-      }),
-      receiverEmail: z
-        .string()
-        .min(1, { message: "Email is required." })
-        .email({ message: "Invalid email address." }),
-      receiverPhoneNumber: z.string().min(1, { message: "Phone number is required." }),
-      // Package Owner
-      shipperFullName: z.string().min(1, { message: "Owner name is required." }),
-      shipperOriginPhoneNumber: z.string().min(1, { message: "Phone number is required." }),
-      shipperDestinationPhoneNumber: z.string().min(1, { message: "Phone number is required." }),
-      shipperEmail: z
-        .string()
-        .min(1, { message: "Email is required." })
-        .email({ message: "Invalid email address." }),
-    }),
-  );
+  const resolver = zodResolver(schema);
 
   // Customer Information
   const origin = ref<Partial<AddressGeocode>>({});
@@ -168,28 +173,16 @@
     }
   };
 
-  const handleOnChangeIsReceiverSameAsSender = ($form: any) => {
+  const handleOnChangeIsReceiverSameAsSender = ($form: FormInstance) => {
     if (isReceiverSameAsSender.value) {
-      // Copy all sender data to receiver
+      // Copy all sender data to receiver (only these 3 property)
       $form.receiverContactName.value = $form.senderContactName.value;
-      $form.receiverCountry.value = $form.senderCountry.value;
-      destinationAddress.value = originAddress.value;
-      destination.value = { ...origin.value };
       $form.receiverEmail.value = $form.senderEmail.value;
       $form.receiverPhoneNumber.value = $form.senderPhoneNumber.value;
     }
-    // else {
-    //   // Clear all receiver fields
-    //   $form.receiverContactName.value = ""
-    //   $form.receiverCountry.value = ""
-    //   destinationAddress.value = ""
-    //   destination.value = {}
-    //   $form.receiverEmail.value = ""
-    //   $form.receiverPhoneNumber.value = ""
-    // }
   };
 
-  const handleOnClickSameAs = (sameAs: "sender" | "receiver", $form: any) => {
+  const handleOnClickSameAs = (sameAs: "sender" | "receiver", $form: FormInstance) => {
     if (shipmentOwnerInformationSameAs.value === "") {
       fillShipmentOwner(sameAs, $form);
     } else {
@@ -228,7 +221,7 @@
    * @param sameAs
    * @param $form
    */
-  const fillShipmentOwner = (sameAs: "sender" | "receiver", $form: any) => {
+  const fillShipmentOwner = (sameAs: "sender" | "receiver", $form: FormInstance) => {
     if (sameAs === "sender") fillShipmentOwnerFromSender($form);
     if (sameAs === "receiver") fillShipmentOwnerFromReceiver($form);
   };
@@ -237,7 +230,7 @@
    * Implementation Fill shipment / package owner from sender
    * @param $form
    */
-  const fillShipmentOwnerFromSender = ($form: any) => {
+  const fillShipmentOwnerFromSender = ($form: FormInstance) => {
     $form.shipperFullName.value = $form.senderContactName.value;
     $form.shipperEmail.value = $form.senderEmail.value;
     $form.shipperOriginPhoneNumber.value = $form.senderPhoneNumber.value;
@@ -250,7 +243,7 @@
    * @param $form
    */
 
-  const fillShipmentOwnerFromReceiver = ($form: any) => {
+  const fillShipmentOwnerFromReceiver = ($form: FormInstance) => {
     $form.shipperFullName.value = $form.receiverContactName.value;
     $form.shipperEmail.value = $form.receiverEmail.value;
     $form.shipperOriginPhoneNumber.value = $form.receiverPhoneNumber.value;
@@ -276,7 +269,7 @@
    * Finish Later
    * @param $form
    */
-  const handleFinishLater = async ($form: any) => {
+  const handleFinishLater = async ($form: FormInstance) => {
     if (finishLaterLoading.value) return;
 
     finishLaterLoading.value = true;
@@ -289,7 +282,7 @@
       senderContactName: $form?.senderContactName.value,
       senderEmail: $form?.senderEmail.value,
       senderPhoneNumber: $form?.senderPhoneNumber.value,
-      senderCountry: $form?.senderCountry?.code,
+      senderCountry: $form?.senderCountry?.value?.code,
       senderFullAddress: originAddress.value ?? null,
       senderAddressGeocode: hasValidGeocode(origin.value) ? toRaw(origin.value) : null,
 
@@ -297,7 +290,7 @@
       receiverContactName: $form?.receiverContactName.value,
       receiverEmail: $form?.receiverEmail.value,
       receiverPhoneNumber: $form?.receiverPhoneNumber.value,
-      receiverCountry: $form?.receiverCountry?.code,
+      receiverCountry: $form?.receiverCountry?.value?.code,
       receiverFullAddress: destinationAddress.value ?? null,
       receiverAddressGeocode: hasValidGeocode(destination.value) ? toRaw(destination.value) : null,
 
@@ -334,7 +327,16 @@
    * Submit
    * @param param0
    */
-  const handleSubmit = async ({ values, valid }: { values: any; valid: boolean }) => {
+  const handleSubmit = async ({
+    values,
+    valid,
+  }: {
+    values: CustomerInformationFormValues;
+    valid: boolean;
+  }) => {
+    console.log("valid", valid);
+    console.log("submitLoading", submitLoading.value);
+
     if (!valid || submitLoading.value) return;
 
     if (!hasValidGeocode(origin.value)) {
@@ -359,7 +361,7 @@
       senderContactName: values.senderContactName,
       senderEmail: values.senderEmail,
       senderPhoneNumber: values.senderPhoneNumber,
-      senderCountry: values.senderCountry.code,
+      senderCountry: values?.senderCountry?.code,
       senderFullAddress: originAddress.value,
       senderProvince: origin.value?.province || "",
       senderCity: origin.value?.city || "",
@@ -370,7 +372,7 @@
       receiverContactName: values.receiverContactName,
       receiverEmail: values.receiverEmail,
       receiverPhoneNumber: values.receiverPhoneNumber,
-      receiverCountry: values.receiverCountry.code,
+      receiverCountry: values?.receiverCountry?.code,
       receiverFullAddress: destinationAddress.value,
       receiverProvince: destination.value?.province || "",
       receiverCity: destination.value?.city || "",
@@ -446,6 +448,8 @@
     dataLoading.value = false;
     formReady.value = true; // ⬅️ KUNCI
   });
+
+  watchEffect(() => {});
 </script>
 
 <template>
@@ -534,7 +538,7 @@
               <!-- Sender -->
               <div class="flex flex-col gap-6">
                 <!-- Sender Full Name -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium text-neutral-90">Sender Full Name</label>
                   <div class="relative">
                     <InputText
@@ -559,7 +563,7 @@
                   >
                 </div>
                 <!-- Sender Country -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium text-neutral-90">Sender Country</label>
                   <div class="relative">
                     <!-- <InputText unsstyled name="senderCountry" type="text" placeholder="Enter Sender Origin Country"
@@ -585,7 +589,7 @@
                   >
                 </div>
                 <!-- Sender Full Address -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium text-neutral-90">Sender Full Address</label>
                   <ClientOnly>
                     <GoogleAddressInput
@@ -610,7 +614,7 @@
                   >
                 </div>
                 <!-- Sender Email Address -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium text-neutral-90">Sender Email Address</label>
                   <div class="relative">
                     <InputText
@@ -634,7 +638,7 @@
                   >
                 </div>
                 <!-- Sender Phone Number -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium text-neutral-90">Sender Phone Number</label>
                   <div class="relative">
                     <InputIcon
@@ -662,7 +666,7 @@
               <!-- Receiver -->
               <div class="flex flex-col gap-6">
                 <!-- Receiver Full Name -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium text-neutral-90">Receiver Full Name</label>
                   <div class="relative">
                     <InputText
@@ -686,7 +690,7 @@
                   >
                 </div>
                 <!-- Receiver Country -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium text-neutral-90">Receiver Country</label>
                   <div class="relative">
                     <!-- <InputText name="receiverCountry" type="text" placeholder="Enter Receiver Origin Country"
@@ -712,7 +716,7 @@
                   >
                 </div>
                 <!-- Receiver Full Address -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium text-neutral-90">Receiver Full Address</label>
                   <ClientOnly>
                     <GoogleAddressInput
@@ -738,7 +742,7 @@
                   >
                 </div>
                 <!-- Receiver Email Address -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium text-neutral-90">Receiver Email Address</label>
                   <div class="relative">
                     <InputText
@@ -762,7 +766,7 @@
                   >
                 </div>
                 <!-- Receiver Phone Number -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium text-neutral-90">Receiver Phone Number</label>
                   <div class="relative">
                     <InputIcon
@@ -842,7 +846,7 @@
               <!-- Shipment Owner Information Body -->
               <div class="flex flex-col gap-6">
                 <!-- Package Owner Name -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium text-neutral-90">Package Owner Name</label>
                   <div class="relative">
                     <InputText
@@ -868,7 +872,7 @@
                 <!-- Package Phone Number -->
                 <div class="flex gap-6">
                   <!-- Origin -->
-                  <div class="flex-1 flex flex-col gap-[6px]">
+                  <div class="flex-1 relative flex flex-col gap-[6px]">
                     <label class="font-medium text-neutral-90"
                       >Active International Phone Number [Origin]</label
                     >
@@ -895,7 +899,7 @@
                     >
                   </div>
                   <!-- Destination -->
-                  <div class="flex-1 flex flex-col gap-[6px]">
+                  <div class="flex-1 relative flex flex-col gap-[6px]">
                     <label class="font-medium text-neutral-90"
                       >Active International Phone Number [Destination]</label
                     >
@@ -923,7 +927,7 @@
                 </div>
 
                 <!-- Package Owner Email Address -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium text-neutral-90">Package Owner Email Address</label>
                   <div class="relative">
                     <InputText
@@ -954,7 +958,10 @@
             <BlackButton class="w-[97px]" @click="navigateToOrderHub">Back</BlackButton>
             <div class="flex items-center gap-3">
               <!-- @click="actionForm = ''" -->
-              <TextButton @click="showPopupFinishLater" :disabled="submitLoading">
+              <TextButton
+                @click="showPopupFinishLater"
+                :disabled="submitLoading || bookingProgressLoading"
+              >
                 Finish Later
               </TextButton>
               <!--  :disabled="$form.invalid && $form.touched" -->
@@ -962,7 +969,7 @@
                 type="submit"
                 class="w-[100px]"
                 :loading="submitLoading"
-                :disabled="finishLaterLoading"
+                :disabled="finishLaterLoading || bookingProgressLoading"
               >
                 Done
               </PrimaryButton>

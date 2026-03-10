@@ -56,6 +56,7 @@
   definePageMeta({ layout: "order-hub" });
 
   const {
+    loading: bookingProgressLoading,
     bookingCode,
     navigateToOrderHub: handleBack,
     navigateToOrderHub,
@@ -394,7 +395,7 @@
                   </div>
                   <PillSuccessUpload v-if="ktpDocument" />
                 </div>
-                <FormField name="ktpDocument" v-slot="{ props, invalid, error }">
+                <FormField class="relative" name="ktpDocument" v-slot="{ props, invalid, error }">
                   <div class="card" :class="invalid ? 'border border-red-600 rounded-[8px]' : ''">
                     <FileUpload
                       v-if="!ktpDocument"
@@ -417,10 +418,9 @@
                       @remove="() => onFileRemove('ktpDocument', props)"
                     />
                   </div>
-
-                  <p v-if="invalid" class="text-[12px] text-red-500 mt-2">
+                  <Message v-if="invalid" severity="error" size="small" variant="simple">
                     {{ error?.message }}
-                  </p>
+                  </Message>
                 </FormField>
               </div>
             </div>
@@ -537,10 +537,9 @@
                       @remove="() => onFileRemove('skpKbriDocument', props)"
                     />
                   </div>
-
-                  <p v-if="invalid" class="text-[12px] text-red-500 mt-2">
+                  <Message v-if="invalid" severity="error" size="small" variant="simple">
                     {{ error?.message }}
-                  </p>
+                  </Message>
                 </FormField>
               </div>
             </div>
@@ -602,11 +601,19 @@
             <BlackButton class="w-[97px]" @click="handleBack">Back</BlackButton>
             <div class="flex items-center gap-3">
               <!--  @click="handleFinishLater" -->
-              <TextButton :disabled="submitLoading" @click="showPopupFinishLater">
+              <TextButton
+                :disabled="submitLoading || bookingProgressLoading"
+                @click="showPopupFinishLater"
+              >
                 Finish Later
               </TextButton>
               <!--  :disabled="$form.invalid && $form.touched" -->
-              <PrimaryButton type="submit" class="w-[100px]" :loading="submitLoading">
+              <PrimaryButton
+                type="submit"
+                class="w-[100px]"
+                :loading="submitLoading"
+                :disabled="finishLaterLoading || bookingProgressLoading"
+              >
                 Done
               </PrimaryButton>
             </div>

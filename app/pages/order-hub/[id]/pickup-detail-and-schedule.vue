@@ -285,7 +285,7 @@
               <!-- Shipment Owner Information Body -->
               <div class="flex flex-col gap-6">
                 <!-- PIC for Pickup Name -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium text-neutral-90">PIC for Pickup Name</label>
                   <div class="relative">
                     <InputText
@@ -310,7 +310,7 @@
                 </div>
 
                 <!-- Building Type -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium text-neutral-90">Building Type</label>
                   <div class="relative">
                     <Select
@@ -418,7 +418,7 @@
                 </div>
 
                 <!-- Street Address -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium text-neutral-90">Street Address</label>
                   <ClientOnly>
                     <!-- @select="handleOriginSelect" -->
@@ -438,7 +438,7 @@
                 </div>
 
                 <!-- Notes for Courier -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium text-neutral-90">Notes for Courier</label>
                   <div class="p-0">
                     <Textarea
@@ -475,7 +475,7 @@
                 </div>
 
                 <!-- PIC for Pickup Phone Number [Origin] -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium text-neutral-90"
                     >PIC for Pickup Phone Number [Origin]</label
                   >

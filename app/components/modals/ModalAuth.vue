@@ -217,7 +217,7 @@
               <!-- Forms -->
               <div class="flex flex-col gap-4">
                 <!-- Email -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium">Email</label>
                   <div class="relative">
                     <InputIcon class="absolute !top-[13px] left-4 !mt-0">
@@ -239,30 +239,32 @@
                   >
                 </div>
                 <!-- Password -->
-                <div class="flex flex-col gap-[6px]">
-                  <label class="font-medium">Password</label>
-                  <div class="relative">
-                    <InputIcon
-                      class="absolute !top-[13px] left-4 !mt-0 cursor-pointer"
-                      @click="toggleShowPasswordLogin"
+                <div class="relative flex flex-col gap-[6px]">
+                  <div class="relative flex flex-col gap-[6px]">
+                    <label class="font-medium">Password</label>
+                    <div class="relative">
+                      <InputIcon
+                        class="absolute !top-[13px] left-4 !mt-0 cursor-pointer"
+                        @click="toggleShowPasswordLogin"
+                      >
+                        <IconEyeClosed v-if="showPasswordLogin" />
+                        <IconEyeOpen v-else />
+                      </InputIcon>
+                      <InputText
+                        name="password"
+                        :type="showPasswordLogin ? 'text' : 'password'"
+                        placeholder="Enter your password"
+                        class="w-full !pl-12"
+                      />
+                    </div>
+                    <Message
+                      v-if="$form.password?.invalid"
+                      severity="error"
+                      size="small"
+                      variant="simple"
+                      >{{ $form.password.error?.message }}</Message
                     >
-                      <IconEyeClosed v-if="showPasswordLogin" />
-                      <IconEyeOpen v-else />
-                    </InputIcon>
-                    <InputText
-                      name="password"
-                      :type="showPasswordLogin ? 'text' : 'password'"
-                      placeholder="Enter your password"
-                      class="w-full !pl-12"
-                    />
                   </div>
-                  <Message
-                    v-if="$form.password?.invalid"
-                    severity="error"
-                    size="small"
-                    variant="simple"
-                    >{{ $form.password.error?.message }}</Message
-                  >
                   <!-- Forgot Password -->
                   <p
                     class="text-[14px] leading-[22px] font-[400] text-right text-[#399CE5] cursor-default"
@@ -343,7 +345,7 @@
               <!-- Forms -->
               <div class="flex flex-col gap-4">
                 <!-- Name -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium">Name</label>
                   <div class="relative">
                     <InputIcon class="absolute !top-[13px] left-4 !mt-0">
@@ -365,7 +367,7 @@
                   >
                 </div>
                 <!-- Email -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium">Email</label>
                   <div class="relative">
                     <InputIcon class="absolute !top-[13px] left-4 !mt-0">
@@ -387,7 +389,7 @@
                   >
                 </div>
                 <!-- Password -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium">Password</label>
                   <div class="relative">
                     <InputIcon
@@ -413,7 +415,7 @@
                   >
                 </div>
                 <!-- Password Confirm -->
-                <div class="flex flex-col gap-[6px]">
+                <div class="relative flex flex-col gap-[6px]">
                   <label class="font-medium">Confirm Password</label>
                   <div class="relative">
                     <InputIcon

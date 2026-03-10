@@ -35,13 +35,16 @@ export default defineEventHandler(async (event) => {
 
   // 2️⃣ Fetch API
   try {
-    const res: any = await $fetch(`${baseApiUrl}/api/order-hub/${body.bookingCode}/item-and-package`, {
-      method: "PUT",
-      body,
-      headers: {
-        Authorization: `Bearer ${token}`,
+    const res: any = await $fetch(
+      `${baseApiUrl}/api/order-hub/${body.bookingCode}/item-and-package`,
+      {
+        method: "PUT",
+        body,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       },
-    });
+    );
 
     /**
      * 2️⃣.1️⃣ Expected response: eligible_schemes
@@ -54,18 +57,14 @@ export default defineEventHandler(async (event) => {
     }
 
     //* 3️⃣ Return response
-    return {
-      rates: res.data,
-    };
+    return res.data;
   } catch (error: any) {
     console.error("[PUT Progress Error]", error);
 
     throw createError({
       statusCode: error?.statusCode || 500,
       statusMessage:
-        error?.data?.message ||
-        error?.statusMessage ||
-        "Failed to update customer information",
+        error?.data?.message || error?.statusMessage || "Failed to update customer information",
     });
   }
 });

@@ -42,29 +42,20 @@
   watch(
     () => props.response,
     (res) => {
-      if (!res) return;
+      if (!res || !props?.step) return;
 
-      let stepTitle = "";
-
-      if (
-        props.step === "customer_information" ||
-        props.step === "compliance_document" ||
-        props.step === "pickup_detail_schedule"
-      ) {
-        stepTitle = wordCapital(props.step, "_", " ");
-      }
-      if (props.step === "item_and_package") {
-        stepTitle = "Item and Packages";
-      }
-
-      const incompleteSteps = hasIncompleteSteps(props.step, res?.progress);
-
+      const progress = res?.progress ?? {};
+      const stepTitle = STEP_LABEL[props.step] ?? wordCapital(props.step, "_", " ");
+      const incompleteSteps = hasIncompleteSteps(props.step, progress);
       title.value = stepTitle;
+
       description.value = `Your ${stepTitle} has been successfully saved.`;
+
       description.value += incompleteSteps
         ? ` Please proceed to finish the remaining form for your booking.`
         : ` We will review them shortly. You can track your progress in the Customer Order Hub.`;
-      nextStepDescription.value = getNextStepDescription(props.step, res?.progress as any); // eslint-disable-line
+
+      nextStepDescription.value = getNextStepDescription(props.step, progress);
     },
     { immediate: true },
   );
@@ -111,30 +102,14 @@
       <div class="bg-white p-4 min-w-full">
         <div class="flex gap-3">
           <div>
-            <svg
-              width="32"
-              height="32"
-              viewBox="0 0 32 32"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <circle cx="16" cy="16" r="16" fill="#F6F6FA" />
-              <path
-                d="M22.9375 16C22.9375 12.1685 19.8315 9.0625 16 9.0625C12.1685 9.0625 9.0625 12.1685 9.0625 16C9.0625 19.8315 12.1685 22.9375 16 22.9375C19.8315 22.9375 22.9375 19.8315 22.9375 16ZM24.0625 16C24.0625 20.4528 20.4528 24.0625 16 24.0625C11.5472 24.0625 7.9375 20.4528 7.9375 16C7.9375 11.5472 11.5472 7.9375 16 7.9375C20.4528 7.9375 24.0625 11.5472 24.0625 16Z"
-                fill="#141B34"
-              />
-              <path
-                d="M15.4375 16.375V13C15.4375 12.6893 15.6893 12.4375 16 12.4375C16.3107 12.4375 16.5625 12.6893 16.5625 13V16.375C16.5625 16.6857 16.3107 16.9375 16 16.9375C15.6893 16.9375 15.4375 16.6857 15.4375 16.375Z"
-                fill="#141B34"
-              />
-              <path
-                d="M15.3247 18.9985V18.9912C15.3247 18.6184 15.6272 18.3159 16 18.3159C16.3728 18.3159 16.6753 18.6184 16.6753 18.9912V18.9985C16.6753 19.3713 16.3728 19.6738 16 19.6738C15.6272 19.6738 15.3247 19.3713 15.3247 18.9985Z"
-                fill="#141B34"
-              />
-            </svg>
+            <IconExclamationCircleNextStep
+              v-if="hasIncompleteSteps(props.step, response?.progress)"
+            />
+            <IconUnlockNextStep v-else />
           </div>
           <div v-if="nextStepDescription" class="flex flex-col gap-2">
-            <div>Next Step</div>
+            <div v-if="hasIncompleteSteps(props.step, response?.progress)">Next Step</div>
+            <div v-else>Pickup Details & Schedule Unlocked!</div>
             <div>{{ nextStepDescription }}</div>
           </div>
         </div>

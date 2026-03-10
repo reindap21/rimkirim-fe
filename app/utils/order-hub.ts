@@ -1,7 +1,7 @@
 import type { Ref } from "vue";
 import { useRouter } from "vue-router";
 import { MENU } from "~/config";
-import type { OrderHubProgress } from "~/types/order-hub";
+import type { OrderHubProgress, OrderHubStep, ProgressStatus } from "~/types/order-hub";
 
 /**
  * Fetch booking progress from API with error handling.
@@ -10,9 +10,7 @@ import type { OrderHubProgress } from "~/types/order-hub";
  * @param bookingCode - The booking code to fetch progress for
  * @returns OrderHubProgress data or null if failed
  */
-export async function fetchBookingProgress(
-  bookingCode: string,
-): Promise<OrderHubProgress | null> {
+export async function fetchBookingProgress(bookingCode: string): Promise<OrderHubProgress | null> {
   try {
     const res = await $fetch<OrderHubProgress>(`/api/order-hub/progress`, {
       method: "GET",
@@ -50,10 +48,7 @@ export function navigateToOrderHub(bookingCode: string): void {
  * @param bookingCode - The booking code
  * @param page - The page to navigate to (e.g., 'customer-information', 'item-and-packages')
  */
-export function navigateToOrderHubPage(
-  bookingCode: string,
-  page: string,
-): void {
+export function navigateToOrderHubPage(bookingCode: string, page: string): void {
   const router = useRouter();
   router.push({
     path: `${MENU.ORDER_HUB}/${bookingCode}/${page}`,
@@ -235,9 +230,7 @@ export async function uploadComplianceDocument({
  * @param purpose - The purpose of shipment value
  * @returns true if purpose is passenger_goods
  */
-export function isPassengerGoods(
-  purpose: string | null | undefined,
-): boolean {
+export function isPassengerGoods(purpose: string | null | undefined): boolean {
   return purpose === "passenger_goods";
 }
 
@@ -247,8 +240,75 @@ export function isPassengerGoods(
  * @param purpose - The purpose of shipment value
  * @returns true if purpose is moving_goods
  */
-export function isMovingGoods(
-  purpose: string | null | undefined,
-): boolean {
+export function isMovingGoods(purpose: string | null | undefined): boolean {
   return purpose === "moving_goods";
 }
+
+export const STEP_LABEL: Record<OrderHubStep, string> = {
+  customer_information: "Customer Information",
+  item_and_package: "Item & Packages Information",
+  compliance_document: "Compliance Document",
+  pickup_detail_schedule: "Pickup Detail & Schedule",
+};
+
+export const MAIN_STEPS: OrderHubStep[] = [
+  "customer_information",
+  "item_and_package",
+  "compliance_document",
+];
+
+/**
+ *
+ * @param currentStep OrderHubStep
+ * @param progress Record<OrderHubStep, ProgressStatus>
+ * @returns
+ */
+export const hasIncompleteSteps = (
+  currentStep: OrderHubStep | null,
+  progress: Record<string, ProgressStatus> = {},
+) => {
+  if (!currentStep || !progress) return;
+  return MAIN_STEPS.filter((step) => step !== currentStep).some(
+    (step) => progress?.[step] !== "completed",
+  );
+};
+
+/**
+ *
+ * @param currentStep OrderHubStep
+ * @param progress Record<OrderHubStep, ProgressStatus>
+ * @returns
+ */
+const getIncompleteSteps = (
+  currentStep: OrderHubStep,
+  progress: Record<string, ProgressStatus> = {},
+): OrderHubStep[] => {
+  return MAIN_STEPS.filter((step) => step !== currentStep && progress?.[step] !== "completed");
+};
+
+/**
+ *
+ * @param currentStep OrderHubStep
+ * @param progress Record<OrderHubStep, ProgressStatus>
+ * @returns
+ */
+export const getNextStepDescription = (
+  currentStep: OrderHubStep,
+  progress: Record<string, ProgressStatus> = {},
+) => {
+  const incompleteSteps = getIncompleteSteps(currentStep, progress);
+  console.log("currentStep", currentStep);
+  console.log("progress", progress);
+
+  if (incompleteSteps.length === 0) {
+    return "You have finished 3/3 form to unlock pickup schedule, go pick a date and time to start your international moving";
+  }
+
+  if (incompleteSteps.length === 1) {
+    return `Finish ${STEP_LABEL[incompleteSteps[0]]} to schedule your move.`;
+  }
+
+  const labels = incompleteSteps.map((step) => STEP_LABEL[step]);
+
+  return `Finish ${labels.join(" and ")} to schedule your move.`;
+};

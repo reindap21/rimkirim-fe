@@ -36,6 +36,8 @@
 
   // * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
 
+  // TODO: Refactor fetch progress
+
   // Use order hub composable
   const { bookingCode, fetchProgress, navigateToOrderHub } = useOrderHub();
 
@@ -145,6 +147,7 @@
       } else {
         packages.value = [createPackage()];
       }
+      bookingProgressLoading.value = false;
     } catch (err) {
       // Error is already handled by the composable
       bookingProgressLoading.value = false;
@@ -510,11 +513,19 @@
             <BlackButton class="w-[97px]" @click="navigateToOrderHub">Back</BlackButton>
             <div class="flex items-center gap-3">
               <!-- @click="actionForm = ''" -->
-              <TextButton :disabled="submitLoading" @click="showPopupFinishLater">
+              <TextButton
+                :disabled="submitLoading || bookingProgressLoading"
+                @click="showPopupFinishLater"
+              >
                 Finish Later
               </TextButton>
               <!--  :disabled="$form.invalid && $form.touched" -->
-              <PrimaryButton type="submit" class="w-[100px]" :loading="submitLoading">
+              <PrimaryButton
+                type="submit"
+                class="w-[100px]"
+                :loading="submitLoading"
+                :disabled="finishLaterLoading || bookingProgressLoading"
+              >
                 Done
               </PrimaryButton>
             </div>
@@ -534,7 +545,7 @@
       </section>
     </template>
 
-    <template v-else>
+    <template v-if="viewMode === 'success'">
       <UISuccessSubmitFormStepOrderHub
         :step="currentStep"
         :response="submittedResponse"
