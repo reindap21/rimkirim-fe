@@ -5,15 +5,9 @@
     use?: "eligible" | "order-hub" | "home" | null | undefined;
   }
 
-<<<<<<< HEAD
   const props = withDefaults(defineProps<Props>(), {
     use: "home",
   });
-=======
-interface Props {
-  use?: "eligible" | "order-hub" | "home" | null | undefined;
-}
->>>>>>> Refactor page structure; Page customer infor and item & packages
 
   const { user, logout, loading } = useAuth();
   const authModal = useAuthModal();
@@ -24,24 +18,7 @@ interface Props {
   const useNavOrderHub = props.use === "order-hub";
   const useNavEligible = props.use === "eligible";
 
-<<<<<<< HEAD
   // * ------- Methods -----------------------------------------------------------------------------------------------------------------------------------------------
-=======
-// When use home; fetching user will appear
-// Default loggedin for order
-const useNavHome = !props?.use || props.use === 'home';
-const useNavOrderHub = props.use === 'order-hub';
-const useNavEligible = props.use === 'eligible';
-
-// * ------- Methods -----------------------------------------------------------------------------------------------------------------------------------------------
-
-/**
- * Open modal login 
- */
-const openLogin = () => {
-  authModal.openLogin()
-}
->>>>>>> Refactor page structure; Page customer infor and item & packages
 
   /**
    * Open modal login
@@ -66,7 +43,6 @@ const openLogin = () => {
           <UIBrandLogo fill="#1E1E1E" />
         </NuxtLink>
       </div>
-<<<<<<< HEAD
       <nav
         class="hidden md:flex items-center gap-3 text-[14px] leading-[22px] text-gray-700 magnetic-group"
         v-if="use === 'home'"
@@ -96,21 +72,6 @@ const openLogin = () => {
           class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-[#C1FF00] hover:text-[#1E1E1E]"
           >FAQs</a
         >
-=======
-      <nav class="hidden md:flex items-center gap-3 text-[14px] leading-[22px] text-gray-700 magnetic-group"
-        v-if="use === 'home'">
-        <a href="#"
-          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-[#C1FF00] hover:text-[#1E1E1E]">Moving</a>
-        <a href="#"
-          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-[#C1FF00] hover:text-[#1E1E1E]">About
-          Us</a>
-        <a href="#"
-          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-[#C1FF00] hover:text-[#1E1E1E]">Articles</a>
-        <a href="#"
-          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-[#C1FF00] hover:text-[#1E1E1E]">Jobs</a>
-        <a href="#"
-          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-[#C1FF00] hover:text-[#1E1E1E]">FAQs</a>
->>>>>>> Refactor page structure; Page customer infor and item & packages
       </nav>
       <div class="flex items-center gap-4">
         <div
@@ -145,7 +106,6 @@ const openLogin = () => {
       </div>
     </div>
   </header>
-<<<<<<< HEAD
   <header
     id="navbar"
     class="fixed top-0 left-0 z-50 px-[28px] py-4 w-full transition-all duration-300"
@@ -160,14 +120,6 @@ const openLogin = () => {
         >
           EN
         </div>
-=======
-  <header id="navbar" class="fixed top-0 left-0 z-50 px-[28px] py-4 w-full transition-all duration-300"
-    :class="useNavEligible ? 'bg-white' : 'bg-[#FAFAFC]'" v-if="useNavOrderHub || useNavEligible">
-    <div class="flex justify-between items-center">
-      <UIBrandLogo fill="#1E1E1E" />
-      <div class="flex items-center gap-2 px-4 py-2 bg-white shadow-lg rounded-full">
-        <div class="text-[18px] leading-[26px] px-4 py-2 font-medium text-[#1E1E1E] cursor-pointer">EN</div>
->>>>>>> Refactor page structure; Page customer infor and item & packages
         <!-- <button class="w-full text-left text-[14px] leading-[22px] text-red-600" @click="logout">
           Logout
         </button> -->

@@ -1,8 +1,5 @@
-<<<<<<< HEAD
 import type { OrderHubProgressResponse } from "~/types/order-hub";
 
-=======
->>>>>>> Refactor page structure; Page customer infor and item & packages
 export default defineEventHandler(async (event) => {
   // 0️⃣ REQUIRED; Token Check
   const token = getCookie(event, "access_token");
@@ -32,7 +29,6 @@ export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig();
   const baseApiUrl = config.apiBaseUrl;
 
-<<<<<<< HEAD
   // 2️⃣ Prepare payload
   const data = { ...body };
   delete data.bookingCode;
@@ -45,24 +41,13 @@ export default defineEventHandler(async (event) => {
     const res = await $fetch<OrderHubProgressResponse>(`${baseApiUrl}/api/order-hub/${body.bookingCode}/customer-information`, {
       method: "PUT",
       body: data, // ✅ Use real form data instead of DUMMY
-=======
-  // 2️⃣ Fetch API
-  try {
-    const res: any = await $fetch(`${baseApiUrl}/api/order-hub/${body.bookingCode}/customer-information`, {
-      method: "PUT",
-      body,
->>>>>>> Refactor page structure; Page customer infor and item & packages
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
     /**
-<<<<<<< HEAD
      * 2️⃣.1️⃣ Expected response: OrderHubProgress
-=======
-     * 2️⃣.1️⃣ Expected response: eligible_schemes
->>>>>>> Refactor page structure; Page customer infor and item & packages
      */
     if (!res?.data) {
       throw createError({
@@ -71,15 +56,8 @@ export default defineEventHandler(async (event) => {
       });
     }
 
-<<<<<<< HEAD
     //* 3️⃣ Return full response
     return res.data;
-=======
-    //* 3️⃣ Return response
-    return {
-      rates: res.data,
-    };
->>>>>>> Refactor page structure; Page customer infor and item & packages
   } catch (error: any) {
     console.error("[PUT CUSTOMMER INFORMATION API Error]", error);
 
@@ -92,7 +70,6 @@ export default defineEventHandler(async (event) => {
     });
   }
 });
-<<<<<<< HEAD
 
 const DUMMY = {
     "shipperFullName": "John Doe",
@@ -248,5 +225,3 @@ const DUMMY = {
         "country": "Indonesia"
     }
 }
-=======
->>>>>>> Refactor page structure; Page customer infor and item & packages
