@@ -3,7 +3,7 @@ interface Props {
   fill?: string;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   fill: "#757575", // Default: is disabled
 });
 </script>

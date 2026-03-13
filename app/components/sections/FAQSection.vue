@@ -20,7 +20,8 @@
               <p class="text-[18px] leading-[26px] text-neutral-100">
                 What exactly included in rimkirim services?
               </p>
-              <svg class="chevron w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor"
+              <svg
+class="chevron w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor"
                 viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
               </svg>
@@ -44,7 +45,8 @@
               <p class="text-[18px] leading-[26px] text-neutral-100">
                 Do I need to pack everything myself?
               </p>
-              <svg class="chevron w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor"
+              <svg
+class="chevron w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor"
                 viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
               </svg>
@@ -68,7 +70,8 @@
               <p class="text-[18px] leading-[26px] text-neutral-100">
                 What type of items can and cannot be shipped?
               </p>
-              <svg class="chevron w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor"
+              <svg
+class="chevron w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor"
                 viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
               </svg>
@@ -98,7 +101,8 @@
               <p class="text-[18px] leading-[26px] text-neutral-100">
                 How are Rimkirim’s rates calculated?
               </p>
-              <svg class="chevron w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor"
+              <svg
+class="chevron w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor"
                 viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
               </svg>
@@ -128,7 +132,8 @@
               <p class="text-[18px] leading-[26px] text-neutral-100">
                 Are taxes and duties included in Rimkirim’s rates?
               </p>
-              <svg class="chevron w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor"
+              <svg
+class="chevron w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor"
                 viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
               </svg>

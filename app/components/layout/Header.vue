@@ -9,7 +9,7 @@
     use: "home",
   });
 
-  const { user, logout, loading } = useAuth();
+  const { user, loading } = useAuth();
   const authModal = useAuthModal();
 
   // When use home; fetching user will appear
@@ -30,9 +30,9 @@
 
 <template>
   <header
+    v-if="useNavHome"
     id="navbar"
     class="fixed top-8 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-3rem)] max-w-[1072px] transition-all duration-300 bg-transparent"
-    v-if="useNavHome"
   >
     <div
       id="navbarInner"
@@ -44,8 +44,8 @@
         </NuxtLink>
       </div>
       <nav
-        class="hidden md:flex items-center gap-3 text-[14px] leading-[22px] text-gray-700 magnetic-group"
         v-if="use === 'home'"
+        class="hidden md:flex items-center gap-3 text-[14px] leading-[22px] text-gray-700 magnetic-group"
       >
         <a
           href="#"
@@ -107,10 +107,10 @@
     </div>
   </header>
   <header
+    v-if="useNavOrderHub || useNavEligible"
     id="navbar"
     class="fixed top-0 left-0 z-50 px-[28px] py-4 w-full transition-all duration-300"
     :class="useNavEligible ? 'bg-white' : 'bg-neutral-10'"
-    v-if="useNavOrderHub || useNavEligible"
   >
     <div class="flex justify-between items-center">
       <UIBrandLogo fill="#1E1E1E" />

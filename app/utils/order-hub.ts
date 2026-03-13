@@ -23,7 +23,7 @@ export async function fetchBookingProgress(bookingCode: string): Promise<OrderHu
     return res || null;
   } catch (err) {
     const router = useRouter();
-    if ((err as any)?.statusCode === 401) {
+    if ((err as { statusCode?: number })?.statusCode === 401) {
       router.push("/");
     }
     return null;
@@ -75,7 +75,7 @@ export async function handleSubmitWithLoadingState<T = unknown>({
   valid: boolean;
   submitOperation: () => Promise<T>;
   onSuccess?: (response: T) => void;
-  onError?: (error: any) => void;
+  onError?: (error: unknown) => void;
 }): Promise<void> {
   if (!valid || loadingRef.value) {
     return;
@@ -90,8 +90,9 @@ export async function handleSubmitWithLoadingState<T = unknown>({
     if (onSuccess) {
       onSuccess(response);
     }
-  } catch (err: any) {
-    const errorMessage = err?.data?.message || "Error submitting form";
+  } catch (err: unknown) {
+    const e = err as { data?: { message?: string } };
+    const errorMessage = e?.data?.message || "Error submitting form";
     errorRef.value = errorMessage;
 
     if (onError) {
@@ -305,7 +306,7 @@ export const getNextStepDescription = (
   }
 
   if (incompleteSteps.length === 1) {
-    return `Finish ${STEP_LABEL[incompleteSteps[0]]} to schedule your move.`;
+    return `Finish ${STEP_LABEL[incompleteSteps[0]!]} to schedule your move.`;
   }
 
   const labels = incompleteSteps.map((step) => STEP_LABEL[step]);

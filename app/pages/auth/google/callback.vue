@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import type { User } from "~/types/user";
+  import type { GetSessionResponse } from "~/types/service";
 
   definePageMeta({
     layout: "clean",
@@ -18,14 +19,14 @@
     try {
       const token = query.token.toString();
       if (token) {
-        const res = await $fetch("/api/auth/store", {
+        const res = await $fetch<GetSessionResponse>("/api/auth/store", {
           method: "POST",
           body: {
             access_token: token,
           },
         });
 
-        userState.value = (res as any)?.user;
+        userState.value = res?.user;
         await navigateTo("/");
       }
     } catch (err) {

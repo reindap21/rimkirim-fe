@@ -37,14 +37,14 @@ export default defineEventHandler(async (event) => {
 
     // 4️⃣ Return the blob directly
     return response
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('[DOWNLOAD PACKING LIST ERROR]', error)
-
+    const e = error as { statusCode?: number; statusMessage?: string; data?: { message?: string } };
     throw createError({
-      statusCode: error?.statusCode || 500,
+      statusCode: e?.statusCode || 500,
       statusMessage:
-        error?.data?.message ||
-        error?.statusMessage ||
+        e?.data?.message ||
+        e?.statusMessage ||
         'Failed to download packing list',
     })
   }

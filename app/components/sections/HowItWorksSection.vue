@@ -2,7 +2,7 @@
   <!-- HOW IT WORKS -->
   <section class="w-full max-w-5xl mx-auto py-10 flex flex-col gap-8">
 
-    <SectionHeader pillLabel="How It Works" pillType="gray" title="How It Works" />
+    <SectionHeader pill-label="How It Works" pill-type="gray" title="How It Works" />
     <div class="grid grid-cols-1 md:grid-cols-4 relative border-t-[2px] border-gray-[#EDEDED]">
       <!-- Step 1 (active) -->
       <div class="flex flex-col gap-3 py-7 px-2 md:px-6 md:border-r-[2px] border-gray-[#EDEDED] transition bg-gray-50">

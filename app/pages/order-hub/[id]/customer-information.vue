@@ -5,7 +5,7 @@
   import IconAlertCircle from "~/components/icons/IconAlertCircle.vue";
   import IconSaveProgress from "~/components/icons/IconSaveProgress.vue";
   import type { AddressGeocode, CustomerInformationPayload, OrderHubStep } from "~/types/order-hub";
-  import type { PrimeFormField, PrimeFormInstance } from "~/types/primevue";
+  import type { PrimeFormInstance } from "~/types/primevue";
   import { hasValidGeocode } from "~/utils/address";
 
   // * ------- Schema ------------------------------------------------------------------------------------------------------------------------------------------------
@@ -86,7 +86,7 @@
     fetchProgress,
   } = useOrderHub(); // other vars: purposeOfShipment
 
-  const { user, loading } = useAuth();
+  useAuth();
 
   const viewMode = ref<"form" | "success">("form");
   const dataLoading = ref(true); // Add loading state
@@ -307,8 +307,9 @@
       if (res) {
         navigateToOrderHub();
       }
-    } catch (err: any) {
-      errorSubmit.value = err?.data?.message || "Error saving draft customer information";
+    } catch (err: unknown) {
+      const e = err as { data?: { message?: string } };
+      errorSubmit.value = e?.data?.message || "Error saving draft customer information";
     } finally {
       finishLaterLoading.value = false;
     }
@@ -392,8 +393,9 @@
         submittedResponse.value = res;
         viewMode.value = "success";
       }
-    } catch (err: any) {
-      errorSubmit.value = err?.data?.message || "Error submit customer information";
+    } catch (err: unknown) {
+      const e = err as { data?: { message?: string } };
+      errorSubmit.value = e?.data?.message || "Error submit customer information";
     } finally {
       submitLoading.value = false;
     }
@@ -463,18 +465,18 @@
         <FormHeader
           title="CUSTOMER INFORMATION"
           description="Please provide customer information details. This information will be used for shipping updates and verification purposes."
-          :packingListCode="packingListCode"
+          :packing-list-code="packingListCode"
         />
 
         <!-- Form (only render after data is loaded) -->
         <!-- :key="JSON.stringify(initialValues)" -->
         <Form
           v-if="formReady"
-          class="flex flex-col gap-6"
           v-slot="$form"
+          class="flex flex-col gap-6"
           :resolver="resolver"
-          :initialValues="initialValues"
-          validateOnBlur
+          :initial-values="initialValues"
+          validate-on-blur
           @submit="handleSubmit"
         >
           <div
@@ -562,8 +564,8 @@
                     <Select
                       name="senderCountry"
                       :options="countries"
-                      optionLabel="name"
-                      dataKey="code"
+                      option-label="name"
+                      data-key="code"
                       placeholder="Select sender country"
                       fluid
                     />
@@ -584,8 +586,8 @@
                   <label class="font-medium text-neutral-90">Sender Full Address</label>
                   <ClientOnly>
                     <GoogleAddressInput
-                      name="senderFullAddress"
                       v-model="originAddress"
+                      name="senderFullAddress"
                       :country="$form.senderCountry?.value?.iso"
                       placeholder="Sender full address"
                       @select="
@@ -692,8 +694,8 @@
                     <Select
                       name="receiverCountry"
                       :options="countries"
-                      dataKey="code"
-                      optionLabel="name"
+                      data-key="code"
+                      option-label="name"
                       placeholder="Select receiver country"
                       fluid
                     />
@@ -711,8 +713,8 @@
                   <label class="font-medium text-neutral-90">Receiver Full Address</label>
                   <ClientOnly>
                     <GoogleAddressInput
-                      name="receiverFullAddress"
                       v-model="destinationAddress"
+                      name="receiverFullAddress"
                       :country="$form.receiverCountry?.value?.iso"
                       placeholder="Receiver full address"
                       @select="
@@ -813,7 +815,7 @@
                 <div class="flex gap-2">
                   <OutlinedButton
                     type="button"
-                    :primaryWhenHover="true"
+                    :primary-when-hover="true"
                     class="w-[169px]"
                     :active="shipmentOwnerInformationSameAs === 'sender'"
                     @click="handleOnClickSameAs('sender', $form)"
@@ -823,7 +825,7 @@
                   </OutlinedButton>
                   <OutlinedButton
                     type="button"
-                    :primaryWhenHover="true"
+                    :primary-when-hover="true"
                     class="w-[169px]"
                     :active="shipmentOwnerInformationSameAs === 'receiver'"
                     @click="handleOnClickSameAs('receiver', $form)"
@@ -950,8 +952,8 @@
             <div class="flex items-center gap-3">
               <!-- @click="actionForm = ''" -->
               <TextButton
-                @click="showPopupFinishLater"
                 :disabled="submitLoading || bookingProgressLoading"
+                @click="showPopupFinishLater"
               >
                 Finish Later
               </TextButton>
@@ -983,9 +985,9 @@
             :icon="IconSaveProgress"
             title="Your progress will be saved"
             :description="`Finish later will automatically save your progress in \ncustomer information.\nYou can comeback later to complete the form.`"
+            :ok-loading="finishLaterLoading"
             @cancel="closePopupFinishLater"
             @ok="handleFinishLater($form)"
-            :okLoading="finishLaterLoading"
           />
         </Form>
       </section>

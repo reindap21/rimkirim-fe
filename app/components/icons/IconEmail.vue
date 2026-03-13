@@ -13,7 +13,8 @@ const props = withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <svg :width="props.width" :height="props.height" viewBox="0 0 20 20" fill="none"
+  <svg
+:width="props.width" :height="props.height" viewBox="0 0 20 20" fill="none"
     xmlns="http://www.w3.org/2000/svg">
     <path
       d="M18.3333 6.01891L12.778 9.07794C11.7387 9.65022 10.8939 10 9.99996 10C9.10597 10 8.26119 9.65022 7.22192 9.07794L1.66663 6.01891L2.26147 5L7.81677 8.05903C8.8253 8.61435 9.43735 8.82855 9.99996 8.82855C10.5626 8.82855 11.1746 8.61435 12.1832 8.05903L17.7384 5L18.3333 6.01891Z"

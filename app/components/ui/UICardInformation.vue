@@ -132,15 +132,15 @@
       <!-- Action Button -->
       <div class="flex items-center justify-end h-[38px] mt-auto">
         <button
-          class="text-[14px] leading-[22px] font-medium text-neutral-100 flex items-center gap-1 hover:opacity-80"
           v-if="status !== 'locked'"
+          class="text-[14px] leading-[22px] font-medium text-neutral-100 flex items-center gap-1 hover:opacity-80"
           @click="emit('action')"
         >
           {{ status === "awaiting_input" ? "Start" : "Edit" }} →
         </button>
         <button
-          class="text-[14px] leading-[22px] font-medium !text-neutral-70 flex items-center gap-1 hover:opacity-80 cursor-default"
           v-else
+          class="text-[14px] leading-[22px] font-medium !text-neutral-70 flex items-center gap-1 hover:opacity-80 cursor-default"
         >
           Wait for another form {{ props?.waitingNumber }}/3
         </button>

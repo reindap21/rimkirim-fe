@@ -1,21 +1,22 @@
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async () => {
   // 1️⃣ Get Config
   const config = useRuntimeConfig();
   const baseApiUrl = config.apiBaseUrl;
 
   // 2️⃣ Fetch API
   try {
-    const res = await $fetch(`${baseApiUrl}/api/rates`);
+    const res = await $fetch<{ data: unknown }>(`${baseApiUrl}/api/rates`);
 
     //* 3️⃣ Return response
     return {
       rates: res.data,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const e = error as { statusCode?: number; statusMessage?: string; data?: { message?: string } };
     throw createError({
-      statusCode: error?.statusCode || 500,
+      statusCode: e?.statusCode || 500,
       statusMessage:
-        error?.data?.message || error?.statusMessage || "Failed to get rates",
+        e?.data?.message || e?.statusMessage || "Failed to get rates",
     });
   }
 });

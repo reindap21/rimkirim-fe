@@ -5,7 +5,8 @@
       stroke="#FF9E42" stroke-width="0.9375" stroke-linecap="round" stroke-linejoin="round" />
     <path d="M12 6.75V6.7575" stroke="#FF9E42" stroke-width="1.5625" stroke-linecap="round" stroke-linejoin="round" />
     <path d="M6 6.75V6.7575" stroke="#FF9E42" stroke-width="1.5625" stroke-linecap="round" stroke-linejoin="round" />
-    <path d="M6 10.875C6.68409 11.7858 7.77323 12.375 9 12.375C10.2268 12.375 11.3159 11.7858 12 10.875"
+    <path
+d="M6 10.875C6.68409 11.7858 7.77323 12.375 9 12.375C10.2268 12.375 11.3159 11.7858 12 10.875"
       stroke="#FF9E42" stroke-width="0.9375" stroke-linecap="round" stroke-linejoin="round" />
   </svg>
 

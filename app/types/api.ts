@@ -86,3 +86,13 @@ export interface EligibilityCheckApiResponse {
     [key: string]: unknown
   }
 }
+
+export interface PackagePhotoUploadResponse {
+  message: string
+  data: { localPath: string; name: string; size: number }[]
+}
+
+export interface EligibilityDetailResponse {
+  message: string
+  data: unknown
+}

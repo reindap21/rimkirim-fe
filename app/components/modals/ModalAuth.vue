@@ -294,8 +294,8 @@
                 <DefaultButton
                   type="button"
                   class="w-full"
-                  @click="handleLoginWithGoogle"
                   :disabled="loginLoading"
+                  @click="handleLoginWithGoogle"
                 >
                   <img
                     src="https://www.svgrepo.com/show/475656/google-color.svg"
@@ -342,10 +342,10 @@
             <Form
               v-slot="$form"
               :resolver="resolverSignup"
-              :initialValues="initialSignupValues"
-              @submit="handleSignup"
-              validateOnBlur
+              :initial-values="initialSignupValues"
+              validate-on-blur
               class="flex justify-center flex-col gap-6"
+              @submit="handleSignup"
             >
               <!-- Forms -->
               <div class="flex flex-col gap-4">
@@ -469,8 +469,8 @@
                 <DefaultButton
                   type="button"
                   class="w-full"
-                  @click="handleSignUpWithGoogle"
                   :disabled="signUpLoading"
+                  @click="handleSignUpWithGoogle"
                 >
                   <img
                     src="https://www.svgrepo.com/show/475656/google-color.svg"

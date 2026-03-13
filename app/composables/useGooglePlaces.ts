@@ -4,7 +4,7 @@ export const useGooglePlaces = () => {
 
   const loadScript = () => {
     return new Promise<void>((resolve, reject) => {
-      if ((window as any).google?.maps?.places) {
+      if ((window as Window & { google?: { maps?: { places?: unknown } } }).google?.maps?.places) {
         resolve()
         return
       }

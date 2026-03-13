@@ -5,7 +5,7 @@ interface Props {
   fill?: string;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   width: 42,
   height: 42,
   fill: "black",

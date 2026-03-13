@@ -1,11 +1,11 @@
 <script setup lang="ts">
   type Props = {
-    title: string;
-    description: string;
+    title?: string;
+    description?: string;
     packingListCode?: string | null;
   };
 
-  const props = withDefaults(defineProps<Props>(), {
+  withDefaults(defineProps<Props>(), {
     title: "",
     description: "",
     packingListCode: null,
@@ -17,7 +17,7 @@
   <div class="flex flex-col p-6 gap-1 bg-neutral-20 rounded-[12px]">
     <div class="flex items-center justify-between">
       <h2 class="text-[24px] font-medium text-neutral-90">{{ title }}</h2>
-      <div class="flex items-center gap-2 text-[14px]" v-if="packingListCode">
+      <div v-if="packingListCode" class="flex items-center gap-2 text-[14px]">
         <span class="text-[14px] leading-[22px] font-[400] !text-neutral-70"
           >Packing List Code:</span
         >

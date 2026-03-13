@@ -18,6 +18,10 @@ const props = withDefaults(defineProps<{
   boxed?: boolean        // 👉 icon with background
   error?: string
 }>(), {
+  modelValue: '',
+  placeholder: '',
+  icon: null,
+  error: '',
   iconPosition: 'left',
   boxed: false
 })
@@ -57,7 +61,7 @@ const iconClass = computed(() =>
     <!-- INPUT WRAPPER -->
     <div :class="wrapperClass">
       <!-- ICON LEFT -->
-      <component v-if="icon && iconPosition === 'left'" :is="icon" :class="['ml-3 shrink-0', iconClass]" />
+      <component :is="icon" v-if="icon && iconPosition === 'left'" :class="['ml-3 shrink-0', iconClass]" />
 
       <!-- INPUT -->
       <InputText
@@ -65,7 +69,7 @@ const iconClass = computed(() =>
         @input="emit('update:modelValue', ($event.target as HTMLInputElement).value)" />
 
       <!-- ICON RIGHT -->
-      <component v-if="icon && iconPosition === 'right'" :is="icon" :class="['mr-3 shrink-0', iconClass]" />
+      <component :is="icon" v-if="icon && iconPosition === 'right'" :class="['mr-3 shrink-0', iconClass]" />
     </div>
 
     <!-- ERROR MESSAGE -->

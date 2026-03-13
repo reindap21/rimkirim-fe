@@ -8,7 +8,7 @@ export const useAuth = () => {
   const fetchUser = async () => {
     loading.value = true
     try {
-      const res: GetSessionResponse = await $fetch('/api/auth/session') as any;
+      const res = await $fetch<GetSessionResponse>('/api/auth/session');
       user.value = res?.user
     } finally {
       loading.value = false

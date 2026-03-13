@@ -1,8 +1,8 @@
 <script setup lang="ts">
 
-interface Props { flag: string; label: string }
+interface Props { flag?: string; label?: string }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   flag: "",
   label: "",
 });

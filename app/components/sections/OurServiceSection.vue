@@ -7,7 +7,7 @@
   <section class="flex flex-col gap-8 w-full max-w-5xl mx-auto py-10 relative">
     <!-- Decorative Shapes -->
 
-    <SectionHeader pillLabel="Our Service" title="How Do We Assist?" class="" />
+    <SectionHeader pill-label="Our Service" title="How Do We Assist?" class="" />
 
     <div class="relative grid grid-cols-1 md:grid-cols-2 gap-0 max-w-6xl mx-auto">
       <!-- Card 1 (supporting) -->

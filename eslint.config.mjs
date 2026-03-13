@@ -6,6 +6,7 @@ export default withNuxt(
   {
     rules: {
       '@typescript-eslint/no-explicit-any': 'warn',
+      'vue/no-multiple-template-root': 'off',
     }
   }
 )

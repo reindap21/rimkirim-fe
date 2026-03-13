@@ -1,6 +1,11 @@
 <script setup lang="ts">
   import { ref } from "vue";
   import { MENU } from "~/config";
+  import type { EligibilityFormPayload } from "~/types/common";
+
+  interface BookingResponse {
+    booking: { booking_code: string }
+  }
 
   definePageMeta({
     layout: "eligible",
@@ -37,13 +42,13 @@
    * On Click Continue Button
    * @param formData
    */
-  const handleOnContinue = async (formData: any) => {
+  const handleOnContinue = async (formData: EligibilityFormPayload) => {
     continueLoading.value = true;
 
     const { shippingToIndonesia, citizenship, livedInOriginCountry, canApplySKP } = formData;
 
-    isSKPAvailable.value = canApplySKP;
-    packingListCode.value = formData?.packingListCode;
+    isSKPAvailable.value = canApplySKP ?? false;
+    packingListCode.value = formData?.packingListCode ?? "";
 
     const payload = {
       rate_id: rateId.value,
@@ -92,7 +97,7 @@
 
     // Submit
     try {
-      const res = await $fetch(`/api/booking`, {
+      const res = await $fetch<BookingResponse>(`/api/booking`, {
         method: "POST",
         credentials: "include", // Required
         body: payload,
@@ -100,7 +105,7 @@
 
       // If success
       router.push({
-        path: `${MENU.ORDER_HUB}/${(res as any)?.booking?.booking_code}`,
+        path: `${MENU.ORDER_HUB}/${res?.booking?.booking_code}`,
       });
     } catch (err) {
       console.error("booking error:", err);
@@ -111,15 +116,15 @@
 
 <template>
   <EligibleQuestionSection
-    @continue="handleOnContinue"
     v-if="eligibleStep === 'question'"
     :loading="continueLoading"
-    :originCountryCode="originCountryCode"
+    :origin-country-code="originCountryCode"
+    @continue="handleOnContinue"
   />
   <EligibleSelectionSection
-    @select="handleOnSelect"
-    :isSKPAvailable="isSKPAvailable"
-    :loading="selectionLoading"
     v-else
+    :is-s-k-p-available="isSKPAvailable"
+    :loading="selectionLoading"
+    @select="handleOnSelect"
   />
 </template>

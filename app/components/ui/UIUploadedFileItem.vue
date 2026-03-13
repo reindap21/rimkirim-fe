@@ -11,8 +11,7 @@
   }>();
 
   const emit = defineEmits<{
-    (e: "remove"): void;
-    (e: "edit"): void;
+    (e: "remove" | "edit"): void;
   }>();
 
   /* ---------------------------
@@ -40,7 +39,7 @@
   });
 
   const now = ref(Date.now());
-  let timer: any;
+  let timer: ReturnType<typeof setInterval> | null = null;
 
   onMounted(() => {
     timer = setInterval(() => {
@@ -48,7 +47,7 @@
     }, 60_000); // update tiap menit
   });
 
-  onUnmounted(() => clearInterval(timer));
+  onUnmounted(() => clearInterval(timer ?? undefined));
 
   const uploadedLabel = computed(() => {
     const diff = Math.floor((now.value - uploadedTime.value.getTime()) / 1000);
@@ -67,7 +66,7 @@
     :class="props.class"
   >
     <div class="flex items-start gap-3">
-      <IconDocumentType :mimeType="props.mimeType" />
+      <IconDocumentType :mime-type="props.mimeType" />
 
       <div class="flex flex-col gap-1">
         <div class="text-neutral-100">

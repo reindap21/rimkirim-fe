@@ -13,14 +13,14 @@ type Props = {
 
 const props = withDefaults(defineProps<Props>(), {
   width: '450px',
+  icon: undefined,
   cancelText: 'Cancel',
   okText: 'OK',
 })
 
 const emit = defineEmits<{
   (e: 'update:visible', value: boolean): void
-  (e: 'cancel'): void
-  (e: 'ok'): void
+  (e: 'cancel' | 'ok'): void
 }>()
 
 const onCancel = () => {
@@ -35,13 +35,14 @@ const onOk = () => {
 </script>
 
 <template>
-  <Dialog :visible="props.visible" :showHeader="false" :closable="false" modal :style="{ width: props.width }"
+  <Dialog
+:visible="props.visible" :show-header="false" :closable="false" modal :style="{ width: props.width }"
     @update:visible="val => emit('update:visible', val)">
     <div class="flex flex-col gap-6 mt-8 mb-2">
 
       <div class="flex flex-col gap-4">
         <!-- Icon -->
-        <component v-if="props.icon" :is="props.icon" class="mx-auto text-[#C1FF00]" />
+        <component :is="props.icon" v-if="props.icon" class="mx-auto text-[#C1FF00]" />
 
         <!-- Title -->
         <h3 class="text-[24px] leading-[32px] font-semibold text-neutral-100 text-center">

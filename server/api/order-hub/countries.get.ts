@@ -1,4 +1,6 @@
 import { getCookie } from "h3";
+import type { ApiResponse } from "~/types/service";
+import type { CountryOption } from "~/types/common";
 
 export default defineEventHandler(async (event) => {
   // 0️⃣ REQUIRED; Token Check
@@ -16,7 +18,7 @@ export default defineEventHandler(async (event) => {
 
   // 2️⃣ Fetch API
   try {
-    const res: any = await $fetch(`${baseApiUrl}/api/countries`, {
+    const res = await $fetch<ApiResponse<CountryOption[]>>(`${baseApiUrl}/api/countries`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -24,13 +26,13 @@ export default defineEventHandler(async (event) => {
 
     //* 3️⃣ Return response
     return res.data;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("[FETCH COUNTRIES API Error]", error);
-
+    const e = error as { statusCode?: number; statusMessage?: string; data?: { message?: string } };
     throw createError({
-      statusCode: error?.statusCode || 404,
+      statusCode: e?.statusCode || 404,
       statusMessage:
-        error?.data?.message || error?.statusMessage,
+        e?.data?.message || e?.statusMessage,
     });
   }
 });
