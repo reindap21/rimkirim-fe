@@ -5,6 +5,8 @@
  * without needing to install @types/google.maps
  */
 
+import type { AddressGeocode } from './order-hub';
+
 /**
  * LatLng representation with getter methods
  */
@@ -66,7 +68,7 @@ export interface Autocomplete {
   setComponentRestrictions(restrictions: ComponentRestrictions): void;
   setFields(fields: string[]): void;
   setTypes(types: string[]): void;
-  bindTo(field: string, target: any): void;
+  bindTo(field: string, target: unknown): void;
   unbind(field: string): void;
   unbindAll(): void;
 }
@@ -90,17 +92,17 @@ export interface MapsEventListener {
  */
 export interface MapsEvent {
   addListener(
-    instance: Autocomplete | any,
+    instance: Autocomplete | unknown,
     eventName: string,
-    handler: (...args: any[]) => void
+    handler: (...args: unknown[]) => void
   ): MapsEventListener;
   addListenerOnce(
-    instance: any,
+    instance: unknown,
     eventName: string,
-    handler: (...args: any[]) => void
+    handler: (...args: unknown[]) => void
   ): MapsEventListener;
-  clearInstanceListeners(instance: Autocomplete | any): void;
-  clearListeners(instance: any, eventName: string): void;
+  clearInstanceListeners(instance: Autocomplete | unknown): void;
+  clearListeners(instance: unknown, eventName: string): void;
   removeListener(listener: MapsEventListener): void;
 }
 
@@ -115,7 +117,7 @@ export interface PlacesLibrary {
  * Google Maps event namespace
  */
 export interface EventLibrary {
-  clearInstanceListeners: (instance: Autocomplete | any) => void;
+  clearInstanceListeners: (instance: Autocomplete | unknown) => void;
 }
 
 /**

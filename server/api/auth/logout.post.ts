@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
 
   // 2️⃣ Fetch API
   try {
-    const res: any = await $fetch(`${baseApiUrl}/api/auth/logout`, {
+    const res = await $fetch<{ message: string }>(`${baseApiUrl}/api/auth/logout`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${access_token}`,
@@ -28,11 +28,12 @@ export default defineEventHandler(async (event) => {
     return {
       success: true,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const e = error as { statusCode?: number; statusMessage?: string; data?: { message?: string } };
     throw createError({
-      statusCode: error?.statusCode || 500,
+      statusCode: e?.statusCode || 500,
       statusMessage:
-        error?.data?.message || error?.statusMessage || "Failed to logout",
+        e?.data?.message || e?.statusMessage || "Failed to logout",
     });
   }
 });

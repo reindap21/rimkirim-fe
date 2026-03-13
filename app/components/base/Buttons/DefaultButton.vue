@@ -7,7 +7,7 @@
     fontWeight?: string; // font-medium
   }
 
-  const props = withDefaults(defineProps<Props>(), {
+  withDefaults(defineProps<Props>(), {
     loading: false,
     disabled: false,
     type: "button",

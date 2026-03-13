@@ -16,11 +16,7 @@
 
   // * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
 
-  const route = useRoute();
-  const router = useRouter();
-  const { user, loading } = useAuth();
-
-  const { bookingCode, packingListCode, navigateToOrderHub, fetchProgress } = useOrderHub(); // other vars: purposeOfShipment
+  const { bookingCode, navigateToOrderHub } = useOrderHub(); // other vars: purposeOfShipment
 
   const viewMode = ref<"form" | "success">("form");
 
@@ -41,14 +37,14 @@
 
   // * ------- Form Handling
 
-  const formRef = ref<any>(null);
+  const formRef = ref<unknown>(null);
   const submitLoading = ref(false);
   const errorSubmit = ref("");
 
   const initialValues = {};
 
   // Customer Information
-  const street = ref<Partial<AddressGeocode>>({});
+  const _street = ref<Partial<AddressGeocode>>({});
   const streetAddress = ref("");
 
   const shipmentOwnerInformationSameAs = ref<"" | "sender" | "receiver">("");
@@ -123,13 +119,13 @@
       }),
   );
 
-  const selectedBuildingType = ref<any>(null);
+  const selectedBuildingType = ref<{ code: string; name: string } | null>(null);
 
   const isApartment = computed(() => {
     return selectedBuildingType.value?.code === "apartement_of_flat";
   });
 
-  const pickupDate = ref<Date | null>(null);
+  const _pickupDate = ref<Date | null>(null);
   const pickupTime = ref<string | null>(null);
 
   const pickupTimeOptions = [
@@ -142,7 +138,7 @@
 
   // * ------- Methods -----------------------------------------------------------------------------------------------------------------------------------------------
 
-  const handleOnClickSameAs = (sameAs: "sender" | "receiver", $form: any) => {
+  const handleOnClickSameAs = (sameAs: "sender" | "receiver", $form: unknown) => {
     if (shipmentOwnerInformationSameAs.value === "") {
       // fillShipmentOwner(sameAs, $form);
     } else {
@@ -153,7 +149,7 @@
     }
   };
 
-  const handleSubmit = async ({ values, valid }: { values: any; valid: boolean }) => {
+  const handleSubmit = async ({ values, valid }: { values: Record<string, unknown>; valid: boolean }) => {
     if (!valid || submitLoading.value) return;
 
     viewMode.value = "success";
@@ -167,7 +163,7 @@
     };
 
     try {
-      const res = await $fetch("/order-hub/item-and-package", {
+      await $fetch("/order-hub/item-and-package", {
         method: "POST",
         body: payload,
         credentials: "include", // Required
@@ -175,8 +171,9 @@
 
       // Store state
       // userState.value = res.user
-    } catch (err: any) {
-      errorSubmit.value = err?.data?.message || "Error submit item and packages";
+    } catch (err: unknown) {
+      const e = err as { data?: { message?: string } };
+      errorSubmit.value = e?.data?.message || "Error submit item and packages";
     } finally {
       submitLoading.value = false;
     }
@@ -316,8 +313,8 @@
                     <Select
                       name="buildingType"
                       :options="buildingTypeOptions"
-                      dataKey="code"
-                      optionLabel="name"
+                      data-key="code"
+                      option-label="name"
                       placeholder="Select receiver country"
                       fluid
                       @change="(e) => (selectedBuildingType = e.value)"
@@ -350,14 +347,14 @@
                         <div class="flex items-center gap-2 cursor-pointer">
                           <RadioButton
                             name="hasFreightElevator"
-                            inputId="freight_yes"
+                            input-id="freight_yes"
                             value="yes"
                           />
                           <label for="freight_yes">Yes</label>
                         </div>
 
                         <div class="flex items-center gap-2 cursor-pointer">
-                          <RadioButton name="hasFreightElevator" inputId="freight_no" value="no" />
+                          <RadioButton name="hasFreightElevator" input-id="freight_no" value="no" />
                           <label for="freight_no">No</label>
                         </div>
                       </div>
@@ -389,7 +386,7 @@
                         <div class="flex items-center gap-2 cursor-pointer">
                           <RadioButton
                             name="hasReceptionist"
-                            inputId="receptionist_yes"
+                            input-id="receptionist_yes"
                             value="yes"
                           />
                           <label for="receptionist_yes">Yes</label>
@@ -398,7 +395,7 @@
                         <div class="flex items-center gap-2 cursor-pointer">
                           <RadioButton
                             name="hasReceptionist"
-                            inputId="receptionist_no"
+                            input-id="receptionist_no"
                             value="no"
                           />
                           <label for="receptionist_no">No</label>
@@ -528,11 +525,11 @@
                 <DatePicker
                   name="pickupDate"
                   inline
-                  :minDate="new Date()"
+                  :min-date="new Date()"
                   class="w-full"
                   :class="$form.pickupTime?.invalid ? 'border border-red-500 rounded-[8px]' : ''"
                   :invalid="$form.pickupDate?.invalid"
-                  dateFormat="dd / mm / yy"
+                  date-format="dd / mm / yy"
                 />
 
                 <small v-if="$form.pickupDate?.invalid" class="text-red-500 text-xs mt-1 block">
@@ -547,8 +544,8 @@
                 <SelectButton
                   name="pickupTime"
                   :options="pickupTimeOptions"
-                  optionLabel="label"
-                  optionValue="value"
+                  option-label="label"
+                  option-value="value"
                   class="pickup-time flex flex-col gap-3 bg-transparent overflow-hidden"
                 >
                   <template #option="slotProps">

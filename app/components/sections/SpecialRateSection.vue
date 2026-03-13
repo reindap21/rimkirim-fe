@@ -3,8 +3,8 @@
   import type { Rate } from "~/types/rate";
 
   interface Props {
-    rates: Rate[];
-    loading: boolean;
+    rates?: Rate[];
+    loading?: boolean;
   }
 
   // * ------- Composable --------------------------------------------------------------------------------------------------------------------------------------------
@@ -14,7 +14,7 @@
 
   // * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
 
-  const props = withDefaults(defineProps<Props>(), {
+  withDefaults(defineProps<Props>(), {
     rates: () => [],
     loading: true,
   });
@@ -76,15 +76,15 @@
           :price="rate?.pricing?.amount"
           :currency="rate?.pricing?.currency"
           :unit="rate?.pricing?.unit"
-          :minWeight="rate?.pricing?.minimum?.value"
+          :min-weight="rate?.pricing?.minimum?.value"
           badge="Special Rate"
           :provider="rate?.provider?.branding?.logo"
-          :originCountry="rate?.route?.origin?.country_name"
-          :originFlag="rate?.assets?.flags?.origin"
-          :destinationCountry="rate?.route?.destination?.country_name"
-          :destinationFlag="rate?.assets?.flags?.destination"
+          :origin-country="rate?.route?.origin?.country_name"
+          :origin-flag="rate?.assets?.flags?.origin"
+          :destination-country="rate?.route?.destination?.country_name"
+          :destination-flag="rate?.assets?.flags?.destination"
           :eta="rate?.eta"
-          :isDirect="rate?.route?.is_direct"
+          :is-direct="rate?.route?.is_direct"
           :terms="rate?.terms"
           :loading="actionMoveNowLoading === rate.id"
           @action="handleActionMoveNow(rate)"

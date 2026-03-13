@@ -1,8 +1,6 @@
 export default defineEventHandler((event) => {
   const config = useRuntimeConfig()
 
-  const redirectUri = `${config.apiBaseUrl}/oauth/google/callback`
-
   const params = new URLSearchParams({
     client_id: config.googleClientId,
     redirect_uri: 'http://localhost:3000/auth/google/callback', // FE

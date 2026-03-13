@@ -47,11 +47,10 @@
   const isPassengerGoods = purposeOfShipment.value === "passenger_goods";
   const viewMode = ref<"form" | "success">("form");
   const currentStep: OrderHubStep = "compliance_document";
-  const submittedResponse = ref<any>();
+  const submittedResponse = ref<OrderHubProgress>();
 
   const submitLoading = ref(false);
   const finishLaterLoading = ref(false);
-  const errorSubmit = ref("");
 
   const visibleConfirmSaveLater = ref(false);
 
@@ -131,7 +130,7 @@
    * Finish Later
    * @param $form
    */
-  const handleFinishLater = async ($form: any) => {
+  const handleFinishLater = async (_$form: unknown) => {
     if (finishLaterLoading.value) return;
 
     finishLaterLoading.value = true;
@@ -155,14 +154,14 @@
    * Submit
    * @param param0
    */
-  const handleSubmit = async ({ values, valid }: { values: any; valid: boolean }) => {
+  const handleSubmit = async ({ values, valid }: { values: Record<string, unknown>; valid: boolean }) => {
     if (!valid || submitLoading.value) return;
 
     submitLoading.value = true;
 
     try {
       const payload: Record<string, DocumentPayload | string> = {
-        ...values,
+        ...(values as Record<string, DocumentPayload | string>),
         ...buildPayload(),
       };
 
@@ -216,10 +215,12 @@
   const onSelectedFiles = (e: FileUploadSelectEvent, type: ComplianceDocumentType) =>
     uploadDocument(e.files, type);
 
+  type FormFieldProps = { onInput: (event: { target: { value: string } }) => void }
+
   const onFileSelect = async (
     e: FileUploadSelectEvent,
     documentType: ComplianceDocumentType,
-    props: any,
+    props: FormFieldProps,
     target?: AdditionalDocument,
   ) => {
     const uploaded = await uploadDocument(e.files, documentType, target);
@@ -232,7 +233,7 @@
     });
   };
 
-  const onFileRemove = (documentType: string, props: any, target?: AdditionalDocument) => {
+  const onFileRemove = (documentType: string, props: FormFieldProps, target?: AdditionalDocument) => {
     if (target) target.file = undefined;
     else documents.value[documentType] = null;
 
@@ -283,7 +284,7 @@
       };
 
       // 1️⃣ REQUIRED DOCUMENT
-      if (REQUIRED_DOCUMENT_TYPES.includes(doc.documentType as any)) {
+      if (REQUIRED_DOCUMENT_TYPES.includes(doc.documentType as ComplianceDocumentType)) {
         const type = doc.documentType as ComplianceDocumentType;
 
         documents.value[type] = uploadedFile;
@@ -308,7 +309,7 @@
     const progress = await fetchProgress();
     // pastikan data ada
     if (progress?.compliance_document && formRef.value) {
-      hydrateFromApi(progress.compliance_document as any, formRef.value); // type: any -> OrderHubProgress['compliance_document']
+      hydrateFromApi(progress.compliance_document as { data?: ComplianceDocument[] }, formRef.value);
     }
   });
 </script>
@@ -375,7 +376,7 @@
                   </div>
                   <PillSuccessUpload v-if="ktpDocument" />
                 </div>
-                <FormField class="relative" name="ktpDocument" v-slot="{ props, invalid, error }">
+                <FormField v-slot="{ props, invalid, error }" class="relative" name="ktpDocument">
                   <div class="card" :class="invalid ? 'border border-red-600 rounded-[8px]' : ''">
                     <FileUpload
                       v-if="!ktpDocument"
@@ -494,7 +495,7 @@
                   <PillSuccessUpload v-if="skpKbriDocument" />
                 </div>
 
-                <FormField name="skpKbriDocument" v-slot="{ props, invalid, error }">
+                <FormField v-slot="{ props, invalid, error }" name="skpKbriDocument">
                   <div class="card" :class="invalid ? 'border border-red-600 rounded-[8px]' : ''">
                     <FileUpload
                       v-if="!skpKbriDocument"
@@ -605,9 +606,9 @@
             :icon="IconSaveProgress"
             title="Your progress will be saved"
             :description="`Finish later will automatically save your progress in \ncompliance document.\nYou can comeback later to complete the form.`"
+            :ok-loading="finishLaterLoading"
             @cancel="closePopupFinishLater"
             @ok="handleFinishLater($form)"
-            :okLoading="finishLaterLoading"
           />
         </Form>
       </section>

@@ -20,8 +20,7 @@ const op = ref();
 
 // * ------- Handlers
 
-// TODO: change to the proper type
-const toggle = (event: any) => { // eslint-disable-line
+const toggle = (event?: MouseEvent) => {
   event?.preventDefault?.();
   op.value.toggle(event);
 }

@@ -1,4 +1,5 @@
 import { readMultipartFormData } from 'h3'
+import type { PackagePhotoUploadResponse } from '~/types/api'
 
 export default defineEventHandler(async (event) => {
   // 0️⃣ REQUIRED; Token Check
@@ -56,7 +57,7 @@ export default defineEventHandler(async (event) => {
 
   // 5️⃣ Forward to backend
   try {
-    const res: any = await $fetch(
+    const res = await $fetch<PackagePhotoUploadResponse>(
       `${baseApiUrl}/api/upload/package-photo`,
       {
         method: 'POST',
@@ -79,14 +80,14 @@ export default defineEventHandler(async (event) => {
       success: true,
       files: res.data,
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('[UPLOAD PACKAGE PHOTO ERROR]', error)
-
+    const e = error as { statusCode?: number; statusMessage?: string; data?: { message?: string } };
     throw createError({
-      statusCode: error?.statusCode || 500,
+      statusCode: e?.statusCode || 500,
       statusMessage:
-        error?.data?.message ||
-        error?.statusMessage ||
+        e?.data?.message ||
+        e?.statusMessage ||
         'Failed to upload package photo',
     })
   }

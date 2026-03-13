@@ -70,7 +70,7 @@
   // * ------- Mounted ------------------------------------------------------------------------------
 
   onMounted(() => {
-    if (process.server) return;
+    if (import.meta.server) return;
     if (!window?.google?.maps?.places) return;
     if (!inputRef.value?.$el) return;
 
@@ -102,8 +102,8 @@
 <template>
   <div class="relative">
     <InputText
-      :name="name"
       ref="inputRef"
+      :name="name"
       class="w-full !h-[46px] pr-12"
       :placeholder="placeholder"
       :value="modelValue"

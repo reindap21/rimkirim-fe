@@ -1,4 +1,5 @@
 import { getCookie } from "h3";
+import type { AuthProfileResponse } from "~/types/api";
 
 export default defineEventHandler(async (event) => {
   // 0️⃣ REQUIRED; Token Check
@@ -16,7 +17,7 @@ export default defineEventHandler(async (event) => {
 
   // 2️⃣ Fetch API
   try {
-    const res: any = await $fetch(`${baseApiUrl}/api/auth/me`, {
+    const res = await $fetch<AuthProfileResponse>(`${baseApiUrl}/api/auth/me`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -26,7 +27,7 @@ export default defineEventHandler(async (event) => {
     return {
       user: res.data,
     };
-  } catch (error: any) {
+  } catch {
     return {
       user: null,
       authenticated: false

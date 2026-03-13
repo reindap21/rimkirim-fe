@@ -19,8 +19,8 @@
     <div class="mt-6 flex items-stretch justify-center gap-4">
       <!-- Skema Barang Pindahan -->
       <button
-        class="flex flex-col flex-1 gap-6 w-[400px] shrink-0 grow-0 rounded-2xl px-6 py-4 text-left" @click="$emit('select', 'moving_goods')"
-        :class="isSKPAvailable ? 'bg-neutral-10 hover:bg-[#D6EAE7] group hover:shadow-lg cursor-pointer' : 'bg-neutral-10 opacity-50 cursor-disabled'"
+        class="flex flex-col flex-1 gap-6 w-[400px] shrink-0 grow-0 rounded-2xl px-6 py-4 text-left" :class="isSKPAvailable ? 'bg-neutral-10 hover:bg-[#D6EAE7] group hover:shadow-lg cursor-pointer' : 'bg-neutral-10 opacity-50 cursor-disabled'"
+        @click="$emit('select', 'moving_goods')"
         >
         <div class="flex items-center justify-center w-[338px] h-[211px]">
           <IconBarangPindahan />
@@ -63,7 +63,8 @@
                       d="M9 15.75C12.7279 15.75 15.75 12.7279 15.75 9C15.75 5.27208 12.7279 2.25 9 2.25C5.27208 2.25 2.25 5.27208 2.25 9C2.25 12.7279 5.27208 15.75 9 15.75Z"
                       stroke="#404040" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                     <path d="M9 6H9.0075V6.0075H9V6Z" stroke="#404040" stroke-width="1.5" stroke-linejoin="round" />
-                    <path d="M9 9V12" stroke="#404040" stroke-width="1.5" stroke-linecap="round"
+                    <path
+d="M9 9V12" stroke="#404040" stroke-width="1.5" stroke-linecap="round"
                       stroke-linejoin="round" />
                   </svg>
                 </div>

@@ -3,6 +3,7 @@
   import { computed, ref } from "vue";
   import type { Package, PackageItem } from "~/types/order-hub";
   import type { FileUploadSelectEvent } from "primevue/fileupload";
+  import type { PackagePhotoUploadResponse } from "~/types/api";
 
   // * ------- Types -------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -33,7 +34,7 @@
   const dimensionInCcLength = ref<number | null>(null);
   const dimensionInCcWidth = ref<number | null>(null);
   const dimensionInCcHeight = ref<number | null>(null);
-  const uploadedFiles = ref<any>([]);
+  const uploadedFiles = ref<NonNullable<Package['uploadedFiles']>>([]);
 
   const showDetails = ref(true);
 
@@ -155,11 +156,9 @@
 
   const primevue = usePrimeVue();
 
-  const totalSize = ref(0);
-  const totalSizePercent = ref(0);
   const files = computed(() => uploadedFiles.value);
 
-  const fileUploadRef = ref<any>(null);
+  const fileUploadRef = ref(null);
 
   /**
    * Open native file picker
@@ -168,7 +167,7 @@
     if (!fileUploadRef.value) return;
 
     // PrimeVue FileUpload public API
-    fileUploadRef.value.choose();
+    (fileUploadRef.value as { choose: () => void } | null)?.choose();
   };
 
   const onSelectedFiles = async (event: FileUploadSelectEvent) => {
@@ -180,12 +179,12 @@
       formData.append("files", file);
     });
 
-    const res = await $fetch("/api/upload/package-photo", {
+    const res = await $fetch<PackagePhotoUploadResponse>("/api/upload/package-photo", {
       method: "POST",
       body: formData,
     });
 
-    uploadedFiles.value.push(...(res as any).files);
+    uploadedFiles.value.push(...res.data);
     emitUpdate();
   };
 
@@ -280,18 +279,18 @@
         </div>
       </div>
       <div class="flex items-center gap-3">
-        <button @click="emit('remove')" v-if="totalPackages > 1">
+        <button v-if="totalPackages > 1" @click="emit('remove')">
           <IconTrash />
         </button>
         <button @click="toggleShowDetail">
-          <IconChevronDown height="24" width="24" v-if="showDetails" />
-          <IconChevronUp height="24" width="24" v-else />
+          <IconChevronDown v-if="showDetails" height="24" width="24" />
+          <IconChevronUp v-else height="24" width="24" />
         </button>
       </div>
     </div>
 
     <!-- Detail of Package -->
-    <div class="flex flex-col gap-6 pb-6" v-if="showDetails">
+    <div v-if="showDetails" class="flex flex-col gap-6 pb-6">
       <!-- Dimension -->
       <div class="px-6">
         <div class="relative flex items-start gap-6">
@@ -303,14 +302,14 @@
                 <!-- <InputNumber v-model="quantity" placeholder="1" class="w-full h-full"
                   inputClass="w-full h-full pr-[49px]" /> -->
                 <Select
+                  v-model="packagingType"
                   class="align-center h-full"
                   name="packagingType"
-                  v-model="packagingType"
                   :options="packagingTypeOptions"
-                  optionLabel="name"
+                  option-label="name"
                   placeholder="Select packaging type"
-                  @update:modelValue="emitUpdate"
                   fluid
+                  @update:model-value="emitUpdate"
                 />
               </div>
             </div>
@@ -326,8 +325,8 @@
                   v-model="weightInKgs"
                   placeholder="Weight"
                   class="w-full h-full"
-                  inputClass="w-full h-full pr-[56px]"
-                  @update:modelValue="emitUpdate"
+                  input-class="w-full h-full pr-[56px]"
+                  @update:model-value="emitUpdate"
                 />
 
                 <InputIcon
@@ -351,8 +350,8 @@
                     v-model="dimensionInCcLength"
                     placeholder="L"
                     class="w-full h-full"
-                    inputClass="w-full h-full pr-[49px]"
-                    @update:modelValue="emitUpdate"
+                    input-class="w-full h-full pr-[49px]"
+                    @update:model-value="emitUpdate"
                   />
                   <InputIcon
                     class="absolute right-[1px] !top-[1px] !mt-0 h-[44px] w-[45px] bg-neutral-20 !text-neutral-70 flex items-center justify-center rounded-tr-[5px] rounded-br-[5px]"
@@ -369,8 +368,8 @@
                     v-model="dimensionInCcWidth"
                     placeholder="W"
                     class="w-full h-full"
-                    inputClass="w-full h-full pr-[49px]"
-                    @update:modelValue="emitUpdate"
+                    input-class="w-full h-full pr-[49px]"
+                    @update:model-value="emitUpdate"
                   />
                   <InputIcon
                     class="absolute right-[1px] !top-[1px] !mt-0 h-[44px] w-[45px] bg-neutral-20 !text-neutral-70 flex items-center justify-center rounded-tr-[5px] rounded-br-[5px]"
@@ -387,8 +386,8 @@
                     v-model="dimensionInCcHeight"
                     placeholder="H"
                     class="w-full h-full"
-                    inputClass="w-full h-full pr-[49px]"
-                    @update:modelValue="emitUpdate"
+                    input-class="w-full h-full pr-[49px]"
+                    @update:model-value="emitUpdate"
                   />
                   <InputIcon
                     class="absolute right-[1px] !top-[1px] !mt-0 h-[44px] w-[45px] bg-neutral-20 !text-neutral-70 flex items-center justify-center rounded-tr-[5px] rounded-br-[5px]"
@@ -484,7 +483,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(item, index) in items" :key="index" class="bg-neutral-20">
+              <tr v-for="(item, itemIndex) in items" :key="itemIndex" class="bg-neutral-20">
                 <!-- Description -->
                 <td class="p-2">
                   <InputText
@@ -501,7 +500,7 @@
                     v-model="item.quantity"
                     :min="1"
                     class="w-full"
-                    @update:modelValue="emitUpdate"
+                    @update:model-value="emitUpdate"
                   />
                 </td>
 
@@ -517,8 +516,8 @@
                       v-model="item.valuePerItem"
                       placeholder="0"
                       class="w-full h-full"
-                      inputClass="w-full h-full !pl-[56px]"
-                      @update:modelValue="emitUpdate"
+                      input-class="w-full h-full !pl-[56px]"
+                      @update:model-value="emitUpdate"
                     />
                   </div>
                 </td>
@@ -545,9 +544,9 @@
                 <!-- Action -->
                 <td class="p-2 text-center">
                   <button
-                    @click="removeItem(index)"
                     :disabled="items.length === 1"
                     class="disabled:opacity-40"
+                    @click="removeItem(itemIndex)"
                   >
                     <IconRemoveItemDetail />
                   </button>
@@ -587,8 +586,8 @@
 
         <!-- List Uploaded Files Here -->
         <div
-          v-for="(file, index) in files"
-          :key="file.name + index"
+          v-for="(file, fileIndex) in files"
+          :key="file.name + fileIndex"
           class="flex items-center justify-between bg-white border border-neutral-30 p-4 rounded-[6px]"
         >
           <div class="flex items-start gap-3">
@@ -636,13 +635,13 @@
           url="/api/upload"
           accept="image/*"
           :multiple="true"
-          :maxFileSize="1000000"
-          :showUploadButton="false"
-          :showCancelButton="false"
-          :showChooseButton="false"
-          @select="onSelectedFiles"
-          :customUpload="true"
+          :max-file-size="1000000"
+          :show-upload-button="false"
+          :show-cancel-button="false"
+          :show-choose-button="false"
+          :custom-upload="true"
           class="border border-dashed border-neutral-40 rounded-[8px]"
+          @select="onSelectedFiles"
         >
           <template #header></template>
           <template #content>

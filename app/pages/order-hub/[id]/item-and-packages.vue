@@ -2,13 +2,12 @@
   // import { zodResolver } from "@primevue/forms/resolvers/zod";
   // import { z } from "zod";
   import { nanoid } from "nanoid";
-  import { ref } from "vue";
+  import { ref, nextTick  } from "vue";
   import type { OrderHubStep, Package } from "~/types/order-hub";
   import type { CurrencyOption } from "~/types/common";
   import { useOrderHub } from "~/composables/useOrderHub";
   import { wordCapital } from "~/utils/string";
-  import { nextTick } from "vue";
-  import IconSaveProgress from "~/components/icons/IconSaveProgress.vue";
+    import IconSaveProgress from "~/components/icons/IconSaveProgress.vue";
 
   // External
 
@@ -149,7 +148,7 @@
         packages.value = [createPackage()];
       }
       bookingProgressLoading.value = false;
-    } catch (err) {
+    } catch {
       // Error is already handled by the composable
       bookingProgressLoading.value = false;
     }
@@ -280,7 +279,7 @@
    * Finish Later
    * @param $form
    */
-  const handleFinishLater = async ($form: any) => {
+  const handleFinishLater = async (_$form: unknown) => {
     if (finishLaterLoading.value) return;
 
     finishLaterLoading.value = true;
@@ -302,8 +301,9 @@
       if (res) {
         navigateToOrderHub();
       }
-    } catch (err: any) {
-      errorSubmit.value = err?.data?.message || "Error submit item and packages";
+    } catch (err: unknown) {
+      const e = err as { data?: { message?: string } };
+      errorSubmit.value = e?.data?.message || "Error submit item and packages";
     } finally {
       submitLoading.value = false;
     }
@@ -311,7 +311,7 @@
 
   // Action Buttons
 
-  const handleSubmit = async ({ values, valid }: { values: any; valid: boolean }) => {
+  const handleSubmit = async ({ values, valid }: { values: Record<string, unknown>; valid: boolean }) => {
     if (!valid || submitLoading.value) return;
 
     errorSubmit.value = "";
@@ -354,8 +354,9 @@
         submittedResponse.value = res;
         viewMode.value = "success";
       }
-    } catch (err: any) {
-      errorSubmit.value = err?.data?.message || "Error submit item and packages";
+    } catch (err: unknown) {
+      const e = err as { data?: { message?: string } };
+      errorSubmit.value = e?.data?.message || "Error submit item and packages";
     } finally {
       submitLoading.value = false;
     }
@@ -538,9 +539,9 @@
             :icon="IconSaveProgress"
             title="Your progress will be saved"
             :description="`Finish later will automatically save your progress in \nitem and packages.\nYou can comeback later to complete the form.`"
+            :ok-loading="finishLaterLoading"
             @cancel="closePopupFinishLater"
             @ok="handleFinishLater($form)"
-            :okLoading="finishLaterLoading"
           />
         </Form>
       </section>

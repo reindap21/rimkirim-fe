@@ -12,7 +12,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const clipId = computed(() => `rimkirim-logo-clip-${Math.random().toString(36).slice(2)}`)
-const clipPath = `url(#${clipId})`
+const clipPath = `url(#${clipId.value})`
 </script>
 
 <template>

@@ -67,7 +67,7 @@ export function useOrderHub() {
 
       return res || null;
     } catch (err) {
-      if ((err as any)?.statusCode === 401) {
+      if ((err as { statusCode?: number })?.statusCode === 401) {
         router.push("/");
       }
       return null;
@@ -87,7 +87,7 @@ export function useOrderHub() {
   }: {
     valid: boolean;
     endpoint: string;
-    payload: Record<string, any>;
+    payload: Record<string, unknown>;
     onSuccess?: (response: T) => void;
   }): Promise<void> {
     if (!valid || loading.value) {
@@ -105,10 +105,11 @@ export function useOrderHub() {
       });
 
       if (onSuccess) {
-        onSuccess(response);
+        onSuccess(response as T);
       }
-    } catch (err: any) {
-      error.value = err?.data?.message || "Error submitting form";
+    } catch (err: unknown) {
+      const e = err as { data?: { message?: string } };
+      error.value = e?.data?.message || "Error submitting form";
     } finally {
       loading.value = false;
     }

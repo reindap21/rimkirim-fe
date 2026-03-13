@@ -41,14 +41,14 @@ export default defineEventHandler(async (event) => {
       message: res.message,
       data: res.data,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("[Search Packing List API Error]", error);
-
+    const e = error as { statusCode?: number; statusMessage?: string; data?: { message?: string } };
     throw createError({
-      statusCode: error?.statusCode || 500,
+      statusCode: e?.statusCode || 500,
       statusMessage:
-        error?.data?.message ||
-        error?.statusMessage ||
+        e?.data?.message ||
+        e?.statusMessage ||
         "Failed to search packing list",
     });
   }

@@ -3,6 +3,7 @@
   import { computed, ref } from "vue";
   import { MENU } from "~/config";
   import type { EstimateRatesRequest, LocationPayload, Rate, ShipmentType } from "~/types/rate";
+  import type { AddressGeocode } from "~/types/order-hub";
 
   // * ------- Composable --------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -13,9 +14,9 @@
 
   const router = useRouter();
 
-  const origin = ref<LocationPayload | {}>({});
+  const origin = ref<LocationPayload | null>(null);
   const originAddress = ref("");
-  const destination = ref<LocationPayload | {}>({});
+  const destination = ref<LocationPayload | null>(null);
   const destinationAddress = ref("");
   const shipmentType = ref("back_for_good"); // back_for_good | moving_abroad
 
@@ -96,19 +97,19 @@
     }, 0);
   });
 
-  const handleOriginSelect = (payload: any) => {
+  const handleOriginSelect = (payload: AddressGeocode) => {
     origin.value = payload;
     originAddress.value = payload?.address;
   };
 
-  const handleDestinationSelect = (payload: any) => {
+  const handleDestinationSelect = (payload: AddressGeocode) => {
     destination.value = payload;
     destinationAddress.value = payload?.address;
   };
 
   // TODO: Refactor to Utils
 
-  const formatNumber = (value: any, options = { decimals: 0, locale: "en-US" }) => {
+  const formatNumber = (value: number | string, options = { decimals: 0, locale: "en-US" }) => {
     const number = Number(value);
 
     if (isNaN(number)) return "0";
@@ -154,12 +155,12 @@
     }
 
     try {
-      const res = await $fetch(`/api/rates/estimate`, {
+      const res = await $fetch<{ rates: Rate[] }>(`/api/rates/estimate`, {
         method: "POST",
         credentials: "include", // Required
         body: payload,
       });
-      rates.value = (res as any).rates; // Array of rates
+      rates.value = res.rates; // Array of rates
       ratesLoading.value = false;
     } catch (err) {
       console.error("fetch rates error:", err);
@@ -197,7 +198,7 @@
         path: MENU.ELIGIBLE,
         query: {
           rateId: rate.id,
-          origin: (origin.value as any)?.country,
+          origin: (origin.value as LocationPayload)?.country,
         },
       });
     } catch (err) {
@@ -338,7 +339,7 @@
                     v-model="item.weight"
                     placeholder="Weight"
                     class="w-full h-full"
-                    inputClass="w-full h-full pr-[56px]"
+                    input-class="w-full h-full pr-[56px]"
                   />
 
                   <InputIcon
@@ -364,7 +365,7 @@
                       v-model="item.length"
                       placeholder="L"
                       class="w-full h-full"
-                      inputClass="w-full h-full pr-[49px]"
+                      input-class="w-full h-full pr-[49px]"
                     />
                     <InputIcon
                       class="absolute right-[1px] !top-[1px] !mt-0 h-[44px] w-[45px] bg-neutral-20 !text-neutral-70 flex items-center justify-center rounded-tr-[5px] rounded-br-[5px]"
@@ -381,7 +382,7 @@
                       v-model="item.width"
                       placeholder="W"
                       class="w-full h-full"
-                      inputClass="w-full h-full pr-[49px]"
+                      input-class="w-full h-full pr-[49px]"
                     />
                     <InputIcon
                       class="absolute right-[1px] !top-[1px] !mt-0 h-[44px] w-[45px] bg-neutral-20 !text-neutral-70 flex items-center justify-center rounded-tr-[5px] rounded-br-[5px]"
@@ -398,7 +399,7 @@
                       v-model="item.height"
                       placeholder="H"
                       class="w-full h-full"
-                      inputClass="w-full h-full pr-[49px]"
+                      input-class="w-full h-full pr-[49px]"
                     />
                     <InputIcon
                       class="absolute right-[1px] !top-[1px] !mt-0 h-[44px] w-[45px] bg-neutral-20 !text-neutral-70 flex items-center justify-center rounded-tr-[5px] rounded-br-[5px]"
@@ -420,7 +421,7 @@
                     v-model="item.quantity"
                     placeholder="1"
                     class="w-full h-full"
-                    inputClass="w-full h-full pr-[49px]"
+                    input-class="w-full h-full pr-[49px]"
                   />
                   <InputIcon
                     class="absolute right-[1px] !top-[1px] !mt-0 h-[44px] w-[45px] bg-neutral-20 !text-neutral-70 flex items-center justify-center rounded-tr-[5px] rounded-br-[5px]"
@@ -433,8 +434,8 @@
               <!-- Remove Item -->
               <button
                 v-if="items.length > 1"
-                @click="removeItem(index)"
                 class="absolute -right-[21px] top-[41px] text-neutral-60 hover:text-red-500 transition"
+                @click="removeItem(index)"
               >
                 <IconTrash width="18" height="18" />
               </button>
@@ -443,8 +444,8 @@
 
           <!-- Add Item -->
           <button
-            @click="addItem"
             class="flex items-center gap-2 text-sm font-medium text-neutral-100 w-fit focus-visible:ring-offset-[6px] focus-visible:ring-offset-[#FAFAFC] focus-visible:rounded-md"
+            @click="addItem"
           >
             <IconPlusCircle />
             Add Item
@@ -510,22 +511,22 @@
     </div>
 
     <!-- Shipping Rate Options -->
-    <div class="flex flex-col gap-3 mt-8" v-if="rates.length > 0">
+    <div v-if="rates.length > 0" class="flex flex-col gap-3 mt-8">
       <h3 class="text-[24px] leading-[130%] text-neutral-100 font-medium">Shipping Option</h3>
       <template v-for="rate in rates" :key="rate.id">
         <UIRateCard
           :price="rate?.pricing?.amount"
           :currency="rate?.pricing?.currency"
           :unit="rate?.pricing?.unit"
-          :minWeight="rate?.pricing?.minimum?.value"
+          :min-weight="rate?.pricing?.minimum?.value"
           badge="Special Rate"
           :provider="rate?.provider?.branding?.logo"
-          :originCountry="rate?.route?.origin?.country_name"
-          :originFlag="rate?.assets?.flags?.origin"
-          :destinationCountry="rate?.route?.destination?.country_name"
-          :destinationFlag="rate?.assets?.flags?.destination"
+          :origin-country="rate?.route?.origin?.country_name"
+          :origin-flag="rate?.assets?.flags?.origin"
+          :destination-country="rate?.route?.destination?.country_name"
+          :destination-flag="rate?.assets?.flags?.destination"
           :eta="rate?.eta"
-          :isDirect="rate?.route?.is_direct"
+          :is-direct="rate?.route?.is_direct"
           :terms="rate?.terms"
           :loading="actionMoveNowLoading === rate.id"
           @action="handleActionMoveNow(rate)"

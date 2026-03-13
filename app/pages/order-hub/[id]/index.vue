@@ -160,12 +160,12 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <!-- CUSTOMER INFORMATION -->
           <UICardInformation
-            :status="(bookingData as any)?.customer_information?.status as any"
+            :status="bookingData?.customer_information?.status"
             :total-progress="
-              Number((bookingData as any)?.customer_information?.progress_count?.total || 0)
+              Number(bookingData?.customer_information?.progress_count?.total || 0)
             "
             :current-progress="
-              Number((bookingData as any)?.customer_information?.progress_count?.completed || 0)
+              Number(bookingData?.customer_information?.progress_count?.completed || 0)
             "
             :title="['CUSTOMER', 'INFORMATION']"
             :icon="IconOrderHubCustomer"
@@ -175,12 +175,12 @@
 
           <!-- ITEM & PACKAGES -->
           <UICardInformation
-            :status="(bookingData as any)?.item_and_package?.status as any"
+            :status="bookingData?.item_and_package?.status"
             :total-progress="
-              Number((bookingData as any)?.item_and_package?.progress_count?.total || 0)
+              Number(bookingData?.item_and_package?.progress_count?.total || 0)
             "
             :current-progress="
-              Number((bookingData as any)?.item_and_package?.progress_count?.completed || 0)
+              Number(bookingData?.item_and_package?.progress_count?.completed || 0)
             "
             :title="['ITEM &', 'PACKAGES']"
             :icon="IconPackage"
@@ -190,12 +190,12 @@
 
           <!-- COMPLIANCE DOCUMENT -->
           <UICardInformation
-            :status="(bookingData as any)?.compliance_document?.status as any"
+            :status="bookingData?.compliance_document?.status"
             :total-progress="
-              Number((bookingData as any)?.compliance_document?.progress_count?.total || 0)
+              Number(bookingData?.compliance_document?.progress_count?.total || 0)
             "
             :current-progress="
-              Number((bookingData as any)?.compliance_document?.progress_count?.completed || 0)
+              Number(bookingData?.compliance_document?.progress_count?.completed || 0)
             "
             :title="['COMPLIANCE', 'DOCUMENT']"
             :icon="IconOrderHubCustomer"
@@ -205,12 +205,12 @@
 
           <!-- PICKUP DETAIL & SCHEDULE: LOCKED -->
           <UICardInformation
-            :status="((bookingData as any)?.pickup_detail_schedule?.status as any) || 'locked'"
+            :status="bookingData?.pickup_detail_schedule?.status || 'locked'"
             :total-progress="
-              Number((bookingData as any)?.pickup_detail_schedule?.progress_count?.total || 0)
+              Number(bookingData?.pickup_detail_schedule?.progress_count?.total || 0)
             "
             :current-progress="
-              Number((bookingData as any)?.pickup_detail_schedule?.progress_count?.completed || 0)
+              Number(bookingData?.pickup_detail_schedule?.progress_count?.completed || 0)
             "
             :waiting-number="getWaitingNumber(bookingData as OrderHubProgress)"
             :title="['PICKUP DETAIL &', 'SCHEDULE']"

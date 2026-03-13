@@ -1,4 +1,5 @@
 import { getCookie } from "h3";
+import type { EligibilityDetailResponse } from "~/types/api";
 
 export default defineEventHandler(async (event) => {
   // 0️⃣ REQUIRED; Token Check
@@ -27,7 +28,7 @@ export default defineEventHandler(async (event) => {
 
   // 2️⃣ Fetch API
   try {
-    const res: any = await $fetch(`${baseApiUrl}/api/eligibility/${rateId}`, {
+    const res = await $fetch<EligibilityDetailResponse>(`${baseApiUrl}/api/eligibility/${rateId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -37,13 +38,13 @@ export default defineEventHandler(async (event) => {
     return {
       eligibility: res.data,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("[Eligibility API Error]", error);
-
+    const e = error as { statusCode?: number; statusMessage?: string; data?: { message?: string } };
     throw createError({
-      statusCode: error?.statusCode || 404,
+      statusCode: e?.statusCode || 404,
       statusMessage:
-        error?.data?.message || error?.statusMessage || "Eligibility not found",
+        e?.data?.message || e?.statusMessage || "Eligibility not found",
     });
   }
 });

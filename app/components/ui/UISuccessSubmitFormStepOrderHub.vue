@@ -15,6 +15,7 @@
   // * ------- Defines
 
   const props = withDefaults(defineProps<Props>(), {
+    icon: undefined,
     step: null,
     response: undefined,
     buttonLabel: "Go To Booking Order Hub",
@@ -68,7 +69,7 @@
   >
     <div class="flex flex-col items-center gap-4">
       <!-- Icon -->
-      <component v-if="props.icon" :is="props.icon" class="mx-auto" />
+      <component :is="props.icon" v-if="props.icon" class="mx-auto" />
 
       <!-- Default Icon -->
       <svg
