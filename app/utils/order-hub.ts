@@ -298,8 +298,6 @@ export const getNextStepDescription = (
   progress: Record<string, ProgressStatus> = {},
 ) => {
   const incompleteSteps = getIncompleteSteps(currentStep, progress);
-  console.log("currentStep", currentStep);
-  console.log("progress", progress);
 
   if (incompleteSteps.length === 0) {
     return "You have finished 3/3 form to unlock pickup schedule, go pick a date and time to start your international moving";
