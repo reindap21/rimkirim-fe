@@ -103,11 +103,10 @@ test.describe('Order Hub Dashboard', () => {
       }),
     )
     await page.goto(DASHBOARD_URL)
-    const downloadBtn = page.getByText('Download Packing List')
+    const downloadBtn = page.locator('button', { hasText: 'Download Packing List' })
     await expect(downloadBtn).toBeVisible({ timeout: 10000 })
-    // Button should not have opacity-50 (disabled) class when download is allowed
-    const parentButton = downloadBtn.locator('xpath=ancestor::button[1]')
-    await expect(parentButton).not.toBeDisabled()
+    // Button should not be disabled when download is allowed
+    await expect(downloadBtn).not.toBeDisabled()
   })
 
   test('clicking active step card navigates to that step page', async ({ page }) => {

@@ -9,16 +9,17 @@ const BOOKING_CODE = 'BK-TEST-001'
 
 /** Answer all eligibility questions (no packing list) to enable Continue */
 async function answerAllQuestions(page: import('@playwright/test').Page) {
+  await page.waitForLoadState('networkidle')
   // Q1: Are you shipping personal belongings to Indonesia? → Yes
-  await page.getByRole('button', { name: 'Yes' }).nth(0).click()
+  await page.locator('div').filter({ hasText: /Are you shipping personal belongings to Indonesia\?/ }).last().getByRole('button', { name: 'Yes' }).click()
   // Q2: Citizenship → Indonesian
   await page.getByRole('button', { name: 'Indonesian' }).click()
   // Q3: Have you lived abroad 12 months? → Yes
-  await page.getByRole('button', { name: 'Yes' }).nth(1).click()
+  await page.locator('div').filter({ hasText: /Have you lived in .* at least 12 Months/ }).last().getByRole('button', { name: 'Yes' }).click()
   // Q4: Can apply for SKP? → Yes
-  await page.getByRole('button', { name: 'Yes' }).nth(2).click()
+  await page.locator('div').filter({ hasText: /apply for SKP/ }).last().getByRole('button', { name: 'Yes' }).click()
   // Q5: Do you have a packing list code? → No
-  await page.getByRole('button', { name: 'No' }).nth(3).click()
+  await page.locator('div').filter({ hasText: /Rimkirim Packing List code/ }).last().getByRole('button', { name: 'No' }).click()
 }
 
 test.describe('Eligible page', () => {

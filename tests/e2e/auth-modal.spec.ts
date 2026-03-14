@@ -6,7 +6,11 @@ async function openAuthModal(page: import('@playwright/test').Page) {
   await page.route('**/api/rates**', (route) =>
     route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(mockRatesResponse) }),
   )
+  await page.route('**/api/auth/session**', (route) =>
+    route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ user: null, authenticated: false }) }),
+  )
   await page.goto('/')
+  await page.waitForLoadState('networkidle')
   await page.getByRole('button', { name: 'Login' }).click()
   await expect(page.locator('#modal-auth')).toBeVisible()
 }
@@ -16,7 +20,11 @@ test.describe('Auth modal', () => {
     await page.route('**/api/rates**', (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(mockRatesResponse) }),
     )
+    await page.route('**/api/auth/session**', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ user: null, authenticated: false }) }),
+    )
     await page.goto('/')
+    await page.waitForLoadState('networkidle')
     await expect(page.locator('#modal-auth')).not.toBeVisible()
   })
 
@@ -47,7 +55,7 @@ test.describe('Auth modal', () => {
   test('login form shows validation errors on empty submit', async ({ page }) => {
     await openAuthModal(page)
     // Click submit without filling in
-    await page.locator('#login').getByRole('button', { name: 'Login' }).click()
+    await page.locator('#login').getByRole('button', { name: 'Login', exact: true }).click()
     // PrimeVue validate-on-submit — error messages should appear
     await expect(page.locator('#login').getByText(/required/i).first()).toBeVisible({ timeout: 5000 })
   })
@@ -56,17 +64,21 @@ test.describe('Auth modal', () => {
     await page.route('**/api/rates**', (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(mockRatesResponse) }),
     )
+    await page.route('**/api/auth/session**', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ user: null, authenticated: false }) }),
+    )
     await page.route('**/api/auth/login', (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(mockLoginResponse) }),
     )
     await page.goto('/')
+    await page.waitForLoadState('networkidle')
     await page.getByRole('button', { name: 'Login' }).click()
     await expect(page.locator('#modal-auth')).toBeVisible()
 
     // Fill in credentials
     await page.locator('[name="email"]').fill('test@example.com')
     await page.locator('[name="password"]').fill('password123')
-    await page.locator('#login').getByRole('button', { name: 'Login' }).click()
+    await page.locator('#login').getByRole('button', { name: 'Login', exact: true }).click()
 
     // Modal should close
     await expect(page.locator('#modal-auth')).not.toBeVisible({ timeout: 5000 })
@@ -78,6 +90,9 @@ test.describe('Auth modal', () => {
     await page.route('**/api/rates**', (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(mockRatesResponse) }),
     )
+    await page.route('**/api/auth/session**', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ user: null, authenticated: false }) }),
+    )
     await page.route('**/api/auth/login', (route) =>
       route.fulfill({
         status: 401,
@@ -86,11 +101,12 @@ test.describe('Auth modal', () => {
       }),
     )
     await page.goto('/')
+    await page.waitForLoadState('networkidle')
     await page.getByRole('button', { name: 'Login' }).click()
 
     await page.locator('[name="email"]').fill('wrong@example.com')
     await page.locator('[name="password"]').fill('wrongpassword')
-    await page.locator('#login').getByRole('button', { name: 'Login' }).click()
+    await page.locator('#login').getByRole('button', { name: 'Login', exact: true }).click()
 
     // Error message should appear
     await expect(page.locator('#login').getByText('Invalid credentials')).toBeVisible({ timeout: 5000 })
@@ -101,7 +117,7 @@ test.describe('Auth modal', () => {
     // Switch to signup
     await page.locator('#login').getByText('Sign Up').click()
     // Click submit without filling in
-    await page.locator('#signup').getByRole('button', { name: 'Sign Up' }).click()
+    await page.locator('#signup').getByRole('button', { name: 'Sign Up', exact: true }).click()
     // Validation errors should appear
     await expect(page.locator('#signup').getByText(/required|minimum/i).first()).toBeVisible({ timeout: 5000 })
   })
@@ -110,10 +126,14 @@ test.describe('Auth modal', () => {
     await page.route('**/api/rates**', (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(mockRatesResponse) }),
     )
+    await page.route('**/api/auth/session**', (route) =>
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ user: null, authenticated: false }) }),
+    )
     await page.route('**/api/auth/register', (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(mockRegisterResponse) }),
     )
     await page.goto('/')
+    await page.waitForLoadState('networkidle')
     await page.getByRole('button', { name: 'Login' }).click()
     // Switch to signup
     await page.locator('#login').getByText('Sign Up').click()
@@ -122,15 +142,15 @@ test.describe('Auth modal', () => {
     await page.locator('[name="email"]').fill('test@example.com')
     await page.locator('[name="password"]').nth(0).fill('password123')
     await page.locator('[name="password_confirmation"]').fill('password123')
-    await page.locator('#signup').getByRole('button', { name: 'Sign Up' }).click()
+    await page.locator('#signup').getByRole('button', { name: 'Sign Up', exact: true }).click()
 
     await expect(page.locator('#modal-auth')).not.toBeVisible({ timeout: 5000 })
   })
 
   test('close button dismisses modal', async ({ page }) => {
     await openAuthModal(page)
-    // Find button that is not Login or Google-related — the X button is right after the logo
-    await page.locator('#modal-auth > div > div > div button').click()
+    // Close (X) button is a direct child button of the modal header row
+    await page.locator('#modal-auth > div > div > button').click()
     await expect(page.locator('#modal-auth')).not.toBeVisible({ timeout: 3000 })
   })
 
