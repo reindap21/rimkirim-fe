@@ -2,6 +2,7 @@ import { test, expect } from './fixtures'
 import {
   mockEligibilityCheckResponse,
   mockBookingResponse,
+  mockOrderHubProgress,
 } from './fixtures/api-mocks'
 
 const ELIGIBLE_URL = '/eligible?rateId=rate-001&origin=GB'
@@ -83,6 +84,15 @@ test.describe('Eligible page', () => {
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify(mockBookingResponse),
+      }),
+    )
+    // Mock progress so the order-hub dashboard doesn't make a real backend call
+    // (which would hang the dev server and corrupt subsequent tests)
+    await page.route('**/api/order-hub/progress**', (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(mockOrderHubProgress),
       }),
     )
     await page.goto(ELIGIBLE_URL)

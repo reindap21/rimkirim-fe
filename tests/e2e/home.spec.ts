@@ -31,11 +31,12 @@ test.describe('Home page', () => {
     await page.route('**/api/rates**', (route) =>
       route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(mockRatesResponse) }),
     )
-    // Session returns 401 so user stays null
+    // Session returns user: null — same as real endpoint when no auth cookie
     await page.route('**/api/auth/session**', (route) =>
-      route.fulfill({ status: 401, contentType: 'application/json', body: JSON.stringify({ message: 'Unauthenticated' }) }),
+      route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ user: null, authenticated: false }) }),
     )
     await page.goto('/')
+    await page.waitForLoadState('networkidle')
     await expect(page.getByRole('button', { name: 'Login' })).toBeVisible()
   })
 
