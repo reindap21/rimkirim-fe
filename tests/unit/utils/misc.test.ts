@@ -3,22 +3,7 @@ import {
   isPurposeOfShipmentPassengerGoods,
   isCompleted,
   isLocked,
-  hasIncompleteSteps,
-  getNextStepDescription,
 } from '~/utils/misc'
-import type { OrderHubStep } from '~/types/order-hub'
-
-type Progress = Parameters<typeof hasIncompleteSteps>[1]
-
-function makeProgress(overrides: Partial<Progress> = {}): Progress {
-  return {
-    customer_information: 'completed',
-    item_and_package: 'completed',
-    compliance_document: 'completed',
-    pickup_detail_schedule: 'completed',
-    ...overrides,
-  }
-}
 
 // ---------------------------------------------------------------------------
 // isPurposeOfShipmentPassengerGoods
@@ -118,96 +103,3 @@ describe('isLocked', () => {
   })
 })
 
-// ---------------------------------------------------------------------------
-// hasIncompleteSteps (misc version)
-// ---------------------------------------------------------------------------
-
-describe('hasIncompleteSteps (misc)', () => {
-  it('returns true when progress is null', () => {
-    expect(hasIncompleteSteps('customer_information' as OrderHubStep, null as unknown as Progress)).toBe(true)
-  })
-
-  it('returns [] when all non-current steps are completed', () => {
-    const progress = makeProgress({ customer_information: 'awaiting_input' })
-    const result = hasIncompleteSteps('customer_information', progress)
-    expect(result).toEqual([])
-  })
-
-  it('returns the label of one awaiting_input step', () => {
-    const progress = makeProgress({ item_and_package: 'awaiting_input' })
-    const result = hasIncompleteSteps('customer_information', progress)
-    expect(result).toEqual(['Item & Packages Information'])
-  })
-
-  it('returns labels for two incomplete steps', () => {
-    const progress = makeProgress({
-      item_and_package: 'awaiting_input',
-      compliance_document: 'awaiting_input',
-    })
-    const result = hasIncompleteSteps('customer_information', progress)
-    expect(result).toEqual(['Item & Packages Information', 'Compliance Document'])
-  })
-
-  it('excludes locked steps from the result', () => {
-    const progress = makeProgress({
-      item_and_package: 'awaiting_input',
-      pickup_detail_schedule: 'locked',
-    })
-    const result = hasIncompleteSteps('customer_information', progress)
-    expect(result).toEqual(['Item & Packages Information'])
-  })
-})
-
-// ---------------------------------------------------------------------------
-// getNextStepDescription (misc version)
-// ---------------------------------------------------------------------------
-
-describe('getNextStepDescription (misc)', () => {
-  it('returns "" when currentStep is null', () => {
-    expect(getNextStepDescription(null, makeProgress())).toBe('')
-  })
-
-  it('returns "" when all steps are completed (incompleteSteps.length === 0)', () => {
-    const progress = makeProgress({ customer_information: 'awaiting_input' })
-    expect(getNextStepDescription('customer_information', progress)).toBe('')
-  })
-
-  it('returns "Finish  to schedule..." path when progress is null (formatStepList non-array branch)', () => {
-    // hasIncompleteSteps returns boolean true when progress is falsy,
-    // which causes formatStepList to hit the !Array.isArray branch → ""
-    const result = getNextStepDescription(
-      'customer_information',
-      null as unknown as Progress,
-    )
-    expect(result).toBe('Finish  to schedule your move.')
-  })
-
-  it('builds message for 1 incomplete step (formatStepList length===1 branch)', () => {
-    const progress = makeProgress({ item_and_package: 'awaiting_input' })
-    const result = getNextStepDescription('customer_information', progress)
-    expect(result).toBe('Finish Item & Packages Information to schedule your move.')
-  })
-
-  it('builds message for 2 incomplete steps (formatStepList length===2 branch)', () => {
-    const progress = makeProgress({
-      item_and_package: 'awaiting_input',
-      compliance_document: 'awaiting_input',
-    })
-    const result = getNextStepDescription('customer_information', progress)
-    expect(result).toBe(
-      'Finish Item & Packages Information and Compliance Document to schedule your move.',
-    )
-  })
-
-  it('builds message for 3 incomplete steps (formatStepList length>2 branch)', () => {
-    const progress = makeProgress({
-      item_and_package: 'awaiting_input',
-      compliance_document: 'awaiting_input',
-      pickup_detail_schedule: 'awaiting_input',
-    })
-    const result = getNextStepDescription('customer_information', progress)
-    expect(result).toBe(
-      'Finish Item & Packages Information, Compliance Document, and Pickup Detail Schedule to schedule your move.',
-    )
-  })
-})
