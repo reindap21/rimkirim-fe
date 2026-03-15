@@ -15,7 +15,7 @@
       autoplay: true,
       path: "/lottie/cta.json",
       rendererSettings: {
-        preserveAspectRatio: "xMaxYMid meet",
+        preserveAspectRatio: "xMidYMid meet",
       },
     });
   });
@@ -48,7 +48,7 @@
       </div>
 
       <!-- RIGHT VISUAL -->
-      <div ref="container" class="absolute right-0 inset-y-0 h-full w-auto pointer-events-none z-0" />
+      <div ref="container" class="absolute right-0 top-0 bottom-0 w-1/2 pointer-events-none z-0" />
     </div>
   </section>
 </template>
