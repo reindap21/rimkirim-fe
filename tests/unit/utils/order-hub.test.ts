@@ -24,9 +24,13 @@ import type { ProgressStatus } from '~/types/order-hub'
 
 const mockRouterPush = vi.hoisted(() => vi.fn())
 
-vi.mock('vue-router', () => ({
-  useRouter: () => ({ push: mockRouterPush }),
-}))
+vi.mock('vue-router', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('vue-router')>()
+  return {
+    ...actual,
+    useRouter: () => ({ push: mockRouterPush, afterEach: vi.fn() }),
+  }
+})
 
 // ---------------------------------------------------------------------------
 // $fetch is a Nuxt global (not an unimport auto-import), stub via globalThis
