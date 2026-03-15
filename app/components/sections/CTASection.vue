@@ -15,7 +15,7 @@
       autoplay: true,
       path: "/lottie/cta.json",
       rendererSettings: {
-        preserveAspectRatio: "xMidYMid slice",
+        preserveAspectRatio: "xMaxYMid slice",
       },
     });
   });
