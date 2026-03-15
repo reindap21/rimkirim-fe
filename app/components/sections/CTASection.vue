@@ -13,9 +13,9 @@
       renderer: "svg",
       loop: true,
       autoplay: true,
-      path: "/lottie/hero-anim.json",
+      path: "/lottie/cta.json",
       rendererSettings: {
-        preserveAspectRatio: "xMidYMid slice",
+        preserveAspectRatio: "xMaxYMid slice",
       },
     });
   });
@@ -23,7 +23,7 @@
 
 <template>
   <!-- CTA -->
-  <section class="w-full relative bg-neutral-10 py-20">
+  <section class="w-full relative overflow-hidden bg-neutral-10 py-20 min-h-[400px]">
     <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 items-center gap-16">
       <div class="flex flex-col gap-6">
         <div class="flex flex-col gap-2">
@@ -48,13 +48,7 @@
       </div>
 
       <!-- RIGHT VISUAL -->
-      <div ref="container" class="absolute right-0 bottom-0 pointer-events-none">
-        <img
-          src="https://i.ibb.co.com/4Z6HtCDH/cta-van.png"
-          alt="International moving illustration"
-          class="w-full max-w-[560px] ml-auto object-contain"
-        />
-      </div>
+      <div ref="container" class="absolute right-0 top-0 bottom-0 w-1/2 pointer-events-none z-0" />
     </div>
   </section>
 </template>
