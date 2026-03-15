@@ -15,7 +15,7 @@
       autoplay: true,
       path: "/lottie/cta.json",
       rendererSettings: {
-        preserveAspectRatio: "xMidYMid meet",
+        preserveAspectRatio: "xMidYMid slice",
       },
     });
   });
@@ -23,7 +23,7 @@
 
 <template>
   <!-- CTA -->
-  <section class="w-full relative overflow-hidden bg-neutral-10 py-20">
+  <section class="w-full relative overflow-hidden bg-neutral-10 py-20 min-h-[400px]">
     <div class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 items-center gap-16">
       <div class="flex flex-col gap-6">
         <div class="flex flex-col gap-2">
