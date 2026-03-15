@@ -13,7 +13,7 @@
       renderer: "svg",
       loop: true,
       autoplay: true,
-      path: "/lottie/hero-anim.json",
+      path: "/lottie/cta.json",
       rendererSettings: {
         preserveAspectRatio: "xMidYMid slice",
       },
@@ -48,13 +48,7 @@
       </div>
 
       <!-- RIGHT VISUAL -->
-      <div ref="container" class="absolute right-0 bottom-0 pointer-events-none">
-        <img
-          src="https://i.ibb.co.com/4Z6HtCDH/cta-van.png"
-          alt="International moving illustration"
-          class="w-full max-w-[560px] ml-auto object-contain"
-        />
-      </div>
+      <div ref="container" class="absolute right-0 bottom-0 w-full max-w-[560px] pointer-events-none" />
     </div>
   </section>
 </template>
