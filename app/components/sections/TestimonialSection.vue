@@ -2,7 +2,7 @@
   <!-- TESTIMONIAL -->
   <section class="w-full flex flex-col gap-12 py-10 overflow-hidden">
     <div class="flex flex-col items-center justify-center gap-2">
-      <h2 class="text-[40px] leading-[48px] font-bold text-neutral-100">
+      <h2 class="text-display-sm font-bold text-neutral-100">
         See what people are saying
       </h2>
     </div>

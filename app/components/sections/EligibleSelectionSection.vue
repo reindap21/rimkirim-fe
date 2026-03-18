@@ -19,19 +19,19 @@
     <div class="mt-6 flex items-stretch justify-center gap-4">
       <!-- Skema Barang Pindahan -->
       <button
-        class="flex flex-col flex-1 gap-6 w-[400px] shrink-0 grow-0 rounded-2xl px-6 py-4 text-left" :class="isSKPAvailable ? 'bg-neutral-10 hover:bg-[#D6EAE7] group hover:shadow-lg cursor-pointer' : 'bg-neutral-10 opacity-50 cursor-disabled'"
+        class="flex flex-col flex-1 gap-6 w-[400px] shrink-0 grow-0 rounded-2xl px-6 py-4 text-left" :class="isSKPAvailable ? 'bg-neutral-10 hover:bg-teal-light group hover:shadow-lg cursor-pointer' : 'bg-neutral-10 opacity-50 cursor-disabled'"
         @click="$emit('select', 'moving_goods')"
         >
         <div class="flex items-center justify-center w-[338px] h-[211px]">
           <IconBarangPindahan />
         </div>
         <div class="flex flex-col gap-4">
-          <h3 class="text-[24px] leading-[130%] font-semibold text-neutral-100 group-hover:text-[#309786]">Skema Barang
+          <h3 class="text-heading-sm leading-[130%] font-semibold text-neutral-100 group-hover:text-teal">Skema Barang
             Pindahan</h3>
 
           <!-- Benefits -->
           <div class="flex flex-col gap-2">
-            <div class="flex items-center gap-[2px] text-[14px] leading-[22px]">
+            <div class="flex items-center gap-[2px] text-body-sm">
               <div class="flex items-center gap-1">
                 <IconThumbsUp />
                 <span class="font-normal text-neutral-90">
@@ -45,7 +45,7 @@
 
           <!-- Requirements -->
           <div class="flex flex-col gap-2">
-            <div class="flex items-center gap-[2px] text-[14px] leading-[22px]">
+            <div class="flex items-center gap-[2px] text-body-sm">
               <div class="flex items-center gap-1">
                 <IconDocumentRequirement />
                 <span class="font-normal text-neutral-90">
@@ -77,17 +77,17 @@ d="M9 9V12" stroke="#404040" stroke-width="1.5" stroke-linecap="round"
 
       <!-- Skema Barang Penumpang -->
       <button
-        class="flex flex-col flex-1 gap-6 w-[400px] shrink-0 grow-0 bg-neutral-10 hover:bg-[#D6EAE7] group hover:shadow-lg rounded-2xl px-6 py-4 text-left cursor-pointer" @click="$emit('select', 'passenger_goods')">
+        class="flex flex-col flex-1 gap-6 w-[400px] shrink-0 grow-0 bg-neutral-10 hover:bg-teal-light group hover:shadow-lg rounded-2xl px-6 py-4 text-left cursor-pointer" @click="$emit('select', 'passenger_goods')">
         <div class="flex items-center justify-center w-[338px] h-[211px]">
           <IconBarangPenumpang />
         </div>
         <div class="flex flex-col gap-4">
-          <h3 class="text-[24px] leading-[130%] font-semibold text-neutral-100 group-hover:text-[#309786]">Skema Barang
+          <h3 class="text-heading-sm leading-[130%] font-semibold text-neutral-100 group-hover:text-teal">Skema Barang
             Penumpang</h3>
 
           <!-- Benefits -->
           <div class="flex flex-col gap-2">
-            <div class="flex items-center gap-[2px] text-[14px] leading-[22px]">
+            <div class="flex items-center gap-[2px] text-body-sm">
               <div class="flex items-center gap-1">
                 <IconThumbsUp />
                 <span class="font-normal text-neutral-90">
@@ -106,7 +106,7 @@ d="M9 9V12" stroke="#404040" stroke-width="1.5" stroke-linecap="round"
 
           <!-- Requirements -->
           <div class="flex flex-col gap-2">
-            <div class="flex items-center gap-[2px] text-[14px] leading-[22px]">
+            <div class="flex items-center gap-[2px] text-body-sm">
               <div class="flex items-center gap-1">
                 <IconDocumentRequirement />
                 <span class="font-normal text-neutral-90">
@@ -121,7 +121,7 @@ d="M9 9V12" stroke="#404040" stroke-width="1.5" stroke-linecap="round"
       </button>
     </div>
 
-    <p class="mt-8 text-[14px] leading-[22px] text-neutral-100">By continuing, you agree with our <span
+    <p class="mt-8 text-body-sm text-neutral-100">By continuing, you agree with our <span
         class="underline cursor-pointer">terms of
         service</span></p>
   </section>

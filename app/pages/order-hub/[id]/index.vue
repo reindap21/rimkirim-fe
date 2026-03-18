@@ -147,7 +147,7 @@
       <h1 class="text-[32px] leading-[130%] font-semibold text-neutral-100 text-center">
         INTERNATIONAL MOVING ORDER
       </h1>
-      <p class="text-[14px] leading-[22px] font-[400] !text-neutral-70 uppercase">
+      <p class="text-body-sm font-[400] !text-neutral-70 uppercase">
         YOU MAY CHOOSE ANY FORM YOU WANT TO FILL FIRST
       </p>
     </div>
@@ -221,7 +221,7 @@
         </div>
 
         <div>
-          <p class="text-[14px] leading-[22px] text-neutral-90 font-[400]">
+          <p class="text-body-sm text-neutral-90 font-[400]">
             Packing List Code:
             <span class="font-bold">{{ packingListCode || "-" }}</span>
           </p>
@@ -232,11 +232,11 @@
       <div class="flex items-center justify-center md:flex-row gap-4 w-full">
         <div class="flex gap-4">
           <button
-            class="h-[46px] w-[244px] flex justify-center items-center gap-2 rounded-lg border border-[#1E1E1E] text-[14px] leading-[22px] font-medium transition-colors"
+            class="h-[46px] w-[244px] flex justify-center items-center gap-2 rounded-lg border border-neutral-100 text-body-sm font-medium transition-colors"
             :class="{
               'opacity-50 cursor-not-allowed text-neutral-70 bg-gray-100':
                 isDownloadingPackingList || !canDownloadPackingList,
-              'hover:bg-gray-50 text-neutral-100':
+              'hover:bg-neutral-20 text-neutral-100':
                 !isDownloadingPackingList && canDownloadPackingList,
             }"
             :disabled="isDownloadingPackingList || !canDownloadPackingList"

@@ -1,6 +1,7 @@
 :root {
   --rimkirim-primary-main: #c1ff00;
   --rimkirim-primary-main-opacity-70: rgba(193, 255, 0, 0.7);
+  --rimkirim-primary-hover: #a1d400;
 
   --rimkirim-neutral: #fff;
   --rimkirim-neutral-10: #fafafc;
@@ -12,6 +13,11 @@
   --rimkirim-neutral-80: #616161;
   --rimkirim-neutral-90: #404040;
   --rimkirim-neutral-100: #1e1e1e;
+  --rimkirim-neutral-gray: #6b6b6b;
+
+  --rimkirim-purple: #9c26f5;
+  --rimkirim-teal: #309786;
+  --rimkirim-teal-light: #d6eae7;
 
   --rimkirim-background-10: var(--rimkirim-neutral-10);
   --rimkirim-background-30: var(--rimkirim-neutral-20);

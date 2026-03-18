@@ -32,7 +32,7 @@
             International Journey
           </h2>
 
-          <p class="text-[16px] text-[#6B6B6B]">Let us assist you</p>
+          <p class="text-body text-neutral-gray">Let us assist you</p>
         </div>
 
         <div class="flex items-center gap-4">

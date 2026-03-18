@@ -2,7 +2,7 @@
   <!-- FAQ -->
   <section class="w-full max-w-5xl mx-auto py-10 flex flex-col gap-12">
     <div class="flex items-start justify-between">
-      <h2 class="text-[40px] leading-[48px] font-bold text-neutral-100">
+      <h2 class="text-display-sm font-bold text-neutral-100">
         Frequently Asked Questions
       </h2>
       <BlackButton class="w-[138px]">
@@ -17,7 +17,7 @@
         <div class="space-y-6">
           <div class="faq-item">
             <button class="faq-trigger w-full flex items-center justify-between text-left focus-visible:rounded-md focus-visible:ring-offset-[6px]">
-              <p class="text-[18px] leading-[26px] text-neutral-100">
+              <p class="text-body-lg text-neutral-100">
                 What exactly included in rimkirim services?
               </p>
               <svg
@@ -42,7 +42,7 @@ class="chevron w-5 h-5 transition-transform duration-300" fill="none" stroke="cu
 
           <div class="faq-item">
             <button class="faq-trigger w-full flex items-center justify-between text-left focus-visible:rounded-md focus-visible:ring-offset-[6px]">
-              <p class="text-[18px] leading-[26px] text-neutral-100">
+              <p class="text-body-lg text-neutral-100">
                 Do I need to pack everything myself?
               </p>
               <svg
@@ -67,7 +67,7 @@ class="chevron w-5 h-5 transition-transform duration-300" fill="none" stroke="cu
 
           <div class="faq-item">
             <button class="faq-trigger w-full flex items-center justify-between text-left focus-visible:rounded-md focus-visible:ring-offset-[6px]">
-              <p class="text-[18px] leading-[26px] text-neutral-100">
+              <p class="text-body-lg text-neutral-100">
                 What type of items can and cannot be shipped?
               </p>
               <svg
@@ -98,7 +98,7 @@ class="chevron w-5 h-5 transition-transform duration-300" fill="none" stroke="cu
         <div class="space-y-6">
           <div class="faq-item">
             <button class="faq-trigger w-full flex items-center justify-between text-left focus-visible:rounded-md focus-visible:ring-offset-[6px]">
-              <p class="text-[18px] leading-[26px] text-neutral-100">
+              <p class="text-body-lg text-neutral-100">
                 How are Rimkirim’s rates calculated?
               </p>
               <svg
@@ -129,7 +129,7 @@ class="chevron w-5 h-5 transition-transform duration-300" fill="none" stroke="cu
         <div class="space-y-6">
           <div class="faq-item">
             <button class="faq-trigger w-full flex items-center justify-between text-left focus-visible:rounded-md focus-visible:ring-offset-[6px]">
-              <p class="text-[18px] leading-[26px] text-neutral-100">
+              <p class="text-body-lg text-neutral-100">
                 Are taxes and duties included in Rimkirim’s rates?
               </p>
               <svg

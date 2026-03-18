@@ -50,10 +50,10 @@
       {{ pillLabel }}
     </BasePill>
     <div class="flex flex-col items-center gap-2">
-      <h2 class="text-[40px] leading-[48px] font-bold tracking-[-0.5%] text-neutral-100">
+      <h2 class="text-display-sm font-bold tracking-[-0.5%] text-neutral-100">
         {{ title }}
       </h2>
-      <p v-if="subtitle" class="text-[14px] leading-[22px] font-[400] !text-neutral-70">
+      <p v-if="subtitle" class="text-body-sm font-[400] !text-neutral-70">
         {{ subtitle }}
       </p>
     </div>

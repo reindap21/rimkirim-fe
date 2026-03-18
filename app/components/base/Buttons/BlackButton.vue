@@ -21,7 +21,7 @@
     :type="type"
     :disabled="disabled"
     :class="[
-      'h-[46px] text-[14px] leading-[22px] text-white transition',
+      'h-[46px] text-body-sm text-white transition',
       'flex items-center justify-center gap-2',
       'hover:bg-black',
       'disabled:bg-neutral-40 disabled:!text-neutral-70 disabled:cursor-not-allowed',

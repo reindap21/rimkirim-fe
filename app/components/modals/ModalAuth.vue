@@ -194,14 +194,14 @@
           <!-- Header -->
           <div class="flex flex-col gap-1">
             <h5 class="text-[24px] leading-[130%] font-medium">Login</h5>
-            <p class="text-[14px] leading-[22px] font-[400] text-white">
+            <p class="text-body-sm font-[400] text-white">
               Please enter your credential
             </p>
           </div>
 
           <p
             v-if="errorLogin"
-            class="flex gap-4 px-4 py-3 text-[14px] leading-[22px] font-[400] bg-[#FFEDED] text-[#FF4D4F] rounded-[12px]"
+            class="flex gap-4 px-4 py-3 text-body-sm font-[400] bg-[#FFEDED] text-[#FF4D4F] rounded-[12px]"
           >
             <IconExclamationError />
             <span>
@@ -272,7 +272,7 @@
                   </div>
                   <!-- Forgot Password -->
                   <p
-                    class="text-[14px] leading-[22px] font-[400] text-right text-[#399CE5] cursor-default"
+                    class="text-body-sm font-[400] text-right text-[#399CE5] cursor-default"
                   >
                     Forgot password?
                   </p>
@@ -308,7 +308,7 @@
             </Form>
 
             <!-- Footer -->
-            <p class="text-[14px] leading-[22px] font-[400] text-center text-white">
+            <p class="text-body-sm font-[400] text-center text-white">
               Don't have an account?
               <span class="text-[#399CE5] cursor-pointer" @click="$emit('update:mode', 'signup')">
                 Sign Up
@@ -322,14 +322,14 @@
           <!-- Header -->
           <div class="flex flex-col gap-1">
             <h5 class="text-[24px] leading-[130%] font-medium">Sign Up</h5>
-            <p class="text-[14px] leading-[22px] font-[400] text-white">
+            <p class="text-body-sm font-[400] text-white">
               Please enter your credential
             </p>
           </div>
 
           <p
             v-if="errorSignup"
-            class="flex gap-4 px-4 py-3 text-[14px] leading-[22px] font-[400] bg-[#FFEDED] text-[#FF4D4F] rounded-[12px]"
+            class="flex gap-4 px-4 py-3 text-body-sm font-[400] bg-[#FFEDED] text-[#FF4D4F] rounded-[12px]"
           >
             <IconExclamationError />
             <span>
@@ -483,7 +483,7 @@
             </Form>
 
             <!-- Footer -->
-            <p class="text-[14px] leading-[22px] font-[400] text-center text-white mt-2">
+            <p class="text-body-sm font-[400] text-center text-white mt-2">
               Already have an account?
               <span class="text-[#399CE5] cursor-pointer" @click="$emit('update:mode', 'login')">
                 Login

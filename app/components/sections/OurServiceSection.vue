@@ -12,7 +12,7 @@
     <div class="relative grid grid-cols-1 md:grid-cols-2 gap-0 max-w-6xl mx-auto">
       <!-- Card 1 (supporting) -->
       <div
-        class="relative z-10 bg-gray-50 rounded-3xl p-10 shadow-md md:translate-y-2 md:-rotate-1 transition hover:shadow-xl"
+        class="relative z-10 bg-neutral-20 rounded-3xl p-10 shadow-md md:translate-y-2 md:-rotate-1 transition hover:shadow-xl"
       >
         <!-- green box -->
         <div
@@ -48,7 +48,7 @@
 
       <!-- Card 2 (foreground) -->
       <div
-        class="relative z-20 bg-gray-50 rounded-3xl p-10 shadow-lg md:rotate-1 transition hover:shadow-xl"
+        class="relative z-20 bg-neutral-20 rounded-3xl p-10 shadow-lg md:rotate-1 transition hover:shadow-xl"
       >
         <!-- green box -->
         <div

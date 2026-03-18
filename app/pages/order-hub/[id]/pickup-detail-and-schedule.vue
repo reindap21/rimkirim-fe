@@ -251,7 +251,7 @@
                       Quick Fill
                     </div>
                   </div>
-                  <p class="text-[14px] leading-[22px] spacing-[0%] font-[400] text-neutral-60">
+                  <p class="text-body-sm spacing-[0%] font-[400] text-neutral-60">
                     Pre-fill Information from Sender or Owner details to save time.
                   </p>
                 </div>
@@ -558,7 +558,7 @@
                       "
                     >
                       <IconSun />
-                      <span class="text-[18px] leading-[26px] text-neutral-90">
+                      <span class="text-body-lg text-neutral-90">
                         {{ slotProps.option.label }}
                       </span>
                     </div>

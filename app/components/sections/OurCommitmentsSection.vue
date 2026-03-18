@@ -16,7 +16,7 @@
           <h3 class="font-bold text-neutral-100">
             End-to-end International Moving Assistant
           </h3>
-          <p class="text-[#616161] text-[14px] leading-[22px] font-[400]">
+          <p class="text-[#616161] text-body-sm font-[400]">
             We are your personal assistant, guiding you from the initial booking
             process and pick-up until your goods arrive at the destination.
             Experience the convenience of door-to-door service without the
@@ -40,7 +40,7 @@ fill-rule="evenodd" clip-rule="evenodd"
           <h3 class="font-bold text-neutral-100">
             Clear as Crystal Pricing Model
           </h3>
-          <p class="text-[#616161] text-[14px] leading-[22px] font-[400]">
+          <p class="text-[#616161] text-body-sm font-[400]">
             Gain complete clarity on the most suitable shipping scheme for you,
             including volumetric calculation and information on all potential
             surcharges upfront. We ensure there are no hidden costs.
@@ -57,7 +57,7 @@ fill-rule="evenodd" clip-rule="evenodd"
             </svg>
           </div>
           <h3 class="font-bold text-neutral-100">Flexible Payment Options</h3>
-          <p class="text-[#616161] text-[14px] leading-[22px] font-[400]">
+          <p class="text-[#616161] text-body-sm font-[400]">
             Our team is always ready to assist and is patient in answering all
             your questions. We ensure your communication is smooth and support
             is always available.
@@ -76,7 +76,7 @@ fill-rule="evenodd" clip-rule="evenodd"
           <h3 class="font-bold text-neutral-100">
             Customer Support Always Available
           </h3>
-          <p class="text-[#616161] text-[14px] leading-[22px] font-[400]">
+          <p class="text-[#616161] text-body-sm font-[400]">
             We provide various shipping schemes (Relocation Goods, General
             Shipment, or Passenger Luggage) to meet the specific needs of the
             diaspora, students, or professionals.

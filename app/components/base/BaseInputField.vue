@@ -43,7 +43,7 @@ const wrapperClass = computed(() => [
   props.error ? 'border-red-500' : 'border-gray-300',
   'bg-white',
   'transition',
-  'focus-within:border-[#C1FF00]'
+  'focus-within:border-primary'
 ].join(' '))
 
 /**

@@ -32,21 +32,21 @@
   const statusConfig = {
     awaiting_input: {
       label: "AWAITING INPUT",
-      bg: "bg-[#FFE0C2]",
-      text: "text-[#FF9E42]",
+      bg: "bg-[var(--rimkirim-semantic-bg-warning)]",
+      text: "text-warning",
       progress: "text-[#FEBC18]",
     },
     in_progress: {
       label: "IN PROGRESS",
-      bg: "bg-[#C2E5FF]",
-      text: "text-[#3DADFF]",
-      progress: "text-[#3DADFF]",
+      bg: "bg-[var(--rimkirim-semantic-bg-info)]",
+      text: "text-info",
+      progress: "text-info",
     },
     completed: {
       label: "COMPLETED",
-      bg: "bg-[#CDF4D3]",
-      text: "text-[#27C827]",
-      progress: "text-[#27C827]",
+      bg: "bg-[var(--rimkirim-semantic-bg-success)]",
+      text: "text-success",
+      progress: "text-success",
     },
     locked: {
       label: "LOCKED",
@@ -85,8 +85,8 @@
 
 <template>
   <div
-    class="rounded-[16px] px-6 py-4 border border-[#EDEDED] flex flex-col justify-between gap-8"
-    :class="status === 'locked' ? 'bg-[#EDEDED]' : 'bg-white'"
+    class="rounded-[16px] px-6 py-4 border border-neutral-30 flex flex-col justify-between gap-8"
+    :class="status === 'locked' ? 'bg-neutral-30' : 'bg-white'"
   >
     <div class="h-full flex flex-col gap-4">
       <!-- Header -->
@@ -94,7 +94,7 @@
         <!-- Status Badge -->
         <span
           :class="[
-            'inline-flex items-center gap-1 px-2 py-1 rounded-full min-w-[120px] text-[14px] leading-[22px] font-[400]',
+            'inline-flex items-center gap-1 px-2 py-1 rounded-full min-w-[120px] text-body-sm font-[400]',
             statusClass?.bg,
             statusClass?.text,
           ]"
@@ -104,7 +104,7 @@
         </span>
 
         <!-- Progress -->
-        <span :class="['text-[14px] leading-[22px] font-medium', statusClass?.progress]">
+        <span :class="['text-body-sm font-medium', statusClass?.progress]">
           {{ currentProgress }}/{{ totalProgress }}
         </span>
       </div>
@@ -114,7 +114,7 @@
         <component :is="icon" />
 
         <h3
-          class="flex flex-col gap-[2px] font-medium text-[18px] leading-[26px]"
+          class="flex flex-col gap-[2px] font-medium text-body-lg"
           :class="status === 'locked' ? '!text-neutral-70' : 'text-neutral-100'"
         >
           <span v-for="(line, index) in titleLines" :key="index">
@@ -122,7 +122,7 @@
           </span>
         </h3>
 
-        <p class="text-[14px] leading-[22px] text-neutral-60">
+        <p class="text-body-sm text-neutral-60">
           {{ description }}
         </p>
 
@@ -133,14 +133,14 @@
       <div class="flex items-center justify-end h-[38px] mt-auto">
         <button
           v-if="status !== 'locked'"
-          class="text-[14px] leading-[22px] font-medium text-neutral-100 flex items-center gap-1 hover:opacity-80"
+          class="text-body-sm font-medium text-neutral-100 flex items-center gap-1 hover:opacity-80"
           @click="emit('action')"
         >
           {{ status === "awaiting_input" ? "Start" : "Edit" }} →
         </button>
         <button
           v-else
-          class="text-[14px] leading-[22px] font-medium !text-neutral-70 flex items-center gap-1 hover:opacity-80 cursor-default"
+          class="text-body-sm font-medium !text-neutral-70 flex items-center gap-1 hover:opacity-80 cursor-default"
         >
           Wait for another form {{ props?.waitingNumber }}/3
         </button>

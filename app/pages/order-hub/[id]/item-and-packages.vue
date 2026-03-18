@@ -401,7 +401,7 @@
               <h2 class="text-[20px] leading-[130%] font-medium text-neutral-90">
                 Choose Your Currency
               </h2>
-              <p class="text-[14px] leading-[22px] spacing-[0%] font-[400] text-neutral-60">
+              <p class="text-body-sm spacing-[0%] font-[400] text-neutral-60">
                 You may pick any convenient currency from origin country to value your
               </p>
             </div>
@@ -458,7 +458,7 @@
                 <div class="text-[12px] font-[400] leading-[20px] text-[#C2C2C2]">
                   Total Package
                 </div>
-                <div class="text-[18px] leading-[26px] font-bold text-white">
+                <div class="text-body-lg font-bold text-white">
                   {{ totalPackage }}
                 </div>
               </div>
@@ -478,7 +478,7 @@
                   <PopoverTotalValueItemAndPackage />
                 </div>
                 <div
-                  class="flex items-center gap-1 text-[18px] leading-[26px] font-bold text-white"
+                  class="flex items-center gap-1 text-body-lg font-bold text-white"
                 >
                   <span v-if="selectedCurrency">{{ selectedCurrency?.code }}</span>
                   {{ totalValue }}
@@ -500,7 +500,7 @@
                   <PopoverTotalChargeableWeightBase />
                 </div>
                 <div
-                  class="flex items-center gap-3 text-[18px] leading-[26px] font-bold text-white"
+                  class="flex items-center gap-3 text-body-lg font-bold text-white"
                 >
                   {{ Math.ceil(totalChargeableWeight) }}
                   <PillErrorMin21KgRequired
