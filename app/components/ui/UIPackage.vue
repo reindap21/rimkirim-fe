@@ -411,7 +411,7 @@
 
             <div class="flex flex-col gap-1">
               <p
-                class="flex items-center gap-1 text-[14px] leading-[22px] font-medium text-neutral-100"
+                class="flex items-center gap-1 text-body-sm font-medium text-neutral-100"
               >
                 Chargeable Weight for this Package
                 <PopoverChargeableWeightPackage
@@ -422,7 +422,7 @@
                   }"
                 />
               </p>
-              <p class="text-[14px] leading-[22px] text-neutral-60">
+              <p class="text-body-sm text-neutral-60">
                 Calculated as the greater of Actual Weight
                 <span class="text-neutral-100"
                   >({{ formatNumber(Number(totalActualWeight)) }} Kg)</span
@@ -437,7 +437,7 @@
           <div
             class="flex items-center gap-1 text-lg font-semibold text-neutral-100 bg-white min-w-[100px] p-4 rounded-xl"
           >
-            <div class="text-[18px] leading-[26px] font-bold w-full text-center">
+            <div class="text-body-lg font-bold w-full text-center">
               {{ formatNumber(Number(chargeableWeight)) }}
             </div>
             <div class="text-sm font-normal w-fit">Kg</div>

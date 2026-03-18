@@ -18,7 +18,7 @@
     <div class="flex items-center justify-between">
       <h2 class="text-[24px] font-medium text-neutral-90">{{ title }}</h2>
       <div v-if="packingListCode" class="flex items-center gap-2 text-[14px]">
-        <span class="text-[14px] leading-[22px] font-[400] !text-neutral-70"
+        <span class="text-body-sm font-[400] !text-neutral-70"
           >Packing List Code:</span
         >
         <span
@@ -44,7 +44,7 @@
         </span>
       </div>
     </div>
-    <p class="text-[14px] leading-[22px] spacing-[0%] font-[400] text-neutral-60">
+    <p class="text-body-sm spacing-[0%] font-[400] text-neutral-60">
       {{ description }}
     </p>
   </div>

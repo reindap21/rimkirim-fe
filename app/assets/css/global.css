@@ -1,127 +1,37 @@
 /* General */
 
 body {
-  @apply !text-[14px] !leading-[22px] font-[400] bg-white;
+  @apply !text-body-sm font-[400] bg-white;
 }
 
 /* TODO: Update the focus-visible later; check using button or link, still use default outline  */
 /* :focus-visible {
-  @apply outline-none ring ring-[#C1FF00] ring-offset-2;
+  @apply outline-none ring ring-primary ring-offset-2;
 } */
 
 a:focus-visible,
 button:focus-visible {
-  @apply text-[14px] leading-[22px] font-[400];
+  @apply text-body-sm font-[400];
 }
 
 :focus-visible {
-  @apply outline-none ring ring-[#C1FF00] ring-offset-2;
-}
-
-/* Background */
-
-.bg-neutral {
-  background-color: var(--rimkirim-neutral);
-}
-
-.bg-neutral-10 {
-  background-color: var(--rimkirim-neutral-10);
-}
-
-.bg-neutral-20 {
-  background-color: var(--rimkirim-neutral-20);
-}
-
-.bg-neutral-30 {
-  background-color: var(--rimkirim-neutral-30);
-}
-
-.bg-neutral-40 {
-  background-color: var(--rimkirim-neutral-40);
-}
-
-.bg-neutral-60 {
-  background-color: var(--rimkirim-neutral-60);
-}
-
-.bg-neutral-70 {
-  background-color: var(--rimkirim-neutral-70);
-}
-
-.bg-neutral-80 {
-  background-color: var(--rimkirim-neutral-80);
-}
-
-.bg-neutral-90 {
-  background-color: var(--rimkirim-neutral-90);
-}
-
-.bg-neutral-100 {
-  background-color: var(--rimkirim-neutral-100);
-}
-
-.bg-primary {
-  background-color: var(--rimkirim-primary-main);
-}
-
-/* Border */
-
-.border-neutral-30 {
-  border-color: var(--rimkirim-neutral-30);
-}
-
-.border-neutral-40 {
-  border-color: var(--rimkirim-neutral-40);
-}
-
-.border-neutral-90 {
-  border-color: var(--rimkirim-neutral-90);
-}
-
-.border-neutral-100 {
-  border-color: var(--rimkirim-neutral-100);
-}
-
-.border-primary {
-  border-color: var(--rimkirim-primary-main);
-}
-
-/* Text */
-
-.text-neutral-60 {
-  color: var(--rimkirim-neutral-60);
-}
-
-.text-neutral-70 {
-  color: var(--rimkirim-neutral-70);
-}
-
-.text-neutral-80 {
-  color: var(--rimkirim-neutral-80);
-}
-
-.text-neutral-90 {
-  color: var(--rimkirim-neutral-90);
-}
-
-.text-neutral-100 {
-  color: var(--rimkirim-neutral-100);
+  @apply outline-none ring ring-primary ring-offset-2;
 }
 
 header a.brand-logo:focus-visible,
 header button:focus-visible {
-  @apply outline-none ring ring-[#C1FF00] ring-offset-[6px] ring-offset-white rounded-[4px];
+  @apply outline-none ring ring-primary ring-offset-[6px] ring-offset-white rounded-[4px];
 }
 
 footer a:focus-visible {
-  @apply outline-none ring ring-[#C1FF00] ring-offset-[6px] ring-offset-[#1E1E1E] rounded-[4px];
+  @apply outline-none ring ring-primary ring-offset-[6px] ring-offset-neutral-100 rounded-[4px];
 }
 
 /* Input */
 
 input,
 baseinput {
-  @apply h-[46px] bg-white outline-none focus:outline-[#C1FF00] focus:outline-offset-0 rounded-[6px] px-4 py-3 text-neutral-100;
+  @apply h-[46px] bg-white outline-none focus:outline-primary focus:outline-offset-0 rounded-[6px] px-4 py-3 text-neutral-100;
 }
 
 input::placeholder,
@@ -129,7 +39,7 @@ baseinput::placeholder,
 .p-select-label.p-placeholder,
 .p-placeholder,
 .p-fileupload-basic-content span {
-  @apply !text-[14px] !leading-[22px] !text-neutral-60;
+  @apply !text-body-sm !text-neutral-60;
 }
 
 input:focus-visible,
@@ -138,7 +48,7 @@ baseinput:focus-visible {
 }
 
 .p-inputtext {
-  @apply !text-[14px] !leading-[22px] !font-[400] bg-white !text-neutral-100;
+  @apply !text-body-sm !font-[400] bg-white !text-neutral-100;
 }
 
 div[role="alert"] {
@@ -148,11 +58,11 @@ div[role="alert"] {
 /* Select */
 
 .p-select {
-  @apply !text-[14px] !leading-[22px] !text-neutral-100 h-[46px] bg-white;
+  @apply !text-body-sm !text-neutral-100 h-[46px] bg-white;
 }
 
 .p-select-label {
-  @apply !text-[14px] !leading-[22px] !text-neutral-100 !flex !items-center;
+  @apply !text-body-sm !text-neutral-100 !flex !items-center;
 }
 
 .p-select-dropdown {
@@ -161,7 +71,7 @@ div[role="alert"] {
 
 /* Text Area */
 .p-textarea {
-  @apply !text-[14px] !leading-[22px] !font-[400];
+  @apply !text-body-sm !font-[400];
 }
 
 /* Popover */

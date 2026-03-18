@@ -808,7 +808,7 @@
                       Quick Fill
                     </div>
                   </div>
-                  <p class="text-[14px] leading-[22px] spacing-[0%] font-[400] text-neutral-60">
+                  <p class="text-body-sm spacing-[0%] font-[400] text-neutral-60">
                     Pre-fill Information from Sender or Receiver details to save time.
                   </p>
                 </div>

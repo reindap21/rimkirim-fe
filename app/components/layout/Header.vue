@@ -45,37 +45,37 @@
       </div>
       <nav
         v-if="use === 'home'"
-        class="hidden md:flex items-center gap-3 text-[14px] leading-[22px] text-gray-700 magnetic-group"
+        class="hidden md:flex items-center gap-3 text-body-sm text-gray-700 magnetic-group"
       >
         <a
           href="#"
-          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-[#C1FF00] hover:text-[#1E1E1E]"
+          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-primary hover:text-neutral-100"
           >Moving</a
         >
         <a
           href="#"
-          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-[#C1FF00] hover:text-[#1E1E1E]"
+          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-primary hover:text-neutral-100"
           >About Us</a
         >
         <a
           href="#"
-          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-[#C1FF00] hover:text-[#1E1E1E]"
+          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-primary hover:text-neutral-100"
           >Articles</a
         >
         <a
           href="#"
-          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-[#C1FF00] hover:text-[#1E1E1E]"
+          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-primary hover:text-neutral-100"
           >Jobs</a
         >
         <a
           href="#"
-          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-[#C1FF00] hover:text-[#1E1E1E]"
+          class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-primary hover:text-neutral-100"
           >FAQs</a
         >
       </nav>
       <div class="flex items-center gap-4">
         <div
-          class="text-[14px] leading-[22px] px-4 py-2 font-medium text-neutral-100 cursor-pointer"
+          class="text-body-sm px-4 py-2 font-medium text-neutral-100 cursor-pointer"
         >
           EN
         </div>
@@ -83,7 +83,7 @@
         <template v-else>
           <template v-if="!user && useNavHome">
             <button
-              class="text-[14px] leading-[22px] font-medium text-white bg-neutral-100 hover:bg-[#2E2E2E] rounded-full w-[102px] h-[46px] flex items-center justify-center"
+              class="text-body-sm font-medium text-white bg-neutral-100 hover:bg-neutral-90 rounded-full w-[102px] h-[46px] flex items-center justify-center"
               @click="openLogin"
             >
               Login
@@ -93,7 +93,7 @@
           <template v-else>
             <div class="relative flex gap-2 items-center cursor-pointer">
               <button
-                class="flex items-center gap-2 text-[14px] leading-[22px] font-medium text-neutral-100"
+                class="flex items-center gap-2 text-body-sm font-medium text-neutral-100"
               >
                 <span class="truncate max-w-[120px]">
                   {{ user?.name?.split(" ")?.[0] || "..." }}
@@ -116,16 +116,16 @@
       <UIBrandLogo fill="#1E1E1E" />
       <div class="flex items-center gap-2 px-4 py-2 bg-white shadow-lg rounded-full">
         <div
-          class="text-[18px] leading-[26px] px-4 py-2 font-medium text-neutral-100 cursor-pointer"
+          class="text-body-lg px-4 py-2 font-medium text-neutral-100 cursor-pointer"
         >
           EN
         </div>
-        <!-- <button class="w-full text-left text-[14px] leading-[22px] text-red-600" @click="logout">
+        <!-- <button class="w-full text-left text-body-sm text-red-600" @click="logout">
           Logout
         </button> -->
         <div class="relative flex gap-2 items-center cursor-pointer">
           <button
-            class="flex items-center gap-2 text-[14px] leading-[22px] font-medium text-neutral-100"
+            class="flex items-center gap-2 text-body-sm font-medium text-neutral-100"
           >
             <span class="truncate max-w-[120px]">
               {{ user?.name?.split(" ")?.[0] || "..." }}

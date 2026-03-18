@@ -35,7 +35,7 @@
         <div class="flex items-center gap-3 mb-2">
           <span
             v-if="badge"
-            class="px-3 py-1 text-[12px] leading-5 rounded-full bg-[#D6EAE74D] text-[#309786]"
+            class="px-3 py-1 text-[12px] leading-5 rounded-full bg-teal-light/30 text-teal"
           >
             {{ badge }}
           </span>
@@ -46,7 +46,7 @@
           {{ currency }} {{ formattedPrice }} / {{ unit }}
         </div>
 
-        <p v-if="minWeight" class="text-[14px] leading-[22px] text-neutral-60">
+        <p v-if="minWeight" class="text-body-sm text-neutral-60">
           For Minimum {{ minWeight }} {{ unit }} Shipment
         </p>
       </div>

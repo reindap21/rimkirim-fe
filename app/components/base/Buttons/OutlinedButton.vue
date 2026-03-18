@@ -29,10 +29,10 @@
     :type="type"
     :disabled="disabled"
     :class="[
-      'h-[46px] text-[14px] leading-[22px] text-neutral-100 transition border',
-      active ? 'bg-primary border-transparent' : 'border-[#1E1E1E]',
+      'h-[46px] text-body-sm text-neutral-100 transition border',
+      active ? 'bg-primary border-transparent' : 'border-neutral-100',
       'flex items-center justify-center gap-2',
-      primaryWhenHover ? 'hover:bg-[#C1FF00] hover:border-transparent' : 'hover:opacity-70',
+      primaryWhenHover ? 'hover:bg-primary hover:border-transparent' : 'hover:opacity-70',
       'disabled:!text-neutral-70 disabled:cursor-not-allowed',
       rounded,
       loading ? '' : '',

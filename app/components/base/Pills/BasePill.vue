@@ -1,7 +1,7 @@
 <template>
   <span
     :class="[
-      'inline-block rounded-full text-[14px] leading-[22px] font-medium',
+      'inline-block rounded-full text-body-sm font-medium',
       padding,
       margin,
       bg,

@@ -262,14 +262,14 @@
           </div>
 
           <div v-if="hasPackingList" class="flex flex-col gap-[6px]">
-            <label class="text-[14px] text-neutral-90 leading-[22px]">Packing List Code</label>
+            <label class="text-body-sm text-neutral-90">Packing List Code</label>
             <div class="flex justify-center gap-4">
               <InputText
                 v-model="packingListCode"
                 name="packing_list_code"
                 type="text"
                 placeholder="Input packing list code"
-                class="flex-1 text-[14px] leading-[22px] font-[400] px-4 py-3 bg-white rounded-[6px] text-neutral-100 placeholder:text-neutral-60 border border-[#EDEDED]"
+                class="flex-1 text-body-sm font-[400] px-4 py-3 bg-white rounded-[6px] text-neutral-100 placeholder:text-neutral-60 border border-[#EDEDED]"
                 variant="filled"
                 fluid
                 :disabled="searchPackingListCodeLoading"
@@ -285,7 +285,7 @@
             </div>
             <div
               v-if="isValidPackingListCode"
-              class="flex items-center gap-2 text-[12px] leading-[20px] text-[#27C827]"
+              class="flex items-center gap-2 text-[12px] leading-[20px] text-success"
             >
               <svg
                 width="16"

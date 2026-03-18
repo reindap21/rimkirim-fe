@@ -7,7 +7,7 @@
     <div class="max-w-5xl mx-auto flex flex-col gap-10">
       <!-- TOP -->
       <div class="">
-        <h2 class="text-[40px] leading-[48px] font-bold max-w-3xl">
+        <h2 class="text-display-sm font-bold max-w-3xl">
           Let's ship more than<br />
           just household goods →
         </h2>
@@ -56,7 +56,7 @@
       <!-- BOTTOM -->
       <div class="flex flex-col md:flex-row items-start md:items-end justify-between gap-8">
         <div class="flex flex-col gap-4">
-          <div class="text-[36px] font-bold text-[#C1FF00]">
+          <div class="text-[36px] font-bold text-primary">
             <UIBrandLogo fill="#C1FF00" width="120" height="40" />
           </div>
           <p class="mt-2 text-[14px] text-[#C2C2C2]">
