@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g transform="matrix(1,0,0,1,-558,-183)">
+        <g id="Home">
+            <g id="Outer-Container" serif:id="Outer Container" transform="matrix(1,0,0,1,180,0)">
+                <circle cx="428" cy="233" r="50" style="fill:rgb(255,224,194);"/>
+            </g>
+            <g id="Animation" transform="matrix(0.54,0,0,0.54,376.88,107.18)">
+                <circle cx="428" cy="233" r="50" style="fill:rgb(255,124,0);stroke:rgb(255,124,0);stroke-width:6.17px;"/>
+            </g>
+            <g id="Inner-Container" serif:id="Inner Container" transform="matrix(0.7,0,0,0.7,308.4,69.9)">
+                <circle cx="428" cy="233" r="50" style="fill:rgb(255,124,0);"/>
+            </g>
+            <g transform="matrix(0.489182,0,0,0.489182,608,233)">
+                <g transform="matrix(1,0,0,1,-50,-50)">
+                    <g transform="matrix(4.166667,0,0,4.166667,0,0)">
+                        <path d="M12.892,2.81L21.488,9.595C21.811,9.851 22,10.241 22,10.653C22,11.397 21.397,12 20.653,12L20,12L20,15.5C20,18.328 20,19.743 19.121,20.621C18.243,21.5 16.828,21.5 14,21.5L10,21.5C7.172,21.5 5.757,21.5 4.879,20.621C4,19.743 4,18.328 4,15.5L4,12L3.347,12C2.603,12 2,11.397 2,10.653C2,10.241 2.189,9.851 2.512,9.595L11.108,2.81C11.362,2.609 11.676,2.5 12,2.5C12.324,2.5 12.638,2.609 12.892,2.81Z" style="fill:none;fill-rule:nonzero;stroke:white;stroke-width:1.5px;stroke-miterlimit:4;"/>
+                    </g>
+                    <g transform="matrix(4.166667,0,0,4.166667,0,0)">
+                        <path d="M14.5,21.5L14.5,17C14.5,16.065 14.5,15.598 14.299,15.25C14.167,15.022 13.978,14.833 13.75,14.701C13.402,14.5 12.935,14.5 12,14.5C11.065,14.5 10.598,14.5 10.25,14.701C10.022,14.833 9.833,15.022 9.701,15.25C9.5,15.598 9.5,16.065 9.5,17L9.5,21.5" style="fill:none;fill-rule:nonzero;stroke:white;stroke-width:1.5px;stroke-miterlimit:4;"/>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
