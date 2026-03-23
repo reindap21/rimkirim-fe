@@ -9,6 +9,7 @@ export default defineVitestConfig({
     },
   },
   test: {
+    hookTimeout: 30000,
     environment: 'nuxt',
     environmentOptions: {
       nuxt: { domEnvironment: 'happy-dom' },
