@@ -225,12 +225,12 @@ div[role="alert"] {
 }
 
 .marquee-left {
-  animation: marquee-left 45s linear infinite;
+  animation: marquee-left 105s linear infinite;
 }
 
 .marquee-right {
-  animation: marquee-right 45s linear infinite;
-  animation-delay: -22.5s;
+  animation: marquee-right 105s linear infinite;
+  animation-delay: -52.5s;
 }
 
 .mask:hover .marquee-left,
