@@ -9,20 +9,20 @@
   // * ------- Defines -----------------------------------------------------------------------------------------------------------------------------------------------
 
   interface ModalAuthProps {
-    open: boolean
-    mode?: 'login' | 'signup'
-    source?: string
+    open: boolean;
+    mode?: "login" | "signup";
+    source?: string;
   }
 
   withDefaults(defineProps<ModalAuthProps>(), {
-    mode: 'login',
-    source: 'header',
+    mode: "login",
+    source: "header",
   });
 
   interface ModalAuthEmits {
-    (e: 'close'): void
-    (e: 'update:mode', mode: 'login' | 'signup'): void
-    (e: 'success', user: User): void
+    (e: "close"): void;
+    (e: "update:mode", mode: "login" | "signup"): void;
+    (e: "success", user: User): void;
   }
 
   const emit = defineEmits<ModalAuthEmits>();
@@ -91,7 +91,13 @@
     ),
   );
 
-  const handleLogin = async ({ values, valid }: { values: { email: string; password: string }; valid: boolean }) => {
+  const handleLogin = async ({
+    values,
+    valid,
+  }: {
+    values: { email: string; password: string };
+    valid: boolean;
+  }) => {
     if (!valid || loginLoading.value) return;
 
     errorLogin.value = "";
@@ -123,7 +129,13 @@
     });
   };
 
-  const handleSignup = async ({ values, valid }: { values: { name: string; email: string; password: string; password_confirmation: string }; valid: boolean }) => {
+  const handleSignup = async ({
+    values,
+    valid,
+  }: {
+    values: { name: string; email: string; password: string; password_confirmation: string };
+    valid: boolean;
+  }) => {
     if (!valid || signUpLoading.value) return;
 
     errorSignup.value = "";
@@ -194,9 +206,7 @@
           <!-- Header -->
           <div class="flex flex-col gap-1">
             <h5 class="text-[24px] leading-[130%] font-medium">Login</h5>
-            <p class="text-body-sm font-[400] text-white">
-              Please enter your credential
-            </p>
+            <p class="text-body-sm font-[400] text-white">Please enter your credential</p>
           </div>
 
           <p
@@ -271,9 +281,7 @@
                     >
                   </div>
                   <!-- Forgot Password -->
-                  <p
-                    class="text-body-sm font-[400] text-right text-[#399CE5] cursor-default"
-                  >
+                  <p class="text-body-sm font-[400] text-right text-[#399CE5] cursor-default">
                     Forgot password?
                   </p>
                 </div>
@@ -322,9 +330,7 @@
           <!-- Header -->
           <div class="flex flex-col gap-1">
             <h5 class="text-[24px] leading-[130%] font-medium">Sign Up</h5>
-            <p class="text-body-sm font-[400] text-white">
-              Please enter your credential
-            </p>
+            <p class="text-body-sm font-[400] text-white">Please enter your credential</p>
           </div>
 
           <p
