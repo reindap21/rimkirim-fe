@@ -1,6 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import RimkirimPreset from "./primevue/preset";
 
+const isDev = process.env.NUXT_PUBLIC_APP_ENV !== "production";
+
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
 
@@ -14,7 +16,7 @@ export default defineNuxtConfig({
     },
   },
 
-  devtools: { enabled: true },
+  devtools: { enabled: isDev },
 
   modules: [
     "@nuxt/eslint",
@@ -36,15 +38,12 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: "Rimkirim",
-      // Force light color scheme at HTML level — Rimkirim is light-only
-      // Prevents browser dark mode from overriding input/form element colors
       htmlAttrs: {
         style: "color-scheme: light;",
       },
       meta: [
         { charset: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
-        // Tell browser this site only supports light mode
         { name: "color-scheme", content: "light" },
       ],
       script: [
@@ -76,19 +75,21 @@ export default defineNuxtConfig({
     classSuffix: "",
   },
 
-  vite: {
-    server: {
-      allowedHosts: [
-        "rimkirimdev.com",
-        ".trycloudflare.com",
-        ".ngrok-free.app",
-        ".ngrok-free.dev",
-        ".ngrok.io",
-      ],
-      hmr: {
-        clientPort: 443,
-        protocol: "wss",
+  ...(isDev && {
+    vite: {
+      server: {
+        allowedHosts: [
+          "rimkirimdev.com",
+          ".trycloudflare.com",
+          ".ngrok-free.app",
+          ".ngrok-free.dev",
+          ".ngrok.io",
+        ],
+        hmr: {
+          clientPort: 443,
+          protocol: "wss",
+        },
       },
     },
-  },
+  }),
 });
