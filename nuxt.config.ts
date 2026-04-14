@@ -64,9 +64,9 @@ export default defineNuxtConfig({
   ],
 
   css: [
-    "/assets/css/global.css",
-    "/assets/css/rimkirim-tokens.css",
-    "/assets/css/primevue-overrides.css",
+    "~/assets/css/global.css",
+    "~/assets/css/rimkirim-tokens.css",
+    "~/assets/css/primevue-overrides.css",
   ],
 
   colorMode: {
