@@ -2,8 +2,6 @@
   import { computed, ref } from "vue";
   import type { UIRateCardProps } from "~/types/rate";
 
-  // * ------- Defines -----------------------------------------------------------------------------------------------------------------------------------------------
-
   const props = withDefaults(defineProps<UIRateCardProps>(), {
     currency: "IDR",
     unit: "Kg",
@@ -14,16 +12,10 @@
 
   const emit = defineEmits(["action"]);
 
-  // * ------- Vars --------------------------------------------------------------------------------------------------------------------------------------------------
-
   const expanded = ref(false);
   const etaDays = `${props?.eta?.days_from} - ${props?.eta?.days_to}D`;
 
-  // * ------- Computed
-
   const formattedPrice = computed(() => props.price.toLocaleString("id-ID"));
-
-  // * ------- Methods ------------------------------------------------------------------------------------------------------------------------------------------------
 </script>
 
 <template>
@@ -33,10 +25,7 @@
       <!-- LEFT -->
       <div>
         <div class="flex items-center gap-3 mb-2">
-          <span
-            v-if="badge"
-            class="px-3 py-1 text-[12px] leading-5 rounded-full bg-teal-light/30 text-teal"
-          >
+          <span v-if="badge" class="px-3 py-1 text-[12px] leading-5 rounded-full bg-teal-light/30 text-teal">
             {{ badge }}
           </span>
           <img class="h-[28px] w-auto" :src="props?.provider?.url" :alt="props?.provider?.alt" />
@@ -54,13 +43,11 @@
       <!-- CENTER -->
       <div class="hidden md:flex flex-1 items-center justify-center gap-10">
         <UICountry :flag="originFlag" :label="originCountry" />
-
         <div class="flex flex-col items-center text-sm text-neutral-60">
           {{ etaDays }}
           <IconDividerArrow />
           {{ isDirect ? "Direct" : "Transit" }}
         </div>
-
         <UICountry :flag="destinationFlag" :label="destinationCountry" />
       </div>
 
@@ -70,31 +57,24 @@
           class="absolute top-0 right-0 w-[107px]"
           :loading="loading"
           @click="emit('action')"
-          >Move Now</PrimaryButton
-        >
+        >Move Now</PrimaryButton>
       </div>
     </div>
 
     <!-- BOTTOM -->
-    <div
-      class="relative mt-6 border-t border-gray-200 pt-4 text-[14px] text-neutral-60 transition-all duration-300 ease-out"
-    >
+    <div class="relative mt-6 border-t border-gray-200 pt-4 text-[14px] text-neutral-60 transition-all duration-300 ease-out">
       <template v-if="expanded">
         <ul class="flex flex-col gap-2">
           <li v-for="(term, i) in terms" :key="i" class="flex items-start gap-2">
-            <div class="mt-1">
-              <IconInfoRate />
-            </div>
+            <div class="mt-1"><IconInfoRate /></div>
             <!-- eslint-disable-next-line vue/no-v-html -->
             <span v-html="term" />
           </li>
         </ul>
       </template>
-
       <template v-else>
         <span>*Terms and conditions applied</span>
       </template>
-
       <div class="flex items-center">
         <button
           v-if="collapsible"

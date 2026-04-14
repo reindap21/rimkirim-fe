@@ -38,6 +38,15 @@ export interface ComplianceDocumentRequestBody {
 
 export interface PickupDetailRequestBody {
   bookingCode: string
+  shipperFullName: string
+  buildingType: string
+  hasFreightElevator?: string
+  hasReceptionist?: string
+  streetAddress: string
+  notesForCourier: string
+  shipperOriginPhoneNumber: string
+  pickupDate: string | Date
+  pickupTime: string
 }
 
 export interface EligibilityCheckRequestBody {

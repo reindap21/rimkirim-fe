@@ -48,6 +48,9 @@ export interface Rate {
     is_direct: true
   }
   terms: string[]
+  meta?: {
+    chargeable_weight: number | null
+  }
 }
 
 export type ShipmentType = 'back_for_good' | 'moving_abroad'

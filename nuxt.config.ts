@@ -36,9 +36,16 @@ export default defineNuxtConfig({
   app: {
     head: {
       title: "Rimkirim",
+      // Force light color scheme at HTML level — Rimkirim is light-only
+      // Prevents browser dark mode from overriding input/form element colors
+      htmlAttrs: {
+        style: "color-scheme: light;",
+      },
       meta: [
         { charset: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
+        // Tell browser this site only supports light mode
+        { name: "color-scheme", content: "light" },
       ],
       script: [
         {
@@ -64,14 +71,24 @@ export default defineNuxtConfig({
   ],
 
   colorMode: {
-    preference: "light", // force light
+    preference: "light",
     fallback: "light",
     classSuffix: "",
   },
 
   vite: {
     server: {
-      allowedHosts: ["rimkirimdev.com"],
+      allowedHosts: [
+        "rimkirimdev.com",
+        ".trycloudflare.com",
+        ".ngrok-free.app",
+        ".ngrok-free.dev",
+        ".ngrok.io",
+      ],
+      hmr: {
+        clientPort: 443,
+        protocol: "wss",
+      },
     },
   },
 });
