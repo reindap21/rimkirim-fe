@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { ref, onMounted, onUnmounted } from "vue";
+  import { MENU } from "~/config";
 
   interface Props {
     use?: "eligible" | "order-hub" | "home" | null | undefined;
@@ -27,7 +28,6 @@
     dropdownOpen.value = !dropdownOpen.value;
   };
 
-  // Close dropdown on outside click
   const handleClickOutside = (e: MouseEvent) => {
     const target = e.target as HTMLElement;
     if (!target.closest("#user-dropdown-wrapper")) {
@@ -71,7 +71,7 @@
         <a href="#" class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-primary hover:text-neutral-100">About Us</a>
         <a href="#" class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-primary hover:text-neutral-100">Articles</a>
         <a href="#" class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-primary hover:text-neutral-100">Jobs</a>
-        <a href="#" class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-primary hover:text-neutral-100">FAQs</a>
+        <NuxtLink :to="MENU.FAQS" class="magnetic rounded-full px-3 py-2 font-medium leading-[22px] transition-transform duration-200 hover:scale-[1.03] hover:bg-primary hover:text-neutral-100">FAQs</NuxtLink>
       </nav>
 
       <!-- Right side -->
