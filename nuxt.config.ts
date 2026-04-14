@@ -7,12 +7,13 @@ export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
 
   runtimeConfig: {
-    apiBaseUrl: process.env.API_BASE_URL, // server-only
+    apiBaseUrl: process.env.API_BASE_URL,
     googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
     googleClientId: process.env.GOOGLE_CLIENT_ID,
     public: {
       baseUrl: process.env.NUXT_PUBLIC_BASE_URL,
       apiBaseUrl: process.env.API_BASE_URL,
+      googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
     },
   },
 
@@ -46,13 +47,7 @@ export default defineNuxtConfig({
         { name: "viewport", content: "width=device-width, initial-scale=1" },
         { name: "color-scheme", content: "light" },
       ],
-      script: [
-        {
-          src: `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_MAPS_API_KEY}&libraries=places`,
-          async: true,
-          defer: true,
-        },
-      ],
+      // Google Maps loaded via plugin instead to avoid SSR mismatch
     },
   },
 
