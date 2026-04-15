@@ -8,14 +8,14 @@ const specialRatesLoading = ref(true);
 
 const getSpecialRates = async () => {
   try {
-    const res = await $fetch<{ rates: Rate[] }>(`/api/rates`, {
+    const res = await $fetch<{ data: Rate[] }>(`/api/rates`, {
       method: "GET",
       credentials: 'include', // Required
       params: {
         is_special_rate: true
       }
     })
-    specialRates.value = res.rates; // Array of rates
+    specialRates.value = res.data; // Array of rates
     specialRatesLoading.value = false;
   } catch (err: unknown) {
     console.error('fetch rates error:', err)

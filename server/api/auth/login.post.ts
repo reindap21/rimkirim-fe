@@ -30,8 +30,8 @@ export default defineEventHandler(async (event) => {
     const access_token = res.data.access_token;
     setCookie(event, "access_token", access_token, {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
+      secure: false,
+      sameSite: "lax",
       path: "/",
       maxAge: 60 * 60 * 24,
     });
